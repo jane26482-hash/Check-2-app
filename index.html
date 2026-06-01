@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>업무용 시설/안전 점검 시스템</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- Firebase compat (regular scripts — no ESM / async race) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <!-- Lucide icons UMD -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    @keyframes bounce{0%,100%{transform:translateY(-10%);animation-timing-function:cubic-bezier(.8,0,1,1)}50%{transform:none;animation-timing-function:cubic-bezier(0,0,.2,1)}}
+    .animate-bounce{animation:bounce 1s infinite}
+    @keyframes pulse{50%{opacity:.5}}
+    .animate-pulse{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+<script>
+  // Firebase compat init (runs synchronously before Babel script)
+  const firebaseConfig = {
+    apiKey: "AIzaSyAoVGRAKKfCr-IEh7s4HVCc8r5wpeWUv0Q",
+    authDomain: "check-calendar-app-2fd92.firebaseapp.com",
+    projectId: "check-calendar-app-2fd92",
+    storageBucket: "check-calendar-app-2fd92.firebasestorage.app",
+    messagingSenderId: "762125584592",
+    appId: "1:762125584592:web:ed057de6598f8e9bb476d5"
+  };
+  window.__fbApp  = firebase.initializeApp(firebaseConfig);
+  window.__fbAuth = firebase.auth(window.__fbApp);
+  window.__fbDb   = firebase.firestore(window.__fbApp);
+  window.__fbAppId = firebaseConfig.appId;
+</script>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+// ── Firebase helpers ──────────────────────────────────────────────────────────
+const auth   = window.__fbAuth;
+const db     = window.__fbDb;
+const APP_ID = window.__fbAppId;
+
+const colRef  = (path) => db.collection(path);
+const docRef  = (path) => db.doc(path);
+const reportsPath  = `artifacts/${APP_ID}/public/data/reports`;
+const logsPath     = `artifacts/${APP_ID}/public/data/dailyLogs`;
+const userPath     = (uid) => `artifacts/${APP_ID}/public/data/users/${uid}`;
+
+// ── Constants ─────────────────────────────────────────────────────────────────
+const CATEGORIES     = ['경기 중 시설 VOC', '일일 화재점검', '일일 안전 및 시설 점검'];
+const TRADES         = ['전기', '소방', '기계', '건축', '안전'];
+const STATUSES       = ['조치 예정', '조치 중', '조치 완료'];
+const LOG_CATEGORIES = ['일일 시설안전 점검', '일일 화재점검'];
+
+// ── Icon wrapper (Lucide UMD) ─────────────────────────────────────────────────
+function Icon({ name, size = 24, className = '', style = {} }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!ref.current || !window.lucide) return;
+    ref.current.innerHTML = '';
+    const el = window.lucide.createElement(name);
+    if (el) { el.setAttribute('width', size); el.setAttribute('height', size); ref.current.appendChild(el); }
+  }, [name, size]);
+  return <span ref={ref} className={`inline-flex items-center justify-center ${className}`} style={style} />;
+}
+
+// ── ConfirmModal ──────────────────────────────────────────────────────────────
+function ConfirmModal({ title, message, onConfirm, onCancel }) {
+  return (
+    <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center z-[100] p-4">
+      <div className="bg-white rounded-3xl w-full max-w-sm shadow-2xl p-8 text-center border border-gray-100">
+        <div className="bg-red-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5">
+          <Icon name="trash-2" size={40} className="text-red-500" />
+        </div>
+        <h3 className="text-xl font-black text-gray-900 mb-3">{title}</h3>
+        <p className="text-sm text-gray-500 mb-8 font-bold leading-relaxed break-keep">{message}</p>
+        <div className="flex gap-3">
+          <button onClick={onCancel} className="flex-1 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-black rounded-xl">취소</button>
+          <button onClick={onConfirm} className="flex-1 py-3.5 bg-red-600 hover:bg-red-700 text-white font-black rounded-xl shadow-md">삭제하기</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── GoogleImageMap ────────────────────────────────────────────────────────────
+function GoogleImageMap({ location, onChange }) {
+  return (
+    <div className="relative w-full h-[400px] bg-[#e5e5e5] rounded-xl overflow-hidden shadow-inner group select-none cursor-crosshair border border-gray-300">
+      <iframe
+        src="https://maps.google.com/maps?q=인천+문학경기장&t=k&z=15&output=embed"
+        width="100%" height="100%" frameBorder="0"
+        style={{ border: 0, pointerEvents: 'none' }}
+        allowFullScreen aria-hidden="false" tabIndex="-1"
+        title="Google Maps Satellite View"
+      />
+      <div
+        className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors z-10"
+        onClick={(e) => {
+          if (!onChange) return;
+          const rect = e.currentTarget.getBoundingClientRect();
+          onChange({ x: ((e.clientX - rect.left) / rect.width) * 100, y: ((e.clientY - rect.top) / rect.height) * 100 });
+        }}
+      >
+        {location && (
+          <span className="absolute -translate-x-1/2 -translate-y-full pointer-events-none" style={{ left: `${location.x}%`, top: `${location.y}%` }}>
+            <Icon name="map-pin" size={42} style={{ color: '#ef4444', filter: 'drop-shadow(0 4px 6px rgba(0,0,0,.8))' }} />
+          </span>
+        )}
+        {!location && onChange && (
+          <div className="absolute top-4 left-4 bg-black/75 text-white text-sm font-bold px-4 py-2.5 rounded-lg shadow-md opacity-0 group-hover:opacity-100 pointer-events-none">
+            지도의 원하는 위치를 클릭하여 핀을 꽂아주세요.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── StatusCard ────────────────────────────────────────────────────────────────
+function StatusCard({ title, count, color, iconName }) {
+  return (
+    <div className={`p-5 rounded-2xl border ${color} flex items-center justify-between shadow-sm bg-white bg-opacity-60 transition-transform hover:scale-105`}>
+      <div>
+        <h3 className="text-sm font-bold opacity-80 mb-1">{title}</h3>
+        <p className="text-3xl font-black tracking-tight">{count}<span className="text-base font-bold ml-1">건</span></p>
+      </div>
+      <div className="p-3 rounded-full bg-white bg-opacity-50 shadow-sm">
+        <Icon name={iconName} size={24} />
+      </div>
+    </div>
+  );
+}
+
+// ── RegisterForm ──────────────────────────────────────────────────────────────
+function RegisterForm({ user, setProfile, setView, showToast }) {
+  const [name, setName]     = useState('');
+  const [email, setEmail]   = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    if (!name.trim() || !email.trim()) { showToast('이름과 이메일을 모두 입력해주세요.'); return; }
+    setLoading(true);
+    try {
+      const userData = { uid: user.uid, name, email, createdAt: Date.now() };
+      await docRef(userPath(user.uid)).set(userData);
+      setProfile(userData); setView('dashboard'); showToast('성공적으로 가입되었습니다. 환영합니다!');
+    } catch { showToast('가입 처리 중 오류가 발생했습니다.'); }
+    finally { setLoading(false); }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4">
+      <div className="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md border border-gray-100">
+        <div className="flex justify-center mb-6">
+          <div className="bg-blue-50 p-5 rounded-full shadow-sm"><Icon name="file-warning" size={48} className="text-blue-600" /></div>
+        </div>
+        <h2 className="text-2xl font-black text-center mb-3 text-slate-800">시설/안전 점검 시스템</h2>
+        <p className="text-gray-500 text-center mb-8 text-sm font-bold bg-gray-100 py-2 rounded-lg">원활한 업무 기록을 위해 최초 1회 프로필 설정이 필요합니다.</p>
+        <form onSubmit={handleRegister} className="flex flex-col gap-5">
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">이름 (점검자명) *</label>
+            <input type="text" required className="w-full p-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50 font-bold text-gray-800"
+              value={name} onChange={e => setName(e.target.value)} placeholder="예: 홍길동" />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">업무용 이메일 *</label>
+            <input type="email" required className="w-full p-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-gray-50 font-bold text-gray-800"
+              value={email} onChange={e => setEmail(e.target.value)} placeholder="예: work@company.com" />
+          </div>
+          <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl mt-4 disabled:opacity-50 shadow-md text-lg">
+            {loading ? '등록 중...' : '시스템 시작하기'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ── CalendarView ──────────────────────────────────────────────────────────────
+function CalendarView({ logs, userProfile, showToast }) {
+  const [currentDate, setCurrentDate]     = useState(new Date());
+  const [isModalOpen, setIsModalOpen]     = useState(false);
+  const [selectedDateStr, setSelectedDateStr] = useState('');
+  const [deleteTargetId, setDeleteTargetId]   = useState(null);
+  const [category, setCategory]           = useState(LOG_CATEGORIES[0]);
+  const [location, setLocation]           = useState('');
+  const [inspectorName, setInspectorName] = useState(userProfile.name);
+  const [isSubmitting, setIsSubmitting]   = useState(false);
+  const [formError, setFormError]         = useState('');
+
+  const year  = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  const fmt   = (y, m, d) => `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  const todayStr = fmt(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+
+  const cells = [];
+  for (let i = 0; i < new Date(year, month, 1).getDay(); i++) cells.push(null);
+  for (let i = 1; i <= new Date(year, month+1, 0).getDate(); i++) cells.push(i);
+
+  const openModal = (day) => {
+    if (!day) return;
+    setSelectedDateStr(fmt(year, month, day));
+    setCategory(LOG_CATEGORIES[0]); setLocation(''); setInspectorName(userProfile.name); setFormError('');
+    setIsModalOpen(true);
+  };
+
+  const saveLog = async () => {
+    if (!location.trim() || !inspectorName.trim()) { setFormError('점검 위치와 점검자를 모두 입력해주세요.'); return; }
+    setIsSubmitting(true);
+    try {
+      await colRef(logsPath).add({ date: selectedDateStr, category, location, inspectorName, inspectorUid: userProfile.uid, createdAt: Date.now() });
+      showToast('점검 일지가 저장되었습니다.'); setIsModalOpen(false);
+    } catch { setFormError('저장 중 오류가 발생했습니다.'); }
+    finally { setIsSubmitting(false); }
+  };
+
+  const deleteLog = async () => {
+    try {
+      await colRef(logsPath).doc(deleteTargetId).delete();
+      showToast('점검 내역이 삭제되었습니다.');
+    } catch { showToast('삭제 중 오류가 발생했습니다.'); }
+    setDeleteTargetId(null);
+  };
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 md:p-8 w-full">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <button onClick={() => setCurrentDate(new Date(year, month-1, 1))} className="p-2 hover:bg-gray-100 rounded-full border border-gray-200 shadow-sm"><Icon name="chevron-left" size={24}/></button>
+          <h2 className="text-xl md:text-3xl font-black text-slate-800">{year}년 {month+1}월</h2>
+          <button onClick={() => setCurrentDate(new Date(year, month+1, 1))} className="p-2 hover:bg-gray-100 rounded-full border border-gray-200 shadow-sm"><Icon name="chevron-right" size={24}/></button>
+        </div>
+        <button onClick={() => setCurrentDate(new Date())} className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl border border-slate-200 text-sm">오늘로 이동</button>
+      </div>
+
+      <div className="grid grid-cols-7 gap-px bg-gray-200 border border-gray-200 rounded-t-xl overflow-hidden">
+        {['일','월','화','수','목','금','토'].map((d,i) => (
+          <div key={d} className={`bg-slate-50 py-3 text-center text-base font-black ${i===0?'text-red-600':i===6?'text-blue-600':'text-slate-700'}`}>{d}</div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-px bg-gray-200 border-x border-b border-gray-200 rounded-b-xl min-h-[700px]">
+        {cells.map((day, idx) => {
+          if (!day) return <div key={`e-${idx}`} className="bg-white/50 min-h-[160px]" />;
+          const dateStr = fmt(year, month, day);
+          const isToday = dateStr === todayStr;
+          const dayLogs = logs.filter(l => l.date === dateStr);
+          return (
+            <div key={`d-${day}`} onClick={() => openModal(day)}
+              className={`bg-white cursor-pointer flex flex-col group relative overflow-hidden ${isToday ? 'min-h-[160px] border-[3px] border-blue-500 shadow-xl z-10 p-3' : 'min-h-[160px] p-2 hover:bg-blue-50/50'}`}>
+              <div className="flex justify-between items-start mb-2">
+                <span className={`text-base font-black flex items-center justify-center rounded-full ${isToday ? 'bg-blue-600 text-white w-8 h-8' : 'w-7 h-7 text-slate-700'}`}>{day}</span>
+                <span className="opacity-0 group-hover:opacity-100 text-blue-400"><Icon name="plus" size={16}/></span>
+              </div>
+              <div className="flex flex-col gap-1.5 flex-1 overflow-y-auto">
+                {dayLogs.map(log => (
+                  <div key={log.id} className={`relative group/log px-2 py-2.5 rounded-lg border-l-4 shadow-sm ${log.category==='일일 시설안전 점검'?'bg-slate-50 border-blue-400':'bg-slate-50 border-red-400'}`}>
+                    {log.inspectorUid === userProfile.uid && (
+                      <button onClick={e => { e.stopPropagation(); setDeleteTargetId(log.id); }}
+                        className="absolute top-1.5 right-1.5 opacity-0 group-hover/log:opacity-100 bg-red-50 text-red-600 rounded p-1 hover:bg-red-600 hover:text-white z-20">
+                        <Icon name="trash-2" size={12}/>
+                      </button>
+                    )}
+                    <div className="flex flex-col gap-0.5 pr-5">
+                      <span className="text-[11px] font-black text-slate-800">{log.category}</span>
+                      <span className="text-[10px] font-bold text-slate-600">-{log.location}</span>
+                      <span className="text-[10px] font-bold text-slate-600">-{log.inspectorName}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
+            <div className="bg-slate-800 p-5 flex justify-between items-center text-white">
+              <h3 className="font-black text-lg flex items-center gap-2"><Icon name="clipboard-list" size={22} className="text-blue-400"/> {selectedDateStr} 점검 등록</h3>
+              <button onClick={() => setIsModalOpen(false)} className="hover:bg-white/20 p-1.5 rounded-full"><Icon name="x" size={20}/></button>
+            </div>
+            <div className="p-7 space-y-6">
+              {formError && <div className="text-red-600 text-sm font-bold bg-red-50 p-3 rounded-xl border border-red-200 flex items-center gap-2"><Icon name="alert-circle" size={16}/> {formError}</div>}
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">대분류 선택 *</label>
+                <select value={category} onChange={e => setCategory(e.target.value)} className="w-full p-3.5 border border-gray-300 rounded-xl bg-gray-50 font-bold text-gray-800">
+                  {LOG_CATEGORIES.map(c => <option key={c}>{c}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">점검 위치 *</label>
+                <input type="text" value={location} onChange={e => setLocation(e.target.value)}
+                  className="w-full p-3.5 border border-gray-300 rounded-xl bg-gray-50 font-bold text-gray-800 placeholder-gray-400"
+                  placeholder="예: 북문 출입구, 주경기장 소화전 등" />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">점검자 *</label>
+                <input type="text" value={inspectorName} onChange={e => setInspectorName(e.target.value)}
+                  className="w-full p-3.5 border border-gray-300 rounded-xl bg-gray-50 font-bold text-gray-800 placeholder-gray-400"
+                  placeholder="점검자 이름" />
+              </div>
+              <div className="pt-2 flex gap-3">
+                <button onClick={() => setIsModalOpen(false)} className="flex-1 py-4 bg-gray-100 hover:bg-gray-200 font-black rounded-xl text-gray-700">취소</button>
+                <button onClick={saveLog} disabled={isSubmitting} className="flex-[2] py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl disabled:opacity-50 shadow-md">
+                  {isSubmitting ? '저장 중...' : '저장하기'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {deleteTargetId && <ConfirmModal title="점검일지 삭제" message="정말로 이 점검 기록을 삭제하시겠습니까?" onConfirm={deleteLog} onCancel={() => setDeleteTargetId(null)} />}
+    </div>
+  );
+}
+
+// ── ReportForm ────────────────────────────────────────────────────────────────
+function ReportForm({ userProfile, existingData, onSave, onCancel, showToast }) {
+  const [formData, setFormData] = useState(existingData || {
+    category: CATEGORIES[0], title: '', trade: TRADES[0],
+    inspectorName: userProfile.name, inspectorEmail: userProfile.email, inspectorUid: userProfile.uid,
+    date: new Date().toISOString().split('T')[0], status: STATUSES[0], isEmergency: false,
+    photoBase64: '', photoDesc: '', location: null, locationDesc: '', remarks: ''
+  });
+  const [error, setError]         = useState('');
+  const [isSubmitting, setSubmit] = useState(false);
+
+  const set = (field, value) => { setFormData(p => ({...p, [field]: value})); if(error) setError(''); };
+
+  const uploadImage = (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image(); img.src = ev.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const scale  = img.width > 800 ? 800/img.width : 1;
+        canvas.width = img.width * scale; canvas.height = img.height * scale;
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        set('photoBase64', canvas.toDataURL('image/jpeg', 0.7));
+      };
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const valid = () => {
+    return ['title','date','photoBase64','photoDesc','locationDesc'].every(k => formData[k] && String(formData[k]).trim()) && formData.location;
+  };
+
+  const handleSubmit = async () => {
+    if (!valid()) { setError('비고란을 제외한 모든 필수 항목(사진, 지도 위치 클릭 포함)을 확인해주세요.'); return; }
+    setSubmit(true);
+    try {
+      const data = { ...formData, updatedAt: Date.now() };
+      let emailTriggered = false;
+      if (existingData) {
+        await colRef(reportsPath).doc(existingData.id).update(data);
+        if (existingData.status !== '조치 완료' && formData.status === '조치 완료') emailTriggered = true;
+      } else {
+        data.createdAt = Date.now();
+        await colRef(reportsPath).add(data);
+        if (formData.status === '조치 완료') emailTriggered = true;
+      }
+      if (emailTriggered) showToast(`[자동 메일 발송됨] "[${formData.title}] 조치완료" 알림 메일이 전송되었습니다.`);
+      else showToast('성공적으로 저장되었습니다.');
+      onSave();
+    } catch { setError('저장 처리 중 오류가 발생했습니다.'); }
+    finally { setSubmit(false); }
+  };
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8 w-full max-w-7xl mx-auto">
+      <h2 className="text-2xl font-black mb-6 border-b border-gray-100 pb-4 text-slate-800 flex items-center gap-2">
+        <Icon name={existingData ? 'edit' : 'plus'} size={24} className="text-blue-600"/>
+        {existingData ? '점검 내역 수정' : '신규 점검 기록 작성'}
+      </h2>
+      {error && <div className="bg-red-50 text-red-700 p-4 rounded-xl mb-6 text-sm flex items-center gap-3 font-bold border border-red-200 animate-pulse"><Icon name="alert-circle" size={24}/> {error}</div>}
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="space-y-6">
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">대분류 *</label>
+              <select className="w-full p-3 border border-gray-300 rounded-xl bg-gray-50 font-bold text-gray-800" value={formData.category} onChange={e => set('category', e.target.value)}>
+                {CATEGORIES.map(c => <option key={c}>{c}</option>)}
+              </select>
+            </div>
+            <div className="col-span-2">
+              <label className="block text-sm font-bold text-gray-700 mb-2">공종 분류 *</label>
+              <select className="w-full p-3 border border-gray-300 rounded-xl bg-gray-50 font-bold text-gray-800" value={formData.trade} onChange={e => set('trade', e.target.value)}>
+                {TRADES.map(t => <option key={t}>{t}</option>)}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">제목 *</label>
+            <input type="text" className="w-full p-3.5 border border-gray-300 rounded-xl bg-gray-50 font-bold placeholder-gray-400 text-gray-800"
+              value={formData.title} onChange={e => set('title', e.target.value)} placeholder="예: 주경기장 2층 북측 통로 누수 발생" />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">점검 날짜 *</label>
+              <input type="date" className="w-full p-3 border border-gray-300 rounded-xl bg-gray-50 font-bold text-gray-800" value={formData.date} onChange={e => set('date', e.target.value)} />
+            </div>
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-2">점검자 정보</label>
+              <input type="text" disabled className="w-full p-3 border border-gray-200 rounded-xl bg-gray-100 text-gray-500 cursor-not-allowed font-bold" value={formData.inspectorName} />
+            </div>
+          </div>
+          <div className="bg-slate-50 p-5 rounded-xl border border-slate-200">
+            <label className="block text-sm font-bold text-slate-800 mb-3">조치 결과 *</label>
+            <div className="flex flex-wrap gap-4">
+              {STATUSES.map(s => (
+                <label key={s} className={`flex items-center gap-2 cursor-pointer p-3 rounded-lg border ${formData.status===s?'bg-blue-100 border-blue-300 text-blue-800':'bg-white border-gray-200 text-gray-700'}`}>
+                  <input type="radio" name="status" value={s} checked={formData.status===s} onChange={e => set('status', e.target.value)} className="w-5 h-5 text-blue-600" />
+                  <span className="text-sm font-black">{s}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+          <label className={`flex items-center gap-3 cursor-pointer p-4 border rounded-xl w-full ${formData.isEmergency?'bg-red-100 border-red-300 text-red-800':'bg-red-50 border-red-200 text-red-800'}`}>
+            <input type="checkbox" checked={formData.isEmergency} onChange={e => set('isEmergency', e.target.checked)} className="w-6 h-6 accent-red-600 rounded" />
+            <span className="font-black text-base">🚨 긴급 건으로 분류 (강조 표시)</span>
+          </label>
+        </div>
+
+        <div className="space-y-6 lg:pl-8 lg:border-l border-gray-100">
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><Icon name="camera" size={18} className="text-blue-600"/> 사진 대지 첨부 *</label>
+            {formData.photoBase64 ? (
+              <div className="relative w-full rounded-xl overflow-hidden border border-gray-300 bg-gray-100 flex justify-center group">
+                <img src={formData.photoBase64} alt="첨부" className="max-w-full object-contain max-h-64" />
+                <button onClick={() => set('photoBase64','')} className="absolute top-3 right-3 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 opacity-0 group-hover:opacity-100"><Icon name="x" size={20}/></button>
+              </div>
+            ) : (
+              <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 hover:border-blue-400 group">
+                <Icon name="camera" size={48} className="mb-3 text-gray-400 group-hover:text-blue-500" />
+                <p className="text-sm text-gray-500 font-bold">클릭하여 현장 사진 업로드</p>
+                <input type="file" className="hidden" accept="image/jpeg,image/png" onChange={uploadImage} />
+              </label>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">사진 상세 설명 *</label>
+            <textarea className="w-full p-3.5 border border-gray-300 rounded-xl bg-gray-50 font-medium placeholder-gray-400 text-gray-800 resize-none h-24"
+              value={formData.photoDesc} onChange={e => set('photoDesc', e.target.value)} placeholder="첨부한 사진의 현장 상황에 대해 기술해주세요." />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><Icon name="map-pin" size={18} className="text-blue-600"/> 위치 지정 (구글맵 위성 클릭) *</label>
+            <GoogleImageMap location={formData.location} onChange={loc => set('location', loc)} />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">상세 위치 설명 *</label>
+            <input type="text" className="w-full p-3.5 border border-gray-300 rounded-xl bg-gray-50 font-bold placeholder-gray-400 text-gray-800"
+              value={formData.locationDesc} onChange={e => set('locationDesc', e.target.value)} placeholder="예: 야구장 1루측 내야석 출입구 인근" />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">비고 (선택사항)</label>
+            <textarea className="w-full p-3.5 border border-gray-300 rounded-xl bg-gray-50 font-medium placeholder-gray-400 text-gray-800 resize-none h-28"
+              value={formData.remarks} onChange={e => set('remarks', e.target.value)} placeholder="기타 참고사항이나 추가 전달사항이 있다면 입력해주세요." />
+          </div>
+        </div>
+      </div>
+
+      <div className="flex gap-4 mt-8 pt-6 border-t border-gray-200">
+        <button onClick={onCancel} className="flex-1 py-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-black rounded-xl text-lg">취소</button>
+        <button onClick={handleSubmit} disabled={isSubmitting} className="flex-[2] py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-xl disabled:opacity-50 shadow-md text-lg">
+          {isSubmitting ? '저장 처리 중...' : '저장 완료하기'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── ReportDetail ──────────────────────────────────────────────────────────────
+function ReportDetail({ report, userProfile, onEdit, onDelete, showToast }) {
+  const isAuthor = report.inspectorUid === userProfile.uid;
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const doDelete = async () => {
+    try {
+      await colRef(reportsPath).doc(report.id).delete();
+      showToast('기록이 삭제되었습니다.'); onDelete();
+    } catch { showToast('삭제 중 오류가 발생했습니다.'); }
+  };
+
+  const statusColor = report.status === '조치 완료' ? 'bg-green-100 text-green-800' : report.status === '조치 중' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800';
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8 w-full max-w-7xl mx-auto relative">
+      {showConfirm && <ConfirmModal title="VOC 기록 삭제" message="정말로 이 점검 기록을 삭제하시겠습니까?" onConfirm={doDelete} onCancel={() => setShowConfirm(false)} />}
+      <div className="flex flex-col md:flex-row justify-between items-start mb-8 border-b border-gray-100 pb-6 gap-4">
+        <div>
+          <div className="flex items-center flex-wrap gap-2 mb-3">
+            <span className="text-sm font-black text-blue-700 bg-blue-50 px-3 py-1 rounded-full">{report.category}</span>
+            <span className="text-sm font-bold text-gray-600 border border-gray-200 px-3 py-1 rounded-full bg-gray-50">{report.trade}</span>
+            {report.isEmergency && <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-black flex items-center gap-1 animate-pulse"><Icon name="alert-circle" size={14}/> 긴급</span>}
+          </div>
+          <h2 className="text-2xl md:text-3xl font-black text-gray-900 leading-tight break-keep">{report.title}</h2>
+        </div>
+        <div className="text-left md:text-right shrink-0">
+          <span className={`inline-block px-4 py-2 rounded-full text-sm font-black mb-3 ${statusColor}`}>{report.status}</span>
+          <p className="text-sm text-gray-500 font-bold flex items-center gap-1 md:justify-end"><Icon name="clock" size={14}/> 점검일: {report.date}</p>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div className="flex flex-col">
+          <h3 className="text-lg font-black mb-3 flex items-center gap-2 text-slate-800"><Icon name="camera" size={20} className="text-blue-600"/> 현장 사진</h3>
+          {report.photoBase64
+            ? <div className="rounded-xl overflow-hidden border border-gray-200 bg-gray-100 h-80 flex items-center justify-center"><img src={report.photoBase64} alt="현장 사진" className="max-h-full max-w-full object-contain" /></div>
+            : <div className="rounded-xl border border-gray-200 bg-gray-50 h-80 flex items-center justify-center text-gray-400 font-bold">첨부된 사진 없음</div>}
+          <div className="mt-4">
+            <span className="text-xs font-bold text-gray-500 mb-2 block">사진 설명</span>
+            <p className="text-sm text-gray-800 p-4 bg-gray-50 rounded-xl whitespace-pre-wrap border border-gray-100 font-medium">{report.photoDesc}</p>
+          </div>
+        </div>
+        <div className="flex flex-col">
+          <h3 className="text-lg font-black mb-3 flex items-center gap-2 text-slate-800"><Icon name="map-pin" size={20} className="text-blue-600"/> 위치 정보</h3>
+          <GoogleImageMap location={report.location} />
+          <div className="mt-4">
+            <span className="text-xs font-bold text-gray-500 mb-2 block">상세 위치</span>
+            <p className="text-sm font-black text-gray-900 p-4 bg-blue-50/50 border border-blue-100 rounded-xl flex items-start gap-2"><Icon name="map-pin" size={18} className="text-blue-600 shrink-0 mt-0.5"/>{report.locationDesc}</p>
+          </div>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 bg-slate-50 p-5 rounded-xl border border-slate-100">
+        <div>
+          <span className="text-xs font-bold text-gray-500 block mb-1">담당 점검자</span>
+          <span className="text-sm font-black text-slate-800">{report.inspectorName} <span className="text-gray-500 font-medium text-xs">({report.inspectorEmail})</span></span>
+        </div>
+        <div>
+          <span className="text-xs font-bold text-gray-500 block mb-1">시스템 등록 일시</span>
+          <span className="text-sm font-black text-slate-800">{new Date(report.createdAt).toLocaleString('ko-KR')}</span>
+        </div>
+      </div>
+      {report.remarks && (
+        <div className="mb-8">
+          <h3 className="text-sm font-black mb-2 text-gray-700">비고 및 추가 전달사항</h3>
+          <p className="text-sm text-gray-700 bg-white border border-gray-200 rounded-xl p-4 whitespace-pre-wrap font-medium">{report.remarks}</p>
+        </div>
+      )}
+      {isAuthor && (
+        <div className="flex gap-3 pt-6 border-t border-gray-200 justify-end">
+          <button onClick={onEdit} className="px-6 py-3 bg-blue-50 text-blue-700 hover:bg-blue-100 font-black rounded-xl flex items-center gap-2 border border-blue-100"><Icon name="edit" size={18}/> 기록 수정</button>
+          <button onClick={() => setShowConfirm(true)} className="px-6 py-3 bg-red-50 text-red-700 hover:bg-red-100 font-black rounded-xl flex items-center gap-2 border border-red-100"><Icon name="trash-2" size={18}/> 삭제</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Main App ──────────────────────────────────────────────────────────────────
+function App() {
+  const [user, setUser]               = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
+  const [reports, setReports]         = useState([]);
+  const [dailyLogs, setDailyLogs]     = useState([]);
+  const [activeTab, setActiveTab]     = useState('voc');
+  const [view, setView]               = useState('loading');
+  const [selectedReport, setSelected] = useState(null);
+  const [authError, setAuthError]     = useState('');
+  const [toastMsg, setToastMsg]       = useState('');
+  const [searchTerm, setSearch]       = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [emergencyFilter, setEmergency] = useState(false);
+
+  const toast = (msg) => { setToastMsg(msg); setTimeout(() => setToastMsg(''), 5000); };
+
+  useEffect(() => {
+    let resolved = false;
+    const timer = setTimeout(() => {
+      if (!resolved) { setAuthError('Firebase 연결 시간이 초과되었습니다. 페이지를 새로고침 해주세요.'); setView('error'); }
+    }, 10000);
+
+    const init = async () => {
+      try {
+        const token = (typeof window.__initial_auth_token !== 'undefined') ? window.__initial_auth_token : null;
+        token ? await auth.signInWithCustomToken(token) : await auth.signInAnonymously();
+      } catch (err) { setAuthError(`인증 오류: ${err.message}`); setView('error'); }
+    };
+    init();
+
+    const unsub = auth.onAuthStateChanged(async u => {
+      resolved = true; clearTimeout(timer); setUser(u);
+      if (u) {
+        try {
+          const snap = await docRef(userPath(u.uid)).get();
+          snap.exists ? (setUserProfile(snap.data()), setView('dashboard')) : setView('register');
+        } catch (err) { setAuthError(`데이터베이스 오류: ${err.message}`); setView('error'); }
+      } else { setView('loading'); }
+    });
+    return () => { unsub(); clearTimeout(timer); };
+  }, []);
+
+  useEffect(() => {
+    if (!user || !userProfile) return;
+    const u1 = colRef(reportsPath).onSnapshot(snap => {
+      const d = snap.docs.map(d => ({id: d.id, ...d.data()}));
+      d.sort((a, b) => b.createdAt - a.createdAt); setReports(d);
+    }, err => { console.error(err); toast('데이터를 불러오는 중 오류가 발생했습니다.'); });
+    const u2 = colRef(logsPath).onSnapshot(snap => {
+      setDailyLogs(snap.docs.map(d => ({id: d.id, ...d.data()})));
+    });
+    return () => { u1(); u2(); };
+  }, [user, userProfile]);
+
+  if (view === 'loading') return <div className="min-h-screen flex items-center justify-center bg-gray-50 text-gray-500 font-medium">시스템 데이터를 불러오는 중입니다...</div>;
+  if (view === 'error') return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center border border-red-100">
+        <div className="bg-red-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"><Icon name="alert-circle" size={32} className="text-red-500"/></div>
+        <h2 className="text-xl font-black text-gray-900 mb-2">연결 오류</h2>
+        <p className="text-sm text-gray-600 mb-6 font-medium">{authError}</p>
+        <button onClick={() => window.location.reload()} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-3 rounded-xl">페이지 새로고침</button>
+      </div>
+    </div>
+  );
+  if (view === 'register') return <RegisterForm user={user} setProfile={setUserProfile} setView={setView} showToast={toast} />;
+
+  const filtered = reports.filter(r => {
+    const s  = r.title.includes(searchTerm) || r.locationDesc.includes(searchTerm);
+    const st = statusFilter ? r.status === statusFilter : true;
+    const em = emergencyFilter ? r.isEmergency : true;
+    return s && st && em;
+  });
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
+      <header className="bg-slate-800 text-white shadow-md sticky top-0 z-10">
+        <div className="w-full px-4 md:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2 cursor-pointer hover:opacity-80" onClick={() => { setView('dashboard'); setActiveTab('voc'); }}>
+            <Icon name="file-warning" size={24} className="text-yellow-400"/>
+            <span className="font-bold text-lg">업무용 시설/안전 점검 시스템</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm bg-slate-700 px-3 py-1.5 rounded-full">
+            <Icon name="user" size={16}/> <span className="font-medium">{userProfile?.name} 님</span>
+          </div>
+        </div>
+      </header>
+
+      <main className="flex-1 w-full p-3 md:p-6 flex flex-col gap-6">
+        {view !== 'dashboard' && (
+          <button onClick={() => { setView('dashboard'); setSelected(null); }}
+            className="flex items-center gap-2 text-slate-600 hover:text-slate-900 font-bold bg-white px-4 py-2.5 rounded-xl shadow-sm border border-gray-200 mx-auto max-w-7xl w-full">
+            <Icon name="home" size={18}/> <span>대시보드로 돌아가기</span>
+          </button>
+        )}
+
+        {view === 'dashboard' && (
+          <div className="w-full max-w-[1800px] mx-auto flex flex-col gap-6">
+            <div className="flex bg-white p-1.5 rounded-xl shadow-sm border border-gray-200 w-fit">
+              <button onClick={() => setActiveTab('voc')} className={`px-6 py-3 rounded-lg text-sm font-bold flex items-center gap-2 transition-all ${activeTab==='voc'?'bg-slate-800 text-white shadow-md':'text-gray-600 hover:bg-gray-100'}`}>
+                <Icon name="file-warning" size={18}/> 시설안전관리
+              </button>
+              <button onClick={() => setActiveTab('calendar')} className={`px-6 py-3 rounded-lg text-sm font-bold flex items-center gap-2 transition-all ${activeTab==='calendar'?'bg-slate-800 text-white shadow-md':'text-gray-600 hover:bg-gray-100'}`}>
+                <Icon name="calendar" size={18}/> 일일 점검일지
+              </button>
+            </div>
+
+            {activeTab === 'voc' && (
+              <div className="w-full max-w-7xl">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                  <StatusCard title="조치 예정" count={reports.filter(r=>r.status==='조치 예정').length} color="bg-red-50 text-red-700 border-red-200" iconName="alert-circle"/>
+                  <StatusCard title="조치 중"   count={reports.filter(r=>r.status==='조치 중').length}   color="bg-yellow-50 text-yellow-700 border-yellow-200" iconName="clock"/>
+                  <StatusCard title="조치 완료" count={reports.filter(r=>r.status==='조치 완료').length} color="bg-green-50 text-green-700 border-green-200" iconName="check-circle"/>
+                  <StatusCard title="긴급 건"   count={reports.filter(r=>r.isEmergency).length}          color="bg-purple-50 text-purple-700 border-purple-200" iconName="file-warning"/>
+                </div>
+
+                <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col md:flex-row gap-4 items-center justify-between mb-6">
+                  <div className="flex flex-wrap gap-2 w-full md:w-auto">
+                    <select className="p-2.5 border border-gray-300 rounded-lg bg-gray-50 outline-none text-sm font-bold" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+                      <option value="">모든 진행상태</option>
+                      {STATUSES.map(s => <option key={s}>{s}</option>)}
+                    </select>
+                    <button onClick={() => setEmergency(!emergencyFilter)}
+                      className={`px-4 py-2.5 border rounded-lg text-sm flex items-center gap-2 font-bold ${emergencyFilter?'bg-purple-600 text-white border-purple-600':'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}>
+                      <Icon name="alert-circle" size={16}/> {emergencyFilter ? '긴급 건만 보는 중' : '긴급 건만 보기'}
+                    </button>
+                  </div>
+                  <div className="flex gap-2 w-full md:w-auto">
+                    <div className="relative flex-1 md:w-80">
+                      <Icon name="search" size={18} className="absolute left-3 top-3 text-gray-400 pointer-events-none"/>
+                      <input type="text" placeholder="제목 또는 위치 검색..." className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg bg-gray-50 outline-none text-sm font-medium"
+                        value={searchTerm} onChange={e => setSearch(e.target.value)} />
+                    </div>
+                    <button onClick={() => { setSelected(null); setView('form'); }}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg flex items-center gap-2 font-bold shrink-0 shadow-sm">
+                      <Icon name="plus" size={18}/> 신규 등록
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm whitespace-nowrap">
+                      <thead className="bg-gray-100 border-b border-gray-200 text-gray-700">
+                        <tr>
+                          <th className="p-4 font-bold w-16 text-center">긴급</th>
+                          <th className="p-4 font-bold">대분류</th>
+                          <th className="p-4 font-bold">공종</th>
+                          <th className="p-4 font-bold w-full">제목</th>
+                          <th className="p-4 font-bold">점검자</th>
+                          <th className="p-4 font-bold">점검일자</th>
+                          <th className="p-4 font-bold">조치결과</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        {filtered.length === 0 ? (
+                          <tr><td colSpan="7" className="p-12 text-center text-gray-500 font-medium">등록된 점검 내역이 없거나 검색 결과가 없습니다.</td></tr>
+                        ) : filtered.map(r => (
+                          <tr key={r.id} onClick={() => { setSelected(r); setView('detail'); }} className="hover:bg-blue-50 cursor-pointer">
+                            <td className="p-4 text-center">{r.isEmergency && <span className="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-black">긴급</span>}</td>
+                            <td className="p-4 text-gray-600 font-medium">{r.category}</td>
+                            <td className="p-4 text-gray-800 font-bold">{r.trade}</td>
+                            <td className="p-4 font-bold text-gray-900 max-w-[200px] md:max-w-md overflow-hidden text-ellipsis">{r.title}</td>
+                            <td className="p-4 text-gray-600 font-medium">{r.inspectorName}</td>
+                            <td className="p-4 text-gray-600 font-medium">{r.date}</td>
+                            <td className="p-4">
+                              <span className={`px-3 py-1 rounded-full text-xs font-black border ${r.status==='조치 완료'?'bg-green-100 text-green-700 border-green-200':r.status==='조치 중'?'bg-yellow-100 text-yellow-700 border-yellow-200':'bg-gray-100 text-gray-700 border-gray-200'}`}>{r.status}</span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'calendar' && <CalendarView logs={dailyLogs} userProfile={userProfile} showToast={toast} />}
+          </div>
+        )}
+
+        {view === 'form' && (
+          <div className="w-full max-w-7xl mx-auto">
+            <ReportForm userProfile={userProfile} existingData={selectedReport}
+              onSave={() => setView('dashboard')}
+              onCancel={() => setView(selectedReport ? 'detail' : 'dashboard')}
+              showToast={toast} />
+          </div>
+        )}
+        {view === 'detail' && selectedReport && (
+          <div className="w-full max-w-7xl mx-auto">
+            <ReportDetail report={selectedReport} userProfile={userProfile}
+              onEdit={() => setView('form')} onDelete={() => setView('dashboard')} showToast={toast} />
+          </div>
+        )}
+      </main>
+
+      {toastMsg && (
+        <div className="fixed bottom-6 right-6 bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 z-50 animate-bounce">
+          <Icon name="mail" size={20} className="text-blue-400"/>
+          <span className="font-bold">{toastMsg}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
