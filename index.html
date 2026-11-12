@@ -384,6 +384,9 @@ tr.pdone td input[type=text]{text-decoration:line-through;color:var(--mute)}
 .fp-end .fp-t{font-size:13.5px}.fp-end .fp-s{margin:0;width:100%;display:none}
 .fp-end .fp-l{border-top:none;padding:0;flex:1;min-width:120px}
 @media (max-width:1100px){.fp-wrap{grid-template-columns:1fr}.fp-phase,.fp-step,.fp-arr,.fp-fork,.fp-end{grid-column:1!important;grid-row:auto!important}.fp-arr{transform:rotate(90deg)}.fp-fork{display:none}}
+.userchip{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#c9d1e0}
+.userchip button{border:1px solid #3d4862;background:none;color:#c9d1e0;border-radius:7px;padding:3px 8px;font-size:11px}
+.userchip:empty{display:none}
 </style>
 </head>
 <body>
@@ -394,6 +397,7 @@ tr.pdone td input[type=text]{text-decoration:line-through;color:var(--mute)}
   <nav class="pnav"><button data-p="ms" onclick="goPage('ms')">마일스톤</button><button data-p="rr" onclick="goPage('rr')">R&amp;R</button></nav>
   <div class="sp"></div>
   <span id="sync" class="sync">연결 중…</span>
+  <span id="userchip" class="userchip"></span>
 </div></header>
 <main id="app"><div class="loading">불러오는 중…</div></main>
 <div id="modals"></div>
@@ -401,7 +405,17 @@ tr.pdone td input[type=text]{text-decoration:line-through;color:var(--mute)}
 <datalist id="dl-names"></datalist>
 
 <script>
-window.EMBED_DATA = {"S": {"categories": [{"name": "수치료실", "group": "", "type": "general", "div": "", "rowLabels": ["업역 협의", "장비 반입", "사전 준비", "공사"], "rows": 4, "order": 0, "createdAt": 1794460000000, "id": "hydro"}, {"name": "클럽하우스", "group": "야구단 인테리어", "type": "space", "div": "clubhouse", "rowLabels": ["인테리어 사전협의", "공사", "체력단련실"], "rows": 3, "order": 1, "createdAt": 1794460000001, "id": "club"}, {"name": "사무실", "group": "야구단 인테리어", "type": "space", "div": "office", "rowLabels": ["설계", "공사"], "rows": 2, "order": 2, "createdAt": 1794460000002, "id": "office"}, {"name": "이사", "group": "가구/가전 · 이사준비", "type": "space", "div": "moving", "rowLabels": ["체력단련실 기구조성", "가구/가전", "이사준비"], "rows": 3, "order": 3, "createdAt": 1794460000003, "id": "moving"}], "ms_tasks": [{"catId": "hydro", "row": 0, "startYm": "2026-11", "startWeek": 2, "weeks": 3, "title": "3자 회의", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000100, "id": "m01"}, {"catId": "hydro", "row": 0, "startYm": "2026-12", "startWeek": 1, "weeks": 9, "title": "장비 시공 계약 준비", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000101, "id": "m02"}, {"catId": "hydro", "row": 0, "startYm": "2027-02", "startWeek": 1, "weeks": 1, "title": "구단–ATPT 시공 계약", "kind": "point", "memo": "’27.02", "color": "", "done": false, "createdAt": 1794460000102, "id": "m03"}, {"catId": "hydro", "row": 1, "startYm": "2026-09", "startWeek": 3, "weeks": 4, "title": "발주", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000103, "id": "m04"}, {"catId": "hydro", "row": 1, "startYm": "2026-10", "startWeek": 3, "weeks": 21, "title": "장비 제작 (6±1개월)", "kind": "light", "memo": "*ATPT ’26.12~’27.01 미국 출국 예정", "color": "", "done": false, "createdAt": 1794460000104, "id": "m05"}, {"catId": "hydro", "row": 1, "startYm": "2027-03", "startWeek": 4, "weeks": 6, "title": "운송 (3월 말 출하)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000105, "id": "m06"}, {"catId": "hydro", "row": 1, "startYm": "2027-05", "startWeek": 1, "weeks": 1, "title": "장비 국내 도착", "kind": "point", "memo": "’27.04 · 5월 1단계 설치 착수", "color": "", "done": false, "createdAt": 1794460000106, "id": "m07"}, {"catId": "hydro", "row": 2, "startYm": "2026-11", "startWeek": 2, "weeks": 13, "title": "일정 재점검 (ATPT·구단·신세계건설)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000107, "id": "m08"}, {"catId": "hydro", "row": 2, "startYm": "2027-02", "startWeek": 2, "weeks": 12, "title": "설치 공정 시뮬레이션 (ATPT)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000108, "id": "m09"}, {"catId": "hydro", "row": 3, "startYm": "2027-01", "startWeek": 2, "weeks": 15, "title": "[신세계건설] 설치 前 공정 : 골조·피트·설비·배관", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000109, "id": "m10"}, {"catId": "hydro", "row": 3, "startYm": "2027-05", "startWeek": 2, "weeks": 7, "title": "[ATPT] 장비 반입·설치", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000110, "id": "m11"}, {"catId": "hydro", "row": 3, "startYm": "2027-07", "startWeek": 2, "weeks": 8, "title": "[신세계건설] 마감 인테리어", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000111, "id": "m12"}, {"catId": "club", "row": 0, "startYm": "2026-10", "startWeek": 2, "weeks": 7, "title": "야구단 시공 범위 협의", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000112, "id": "m13"}, {"catId": "club", "row": 0, "startYm": "2026-11", "startWeek": 4, "weeks": 1, "title": "최종 실시도서·내역서 완료", "kind": "point", "memo": "’26.11", "color": "", "done": false, "createdAt": 1794460000113, "id": "m14"}, {"catId": "club", "row": 0, "startYm": "2026-12", "startWeek": 1, "weeks": 8, "title": "클럽하우스 시공사 선정", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000114, "id": "m15"}, {"catId": "club", "row": 1, "startYm": "2026-10", "startWeek": 2, "weeks": 7, "title": "실시설계 (다우건축)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000115, "id": "m16"}, {"catId": "club", "row": 1, "startYm": "2026-12", "startWeek": 1, "weeks": 7, "title": "RFP 작성 및 협의", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000116, "id": "m17"}, {"catId": "club", "row": 1, "startYm": "2027-01", "startWeek": 4, "weeks": 5, "title": "시공 계약", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000117, "id": "m18"}, {"catId": "club", "row": 1, "startYm": "2027-02", "startWeek": 4, "weeks": 1, "title": "인테리어 시공업체 계약", "kind": "point", "memo": "’27.02", "color": "", "done": false, "createdAt": 1794460000118, "id": "m19"}, {"catId": "club", "row": 1, "startYm": "2027-03", "startWeek": 1, "weeks": 4, "title": "시공 준비", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000119, "id": "m20"}, {"catId": "club", "row": 1, "startYm": "2027-04", "startWeek": 1, "weeks": 28, "title": "클럽하우스 인테리어 공사 (’27.04~’27.10)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000120, "id": "m21"}, {"catId": "club", "row": 1, "startYm": "2027-10", "startWeek": 4, "weeks": 1, "title": "인테리어 완료", "kind": "point", "memo": "’27.10", "color": "", "done": false, "createdAt": 1794460000121, "id": "m22"}, {"catId": "club", "row": 2, "startYm": "2027-03", "startWeek": 2, "weeks": 8, "title": "기구 리스트 협의", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000122, "id": "m23"}, {"catId": "club", "row": 2, "startYm": "2027-05", "startWeek": 2, "weeks": 7, "title": "업체 견적·제안 비교 (RFP)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000123, "id": "m24"}, {"catId": "club", "row": 2, "startYm": "2027-07", "startWeek": 2, "weeks": 4, "title": "업체 선정", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000124, "id": "m25"}, {"catId": "club", "row": 2, "startYm": "2027-08", "startWeek": 1, "weeks": 1, "title": "기구 구매 계약", "kind": "point", "memo": "’27.08", "color": "", "done": false, "createdAt": 1794460000125, "id": "m26"}, {"catId": "club", "row": 2, "startYm": "2027-08", "startWeek": 2, "weeks": 8, "title": "기구 제작·운송", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000126, "id": "m27"}, {"catId": "office", "row": 0, "startYm": "2026-10", "startWeek": 2, "weeks": 10, "title": "기획 (평면 레이아웃)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000127, "id": "m28"}, {"catId": "office", "row": 0, "startYm": "2026-12", "startWeek": 3, "weeks": 1, "title": "레이아웃 확정", "kind": "point", "memo": "’26.12", "color": "", "done": false, "createdAt": 1794460000128, "id": "m29"}, {"catId": "office", "row": 0, "startYm": "2026-12", "startWeek": 4, "weeks": 8, "title": "설계업체 선정·협의 (8주)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000129, "id": "m30"}, {"catId": "office", "row": 0, "startYm": "2027-02", "startWeek": 4, "weeks": 1, "title": "설계업체 선정", "kind": "point", "memo": "’27.02", "color": "", "done": false, "createdAt": 1794460000130, "id": "m31"}, {"catId": "office", "row": 0, "startYm": "2027-03", "startWeek": 1, "weeks": 4, "title": "설계업체 협의 (4주)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000131, "id": "m32"}, {"catId": "office", "row": 0, "startYm": "2027-04", "startWeek": 2, "weeks": 12, "title": "인테리어 설계 (12주)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000132, "id": "m33"}, {"catId": "office", "row": 0, "startYm": "2027-07", "startWeek": 1, "weeks": 1, "title": "실시설계 완료", "kind": "point", "memo": "’27.07", "color": "", "done": false, "createdAt": 1794460000133, "id": "m34"}, {"catId": "office", "row": 1, "startYm": "2027-07", "startWeek": 2, "weeks": 4, "title": "공사업체 선정 (4주)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000134, "id": "m35"}, {"catId": "office", "row": 1, "startYm": "2027-08", "startWeek": 1, "weeks": 1, "title": "인테리어 공사 시작", "kind": "point", "memo": "’27.08", "color": "", "done": false, "createdAt": 1794460000135, "id": "m36"}, {"catId": "office", "row": 1, "startYm": "2027-08", "startWeek": 2, "weeks": 11, "title": "인테리어 공사 (12주)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000136, "id": "m37"}, {"catId": "office", "row": 1, "startYm": "2027-10", "startWeek": 4, "weeks": 1, "title": "인테리어 완료", "kind": "point", "memo": "’27.10", "color": "", "done": false, "createdAt": 1794460000137, "id": "m38"}, {"catId": "moving", "row": 0, "startYm": "2027-10", "startWeek": 2, "weeks": 3, "title": "체력단련실 기구 설치", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000138, "id": "m39"}, {"catId": "moving", "row": 0, "startYm": "2027-10", "startWeek": 4, "weeks": 1, "title": "체력단련실 기구 입고 완료", "kind": "point", "memo": "’27.10", "color": "", "done": false, "createdAt": 1794460000139, "id": "m40"}, {"catId": "moving", "row": 1, "startYm": "2027-07", "startWeek": 2, "weeks": 4, "title": "구단현황(자산) 파악", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000140, "id": "m41"}, {"catId": "moving", "row": 1, "startYm": "2027-08", "startWeek": 2, "weeks": 3, "title": "필요가구 리스트업", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000141, "id": "m42"}, {"catId": "moving", "row": 1, "startYm": "2027-09", "startWeek": 1, "weeks": 4, "title": "크로스체크", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000142, "id": "m43"}, {"catId": "moving", "row": 1, "startYm": "2027-10", "startWeek": 1, "weeks": 4, "title": "구매자산/이사자산 결정", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000143, "id": "m44"}, {"catId": "moving", "row": 1, "startYm": "2027-11", "startWeek": 1, "weeks": 8, "title": "가구·가전 세팅", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000144, "id": "m45"}, {"catId": "moving", "row": 1, "startYm": "2027-12", "startWeek": 4, "weeks": 1, "title": "이사 완료", "kind": "point", "memo": "’27.12", "color": "", "done": false, "createdAt": 1794460000145, "id": "m46"}, {"catId": "moving", "row": 2, "startYm": "2027-09", "startWeek": 1, "weeks": 8, "title": "가구·가전·이사업체 입찰", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000146, "id": "m47"}, {"catId": "moving", "row": 2, "startYm": "2027-10", "startWeek": 4, "weeks": 1, "title": "업체 선정", "kind": "point", "memo": "’27.10", "color": "", "done": false, "createdAt": 1794460000147, "id": "m48"}], "projects": [], "proj_tasks": [], "proj_logs": [], "proj_issues": [], "rooms": [{"div": "clubhouse", "name": "덕아웃", "order": 0, "createdAt": 1794460001000, "id": "c01"}, {"div": "clubhouse", "name": "덕아웃 화장실", "order": 1, "createdAt": 1794460001001, "id": "c02"}, {"div": "clubhouse", "name": "덕아웃 흡연실", "order": 2, "createdAt": 1794460001002, "id": "c03"}, {"div": "clubhouse", "name": "락커룸", "order": 3, "createdAt": 1794460001003, "id": "c04"}, {"div": "clubhouse", "name": "샤워실, 파우더룸", "order": 4, "createdAt": 1794460001004, "id": "c05"}, {"div": "clubhouse", "name": "화장실", "order": 5, "createdAt": 1794460001005, "id": "c06"}, {"div": "clubhouse", "name": "트레이너 사무실", "order": 6, "createdAt": 1794460001006, "id": "c07"}, {"div": "clubhouse", "name": "물리치료실", "order": 7, "createdAt": 1794460001007, "id": "c08"}, {"div": "clubhouse", "name": "물리치료 약/물품 보관창고", "order": 8, "createdAt": 1794460001008, "id": "c09"}, {"div": "clubhouse", "name": "타격훈련실 (1루)", "order": 9, "createdAt": 1794460001009, "id": "c10"}, {"div": "clubhouse", "name": "타격훈련실 내 분석실", "order": 10, "createdAt": 1794460001010, "id": "c11"}, {"div": "clubhouse", "name": "타격훈련실 창고", "order": 11, "createdAt": 1794460001011, "id": "c12"}, {"div": "clubhouse", "name": "선수단 라운지", "order": 12, "createdAt": 1794460001012, "id": "c13"}, {"div": "clubhouse", "name": "배트보관실", "order": 13, "createdAt": 1794460001013, "id": "c14"}, {"div": "clubhouse", "name": "선수 수면실", "order": 14, "createdAt": 1794460001014, "id": "c15"}, {"div": "clubhouse", "name": "선수식당", "order": 15, "createdAt": 1794460001015, "id": "c16"}, {"div": "clubhouse", "name": "선수식당 전용 주방", "order": 16, "createdAt": 1794460001016, "id": "c17"}, {"div": "clubhouse", "name": "감독실", "order": 17, "createdAt": 1794460001017, "id": "c18"}, {"div": "clubhouse", "name": "감독 휴게실", "order": 18, "createdAt": 1794460001018, "id": "c19"}, {"div": "clubhouse", "name": "감독 샤워실/화장실", "order": 19, "createdAt": 1794460001019, "id": "c20"}, {"div": "clubhouse", "name": "코치실", "order": 20, "createdAt": 1794460001020, "id": "c21"}, {"div": "clubhouse", "name": "코치 샤워실/화장실", "order": 21, "createdAt": 1794460001021, "id": "c22"}, {"div": "clubhouse", "name": "코치 수면실", "order": 22, "createdAt": 1794460001022, "id": "c23"}, {"div": "clubhouse", "name": "코치 회의실", "order": 23, "createdAt": 1794460001023, "id": "c24"}, {"div": "clubhouse", "name": "전력분석실", "order": 24, "createdAt": 1794460001024, "id": "c25"}, {"div": "clubhouse", "name": "전력분석회의실", "order": 25, "createdAt": 1794460001025, "id": "c26"}, {"div": "clubhouse", "name": "심판실", "order": 26, "createdAt": 1794460001026, "id": "c27"}, {"div": "clubhouse", "name": "대기심판실", "order": 27, "createdAt": 1794460001027, "id": "c28"}, {"div": "clubhouse", "name": "보조락커", "order": 28, "createdAt": 1794460001028, "id": "c29"}, {"div": "clubhouse", "name": "보조락커 샤워 및 화장실", "order": 29, "createdAt": 1794460001029, "id": "c30"}, {"div": "clubhouse", "name": "현장직원 및 훈련보조 락커", "order": 30, "createdAt": 1794460001030, "id": "c31"}, {"div": "clubhouse", "name": "선수가족실", "order": 31, "createdAt": 1794460001031, "id": "c32"}, {"div": "clubhouse", "name": "선수단 의무실", "order": 32, "createdAt": 1794460001032, "id": "c33"}, {"div": "clubhouse", "name": "인터뷰실", "order": 33, "createdAt": 1794460001033, "id": "c34"}, {"div": "clubhouse", "name": "홈 사진 기자석", "order": 34, "createdAt": 1794460001034, "id": "c35"}, {"div": "clubhouse", "name": "홈 공용 화장실", "order": 35, "createdAt": 1794460001035, "id": "c36"}, {"div": "clubhouse", "name": "접견실", "order": 36, "createdAt": 1794460001036, "id": "c37"}, {"div": "clubhouse", "name": "상황실", "order": 37, "createdAt": 1794460001037, "id": "c38"}, {"div": "clubhouse", "name": "이벤트대기실", "order": 38, "createdAt": 1794460001038, "id": "c39"}, {"div": "clubhouse", "name": "시구자대기실", "order": 39, "createdAt": 1794460001039, "id": "c40"}, {"div": "clubhouse", "name": "체력단련실", "order": 40, "createdAt": 1794460001040, "id": "c41"}, {"div": "office", "name": "홈임원실", "order": 0, "createdAt": 1794460001000, "id": "o01"}, {"div": "office", "name": "단장실", "order": 1, "createdAt": 1794460001001, "id": "o02"}, {"div": "office", "name": "원정임원실", "order": 2, "createdAt": 1794460001002, "id": "o03"}, {"div": "office", "name": "직원 및 홈경기 관계자 식당", "order": 3, "createdAt": 1794460001003, "id": "o04"}, {"div": "office", "name": "주방", "order": 4, "createdAt": 1794460001004, "id": "o05"}, {"div": "office", "name": "주방창고", "order": 5, "createdAt": 1794460001005, "id": "o06"}, {"div": "office", "name": "사무공간2 (B1F)", "order": 6, "createdAt": 1794460001006, "id": "o07"}, {"div": "office", "name": "사무공간1 (6F)", "order": 7, "createdAt": 1794460001007, "id": "o08"}, {"div": "office", "name": "임원실", "order": 8, "createdAt": 1794460001008, "id": "o09"}, {"div": "office", "name": "복도", "order": 9, "createdAt": 1794460001009, "id": "o10"}, {"div": "office", "name": "회의실", "order": 10, "createdAt": 1794460001010, "id": "o11"}, {"div": "office", "name": "대회의실", "order": 11, "createdAt": 1794460001011, "id": "o12"}, {"div": "office", "name": "사무실 창고, 서류보관실", "order": 12, "createdAt": 1794460001012, "id": "o13"}, {"div": "office", "name": "사료 창고", "order": 13, "createdAt": 1794460001013, "id": "o14"}, {"div": "office", "name": "라운지", "order": 14, "createdAt": 1794460001014, "id": "o15"}, {"div": "office", "name": "구단 여직원 휴게실", "order": 15, "createdAt": 1794460001015, "id": "o16"}, {"div": "office", "name": "구단 6F 화장실", "order": 16, "createdAt": 1794460001016, "id": "o17"}, {"div": "office", "name": "구단 B1F 화장실", "order": 17, "createdAt": 1794460001017, "id": "o18"}, {"div": "office", "name": "스튜디오(쓱튜브)", "order": 18, "createdAt": 1794460001018, "id": "o19"}, {"div": "office", "name": "치어리더실", "order": 19, "createdAt": 1794460001019, "id": "o20"}, {"div": "office", "name": "치어리더연습실", "order": 20, "createdAt": 1794460001020, "id": "o21"}, {"div": "office", "name": "치어리더 샤워실/화장실", "order": 21, "createdAt": 1794460001021, "id": "o22"}, {"div": "office", "name": "치어리더 대기실 (홈, 3F)", "order": 22, "createdAt": 1794460001022, "id": "o23"}, {"div": "office", "name": "마스코트 대기실", "order": 23, "createdAt": 1794460001023, "id": "o24"}, {"div": "office", "name": "응원단 대기실", "order": 24, "createdAt": 1794460001024, "id": "o25"}, {"div": "office", "name": "치어리더실 화장실/샤워실 (원정)", "order": 25, "createdAt": 1794460001025, "id": "o26"}, {"div": "office", "name": "치어리더실 (원정)", "order": 26, "createdAt": 1794460001026, "id": "o27"}, {"div": "office", "name": "고객 의무실 (1F)", "order": 27, "createdAt": 1794460001027, "id": "o28"}, {"div": "office", "name": "랜더스 센터", "order": 28, "createdAt": 1794460001028, "id": "o29"}, {"div": "office", "name": "1루매표소", "order": 29, "createdAt": 1794460001029, "id": "o30"}, {"div": "office", "name": "3루 매표소", "order": 30, "createdAt": 1794460001030, "id": "o31"}, {"div": "office", "name": "내야 매표소", "order": 31, "createdAt": 1794460001031, "id": "o32"}, {"div": "office", "name": "외야 매표소", "order": 32, "createdAt": 1794460001032, "id": "o33"}, {"div": "office", "name": "MD 샵", "order": 33, "createdAt": 1794460001033, "id": "o34"}, {"div": "office", "name": "보도기자실 (7F)", "order": 34, "createdAt": 1794460001034, "id": "o35"}, {"div": "office", "name": "보도기자 화장실 (7F)", "order": 35, "createdAt": 1794460001035, "id": "o36"}, {"div": "office", "name": "중계실 화장실 (6F)", "order": 36, "createdAt": 1794460001036, "id": "o37"}, {"div": "office", "name": "방송 중계실 (6F)", "order": 37, "createdAt": 1794460001037, "id": "o38"}, {"div": "office", "name": "미디어 흡연실 (7F)", "order": 38, "createdAt": 1794460001038, "id": "o39"}, {"div": "office", "name": "전광판/음향/조명 주조정실", "order": 39, "createdAt": 1794460001039, "id": "o40"}, {"div": "office", "name": "전광판/음향/조명 장비실", "order": 40, "createdAt": 1794460001040, "id": "o41"}, {"div": "office", "name": "트래킹,ABS,체크스윙 주조정실 (6F)", "order": 41, "createdAt": 1794460001041, "id": "o42"}, {"div": "office", "name": "전광판/음향/조명 주조정실 화장실 (6F)", "order": 42, "createdAt": 1794460001042, "id": "o43"}, {"div": "office", "name": "장내방송 및 기록실 (6F)", "order": 43, "createdAt": 1794460001043, "id": "o44"}, {"div": "office", "name": "경기감독관실 (6F)", "order": 44, "createdAt": 1794460001044, "id": "o45"}, {"div": "moving", "name": "선수단 물품창고(1루)", "order": 0, "createdAt": 1794460001000, "id": "v01"}, {"div": "moving", "name": "선수단 물품창고 (덕아웃 후면)", "order": 1, "createdAt": 1794460001001, "id": "v02"}, {"div": "moving", "name": "선수단 물품창고 (추가공간 확보)", "order": 2, "createdAt": 1794460001002, "id": "v03"}, {"div": "moving", "name": "훈련장비창고", "order": 3, "createdAt": 1794460001003, "id": "v04"}, {"div": "moving", "name": "그라운드키퍼 창고 (덕아웃 인근)", "order": 4, "createdAt": 1794460001004, "id": "v05"}, {"div": "moving", "name": "그라운드키퍼 장비창고 (외야)", "order": 5, "createdAt": 1794460001005, "id": "v06"}, {"div": "moving", "name": "그라운드키퍼 재료창고 (외야)", "order": 6, "createdAt": 1794460001006, "id": "v07"}, {"div": "moving", "name": "예비창고 (외야/지하)", "order": 7, "createdAt": 1794460001007, "id": "v08"}, {"div": "moving", "name": "구단 창고", "order": 8, "createdAt": 1794460001008, "id": "v09"}, {"div": "moving", "name": "덕아웃 인근 창고", "order": 9, "createdAt": 1794460001009, "id": "v10"}, {"div": "moving", "name": "CS용역 사무실", "order": 10, "createdAt": 1794460001010, "id": "v11"}, {"div": "moving", "name": "CS용역 휴게실", "order": 11, "createdAt": 1794460001011, "id": "v12"}, {"div": "moving", "name": "그라운드키퍼 사무실", "order": 12, "createdAt": 1794460001012, "id": "v13"}, {"div": "moving", "name": "그라운드키퍼 락카 및 샤워실", "order": 13, "createdAt": 1794460001013, "id": "v14"}, {"div": "moving", "name": "기사대기실", "order": 14, "createdAt": 1794460001014, "id": "v15"}, {"div": "moving", "name": "경찰 및 소방대기실", "order": 15, "createdAt": 1794460001015, "id": "v16"}], "decisions": [], "drawings": [], "fixtures": [], "spec_snaps": [], "layouts": [], "interior_reqs": [], "renders": [], "plans": []}, "settings": {"start": "2026-09", "end": "2028-02", "markers": [{"ym": "2027-02", "week": 2, "label": "신세계건설 인테리어 공사 시작"}, {"ym": "2027-08", "week": 2, "label": "사무실 인테리어 설계 완료"}, {"ym": "2028-01", "week": 1, "label": "준공 목표 (’27.12)"}]}};
+/* Firebase 설정 (Firebase 콘솔 → 프로젝트 설정 → 내 앱) */
+window.FIREBASE_CONFIG = {
+  apiKey: "AIzaSyD_vHBvJXt2GArwfX4YOStgawQZeKZ7an4",
+  authDomain: "check-2-app.firebaseapp.com",
+  projectId: "check-2-app",
+  storageBucket: "check-2-app.firebasestorage.app",
+  messagingSenderId: "252399656299",
+  appId: "1:252399656299:web:3037a9658290147476402e"
+};
+/* 처음 접속 시 Firestore가 비어 있으면 올라가는 기본 데이터 */
+window.EMBED_DATA = {"S": {"categories": [{"name": "수치료실", "group": "", "type": "general", "div": "", "rowLabels": ["업역 협의", "장비 반입", "사전 준비", "공사"], "rows": 4, "order": 0, "createdAt": 1794460000000, "id": "hydro"}, {"name": "클럽하우스", "group": "야구단 인테리어", "type": "space", "div": "clubhouse", "rowLabels": ["인테리어 사전협의", "공사", "체력단련실"], "rows": 3, "order": 1, "createdAt": 1794460000001, "id": "club"}, {"name": "사무실", "group": "야구단 인테리어", "type": "space", "div": "office", "rowLabels": ["설계", "공사"], "rows": 2, "order": 2, "createdAt": 1794460000002, "id": "office"}, {"name": "이사", "group": "가구/가전 · 이사준비", "type": "space", "div": "moving", "rowLabels": ["체력단련실 기구조성", "가구/가전", "이사준비"], "rows": 3, "order": 3, "createdAt": 1794460000003, "id": "moving"}], "ms_tasks": [{"catId": "hydro", "row": 0, "startYm": "2026-11", "startWeek": 2, "weeks": 3, "title": "3자 회의", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000100, "id": "m01"}, {"catId": "hydro", "row": 0, "startYm": "2026-12", "startWeek": 1, "weeks": 9, "title": "장비 시공 계약 준비", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000101, "id": "m02"}, {"catId": "hydro", "row": 0, "startYm": "2027-02", "startWeek": 1, "weeks": 1, "title": "구단–ATPT 시공 계약", "kind": "point", "memo": "’27.02", "color": "", "done": false, "createdAt": 1794460000102, "id": "m03"}, {"catId": "hydro", "row": 1, "startYm": "2026-09", "startWeek": 3, "weeks": 4, "title": "발주", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000103, "id": "m04"}, {"catId": "hydro", "row": 1, "startYm": "2026-10", "startWeek": 3, "weeks": 21, "title": "장비 제작 (6±1개월)", "kind": "light", "memo": "*ATPT ’26.12~’27.01 미국 출국 예정", "color": "", "done": false, "createdAt": 1794460000104, "id": "m05"}, {"catId": "hydro", "row": 1, "startYm": "2027-03", "startWeek": 4, "weeks": 6, "title": "운송 (3월 말 출하)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000105, "id": "m06"}, {"catId": "hydro", "row": 1, "startYm": "2027-05", "startWeek": 1, "weeks": 1, "title": "장비 국내 도착", "kind": "point", "memo": "’27.04 · 5월 1단계 설치 착수", "color": "", "done": false, "createdAt": 1794460000106, "id": "m07"}, {"catId": "hydro", "row": 2, "startYm": "2026-11", "startWeek": 2, "weeks": 13, "title": "일정 재점검 (ATPT·구단·신세계건설)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000107, "id": "m08"}, {"catId": "hydro", "row": 2, "startYm": "2027-02", "startWeek": 2, "weeks": 12, "title": "설치 공정 시뮬레이션 (ATPT)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000108, "id": "m09"}, {"catId": "hydro", "row": 3, "startYm": "2027-01", "startWeek": 2, "weeks": 15, "title": "[신세계건설] 설치 前 공정 : 골조·피트·설비·배관", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000109, "id": "m10"}, {"catId": "hydro", "row": 3, "startYm": "2027-05", "startWeek": 2, "weeks": 7, "title": "[ATPT] 장비 반입·설치", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000110, "id": "m11"}, {"catId": "hydro", "row": 3, "startYm": "2027-07", "startWeek": 2, "weeks": 8, "title": "[신세계건설] 마감 인테리어", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000111, "id": "m12"}, {"catId": "club", "row": 0, "startYm": "2026-10", "startWeek": 2, "weeks": 7, "title": "야구단 시공 범위 협의", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000112, "id": "m13"}, {"catId": "club", "row": 0, "startYm": "2026-11", "startWeek": 4, "weeks": 1, "title": "최종 실시도서·내역서 완료", "kind": "point", "memo": "’26.11", "color": "", "done": false, "createdAt": 1794460000113, "id": "m14"}, {"catId": "club", "row": 0, "startYm": "2026-12", "startWeek": 1, "weeks": 8, "title": "클럽하우스 시공사 선정", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000114, "id": "m15"}, {"catId": "club", "row": 1, "startYm": "2026-10", "startWeek": 2, "weeks": 7, "title": "실시설계 (다우건축)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000115, "id": "m16"}, {"catId": "club", "row": 1, "startYm": "2026-12", "startWeek": 1, "weeks": 7, "title": "RFP 작성 및 협의", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000116, "id": "m17"}, {"catId": "club", "row": 1, "startYm": "2027-01", "startWeek": 4, "weeks": 5, "title": "시공 계약", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000117, "id": "m18"}, {"catId": "club", "row": 1, "startYm": "2027-02", "startWeek": 4, "weeks": 1, "title": "인테리어 시공업체 계약", "kind": "point", "memo": "’27.02", "color": "", "done": false, "createdAt": 1794460000118, "id": "m19"}, {"catId": "club", "row": 1, "startYm": "2027-03", "startWeek": 1, "weeks": 4, "title": "시공 준비", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000119, "id": "m20"}, {"catId": "club", "row": 1, "startYm": "2027-04", "startWeek": 1, "weeks": 28, "title": "클럽하우스 인테리어 공사 (’27.04~’27.10)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000120, "id": "m21"}, {"catId": "club", "row": 1, "startYm": "2027-10", "startWeek": 4, "weeks": 1, "title": "인테리어 완료", "kind": "point", "memo": "’27.10", "color": "", "done": false, "createdAt": 1794460000121, "id": "m22"}, {"catId": "club", "row": 2, "startYm": "2027-03", "startWeek": 2, "weeks": 8, "title": "기구 리스트 협의", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000122, "id": "m23"}, {"catId": "club", "row": 2, "startYm": "2027-05", "startWeek": 2, "weeks": 7, "title": "업체 견적·제안 비교 (RFP)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000123, "id": "m24"}, {"catId": "club", "row": 2, "startYm": "2027-07", "startWeek": 2, "weeks": 4, "title": "업체 선정", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000124, "id": "m25"}, {"catId": "club", "row": 2, "startYm": "2027-08", "startWeek": 1, "weeks": 1, "title": "기구 구매 계약", "kind": "point", "memo": "’27.08", "color": "", "done": false, "createdAt": 1794460000125, "id": "m26"}, {"catId": "club", "row": 2, "startYm": "2027-08", "startWeek": 2, "weeks": 8, "title": "기구 제작·운송", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000126, "id": "m27"}, {"catId": "office", "row": 0, "startYm": "2026-10", "startWeek": 2, "weeks": 10, "title": "기획 (평면 레이아웃)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000127, "id": "m28"}, {"catId": "office", "row": 0, "startYm": "2026-12", "startWeek": 3, "weeks": 1, "title": "레이아웃 확정", "kind": "point", "memo": "’26.12", "color": "", "done": false, "createdAt": 1794460000128, "id": "m29"}, {"catId": "office", "row": 0, "startYm": "2026-12", "startWeek": 4, "weeks": 8, "title": "설계업체 선정·협의 (8주)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000129, "id": "m30"}, {"catId": "office", "row": 0, "startYm": "2027-02", "startWeek": 4, "weeks": 1, "title": "설계업체 선정", "kind": "point", "memo": "’27.02", "color": "", "done": false, "createdAt": 1794460000130, "id": "m31"}, {"catId": "office", "row": 0, "startYm": "2027-03", "startWeek": 1, "weeks": 4, "title": "설계업체 협의 (4주)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000131, "id": "m32"}, {"catId": "office", "row": 0, "startYm": "2027-04", "startWeek": 2, "weeks": 12, "title": "인테리어 설계 (12주)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000132, "id": "m33"}, {"catId": "office", "row": 0, "startYm": "2027-07", "startWeek": 1, "weeks": 1, "title": "실시설계 완료", "kind": "point", "memo": "’27.07", "color": "", "done": false, "createdAt": 1794460000133, "id": "m34"}, {"catId": "office", "row": 1, "startYm": "2027-07", "startWeek": 2, "weeks": 4, "title": "공사업체 선정 (4주)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000134, "id": "m35"}, {"catId": "office", "row": 1, "startYm": "2027-08", "startWeek": 1, "weeks": 1, "title": "인테리어 공사 시작", "kind": "point", "memo": "’27.08", "color": "", "done": false, "createdAt": 1794460000135, "id": "m36"}, {"catId": "office", "row": 1, "startYm": "2027-08", "startWeek": 2, "weeks": 11, "title": "인테리어 공사 (12주)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000136, "id": "m37"}, {"catId": "office", "row": 1, "startYm": "2027-10", "startWeek": 4, "weeks": 1, "title": "인테리어 완료", "kind": "point", "memo": "’27.10", "color": "", "done": false, "createdAt": 1794460000137, "id": "m38"}, {"catId": "moving", "row": 0, "startYm": "2027-10", "startWeek": 2, "weeks": 3, "title": "체력단련실 기구 설치", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000138, "id": "m39"}, {"catId": "moving", "row": 0, "startYm": "2027-10", "startWeek": 4, "weeks": 1, "title": "체력단련실 기구 입고 완료", "kind": "point", "memo": "’27.10", "color": "", "done": false, "createdAt": 1794460000139, "id": "m40"}, {"catId": "moving", "row": 1, "startYm": "2027-07", "startWeek": 2, "weeks": 4, "title": "구단현황(자산) 파악", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000140, "id": "m41"}, {"catId": "moving", "row": 1, "startYm": "2027-08", "startWeek": 2, "weeks": 3, "title": "필요가구 리스트업", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000141, "id": "m42"}, {"catId": "moving", "row": 1, "startYm": "2027-09", "startWeek": 1, "weeks": 4, "title": "크로스체크", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000142, "id": "m43"}, {"catId": "moving", "row": 1, "startYm": "2027-10", "startWeek": 1, "weeks": 4, "title": "구매자산/이사자산 결정", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000143, "id": "m44"}, {"catId": "moving", "row": 1, "startYm": "2027-11", "startWeek": 1, "weeks": 8, "title": "가구·가전 세팅", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000144, "id": "m45"}, {"catId": "moving", "row": 1, "startYm": "2027-12", "startWeek": 4, "weeks": 1, "title": "이사 완료", "kind": "point", "memo": "’27.12", "color": "", "done": false, "createdAt": 1794460000145, "id": "m46"}, {"catId": "moving", "row": 2, "startYm": "2027-09", "startWeek": 1, "weeks": 8, "title": "가구·가전·이사업체 입찰", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000146, "id": "m47"}, {"catId": "moving", "row": 2, "startYm": "2027-10", "startWeek": 4, "weeks": 1, "title": "업체 선정", "kind": "point", "memo": "’27.10", "color": "", "done": false, "createdAt": 1794460000147, "id": "m48"}], "rooms": [{"div": "clubhouse", "name": "덕아웃", "order": 0, "createdAt": 1794460001000, "id": "c01"}, {"div": "clubhouse", "name": "덕아웃 화장실", "order": 1, "createdAt": 1794460001001, "id": "c02"}, {"div": "clubhouse", "name": "덕아웃 흡연실", "order": 2, "createdAt": 1794460001002, "id": "c03"}, {"div": "clubhouse", "name": "락커룸", "order": 3, "createdAt": 1794460001003, "id": "c04"}, {"div": "clubhouse", "name": "샤워실, 파우더룸", "order": 4, "createdAt": 1794460001004, "id": "c05"}, {"div": "clubhouse", "name": "화장실", "order": 5, "createdAt": 1794460001005, "id": "c06"}, {"div": "clubhouse", "name": "트레이너 사무실", "order": 6, "createdAt": 1794460001006, "id": "c07"}, {"div": "clubhouse", "name": "물리치료실", "order": 7, "createdAt": 1794460001007, "id": "c08"}, {"div": "clubhouse", "name": "물리치료 약/물품 보관창고", "order": 8, "createdAt": 1794460001008, "id": "c09"}, {"div": "clubhouse", "name": "타격훈련실 (1루)", "order": 9, "createdAt": 1794460001009, "id": "c10"}, {"div": "clubhouse", "name": "타격훈련실 내 분석실", "order": 10, "createdAt": 1794460001010, "id": "c11"}, {"div": "clubhouse", "name": "타격훈련실 창고", "order": 11, "createdAt": 1794460001011, "id": "c12"}, {"div": "clubhouse", "name": "선수단 라운지", "order": 12, "createdAt": 1794460001012, "id": "c13"}, {"div": "clubhouse", "name": "배트보관실", "order": 13, "createdAt": 1794460001013, "id": "c14"}, {"div": "clubhouse", "name": "선수 수면실", "order": 14, "createdAt": 1794460001014, "id": "c15"}, {"div": "clubhouse", "name": "선수식당", "order": 15, "createdAt": 1794460001015, "id": "c16"}, {"div": "clubhouse", "name": "선수식당 전용 주방", "order": 16, "createdAt": 1794460001016, "id": "c17"}, {"div": "clubhouse", "name": "감독실", "order": 17, "createdAt": 1794460001017, "id": "c18"}, {"div": "clubhouse", "name": "감독 휴게실", "order": 18, "createdAt": 1794460001018, "id": "c19"}, {"div": "clubhouse", "name": "감독 샤워실/화장실", "order": 19, "createdAt": 1794460001019, "id": "c20"}, {"div": "clubhouse", "name": "코치실", "order": 20, "createdAt": 1794460001020, "id": "c21"}, {"div": "clubhouse", "name": "코치 샤워실/화장실", "order": 21, "createdAt": 1794460001021, "id": "c22"}, {"div": "clubhouse", "name": "코치 수면실", "order": 22, "createdAt": 1794460001022, "id": "c23"}, {"div": "clubhouse", "name": "코치 회의실", "order": 23, "createdAt": 1794460001023, "id": "c24"}, {"div": "clubhouse", "name": "전력분석실", "order": 24, "createdAt": 1794460001024, "id": "c25"}, {"div": "clubhouse", "name": "전력분석회의실", "order": 25, "createdAt": 1794460001025, "id": "c26"}, {"div": "clubhouse", "name": "심판실", "order": 26, "createdAt": 1794460001026, "id": "c27"}, {"div": "clubhouse", "name": "대기심판실", "order": 27, "createdAt": 1794460001027, "id": "c28"}, {"div": "clubhouse", "name": "보조락커", "order": 28, "createdAt": 1794460001028, "id": "c29"}, {"div": "clubhouse", "name": "보조락커 샤워 및 화장실", "order": 29, "createdAt": 1794460001029, "id": "c30"}, {"div": "clubhouse", "name": "현장직원 및 훈련보조 락커", "order": 30, "createdAt": 1794460001030, "id": "c31"}, {"div": "clubhouse", "name": "선수가족실", "order": 31, "createdAt": 1794460001031, "id": "c32"}, {"div": "clubhouse", "name": "선수단 의무실", "order": 32, "createdAt": 1794460001032, "id": "c33"}, {"div": "clubhouse", "name": "인터뷰실", "order": 33, "createdAt": 1794460001033, "id": "c34"}, {"div": "clubhouse", "name": "홈 사진 기자석", "order": 34, "createdAt": 1794460001034, "id": "c35"}, {"div": "clubhouse", "name": "홈 공용 화장실", "order": 35, "createdAt": 1794460001035, "id": "c36"}, {"div": "clubhouse", "name": "접견실", "order": 36, "createdAt": 1794460001036, "id": "c37"}, {"div": "clubhouse", "name": "상황실", "order": 37, "createdAt": 1794460001037, "id": "c38"}, {"div": "clubhouse", "name": "이벤트대기실", "order": 38, "createdAt": 1794460001038, "id": "c39"}, {"div": "clubhouse", "name": "시구자대기실", "order": 39, "createdAt": 1794460001039, "id": "c40"}, {"div": "clubhouse", "name": "체력단련실", "order": 40, "createdAt": 1794460001040, "id": "c41"}, {"div": "office", "name": "홈임원실", "order": 0, "createdAt": 1794460001000, "id": "o01"}, {"div": "office", "name": "단장실", "order": 1, "createdAt": 1794460001001, "id": "o02"}, {"div": "office", "name": "원정임원실", "order": 2, "createdAt": 1794460001002, "id": "o03"}, {"div": "office", "name": "직원 및 홈경기 관계자 식당", "order": 3, "createdAt": 1794460001003, "id": "o04"}, {"div": "office", "name": "주방", "order": 4, "createdAt": 1794460001004, "id": "o05"}, {"div": "office", "name": "주방창고", "order": 5, "createdAt": 1794460001005, "id": "o06"}, {"div": "office", "name": "사무공간2 (B1F)", "order": 6, "createdAt": 1794460001006, "id": "o07"}, {"div": "office", "name": "사무공간1 (6F)", "order": 7, "createdAt": 1794460001007, "id": "o08"}, {"div": "office", "name": "임원실", "order": 8, "createdAt": 1794460001008, "id": "o09"}, {"div": "office", "name": "복도", "order": 9, "createdAt": 1794460001009, "id": "o10"}, {"div": "office", "name": "회의실", "order": 10, "createdAt": 1794460001010, "id": "o11"}, {"div": "office", "name": "대회의실", "order": 11, "createdAt": 1794460001011, "id": "o12"}, {"div": "office", "name": "사무실 창고, 서류보관실", "order": 12, "createdAt": 1794460001012, "id": "o13"}, {"div": "office", "name": "사료 창고", "order": 13, "createdAt": 1794460001013, "id": "o14"}, {"div": "office", "name": "라운지", "order": 14, "createdAt": 1794460001014, "id": "o15"}, {"div": "office", "name": "구단 여직원 휴게실", "order": 15, "createdAt": 1794460001015, "id": "o16"}, {"div": "office", "name": "구단 6F 화장실", "order": 16, "createdAt": 1794460001016, "id": "o17"}, {"div": "office", "name": "구단 B1F 화장실", "order": 17, "createdAt": 1794460001017, "id": "o18"}, {"div": "office", "name": "스튜디오(쓱튜브)", "order": 18, "createdAt": 1794460001018, "id": "o19"}, {"div": "office", "name": "치어리더실", "order": 19, "createdAt": 1794460001019, "id": "o20"}, {"div": "office", "name": "치어리더연습실", "order": 20, "createdAt": 1794460001020, "id": "o21"}, {"div": "office", "name": "치어리더 샤워실/화장실", "order": 21, "createdAt": 1794460001021, "id": "o22"}, {"div": "office", "name": "치어리더 대기실 (홈, 3F)", "order": 22, "createdAt": 1794460001022, "id": "o23"}, {"div": "office", "name": "마스코트 대기실", "order": 23, "createdAt": 1794460001023, "id": "o24"}, {"div": "office", "name": "응원단 대기실", "order": 24, "createdAt": 1794460001024, "id": "o25"}, {"div": "office", "name": "치어리더실 화장실/샤워실 (원정)", "order": 25, "createdAt": 1794460001025, "id": "o26"}, {"div": "office", "name": "치어리더실 (원정)", "order": 26, "createdAt": 1794460001026, "id": "o27"}, {"div": "office", "name": "고객 의무실 (1F)", "order": 27, "createdAt": 1794460001027, "id": "o28"}, {"div": "office", "name": "랜더스 센터", "order": 28, "createdAt": 1794460001028, "id": "o29"}, {"div": "office", "name": "1루매표소", "order": 29, "createdAt": 1794460001029, "id": "o30"}, {"div": "office", "name": "3루 매표소", "order": 30, "createdAt": 1794460001030, "id": "o31"}, {"div": "office", "name": "내야 매표소", "order": 31, "createdAt": 1794460001031, "id": "o32"}, {"div": "office", "name": "외야 매표소", "order": 32, "createdAt": 1794460001032, "id": "o33"}, {"div": "office", "name": "MD 샵", "order": 33, "createdAt": 1794460001033, "id": "o34"}, {"div": "office", "name": "보도기자실 (7F)", "order": 34, "createdAt": 1794460001034, "id": "o35"}, {"div": "office", "name": "보도기자 화장실 (7F)", "order": 35, "createdAt": 1794460001035, "id": "o36"}, {"div": "office", "name": "중계실 화장실 (6F)", "order": 36, "createdAt": 1794460001036, "id": "o37"}, {"div": "office", "name": "방송 중계실 (6F)", "order": 37, "createdAt": 1794460001037, "id": "o38"}, {"div": "office", "name": "미디어 흡연실 (7F)", "order": 38, "createdAt": 1794460001038, "id": "o39"}, {"div": "office", "name": "전광판/음향/조명 주조정실", "order": 39, "createdAt": 1794460001039, "id": "o40"}, {"div": "office", "name": "전광판/음향/조명 장비실", "order": 40, "createdAt": 1794460001040, "id": "o41"}, {"div": "office", "name": "트래킹,ABS,체크스윙 주조정실 (6F)", "order": 41, "createdAt": 1794460001041, "id": "o42"}, {"div": "office", "name": "전광판/음향/조명 주조정실 화장실 (6F)", "order": 42, "createdAt": 1794460001042, "id": "o43"}, {"div": "office", "name": "장내방송 및 기록실 (6F)", "order": 43, "createdAt": 1794460001043, "id": "o44"}, {"div": "office", "name": "경기감독관실 (6F)", "order": 44, "createdAt": 1794460001044, "id": "o45"}, {"div": "moving", "name": "선수단 물품창고(1루)", "order": 0, "createdAt": 1794460001000, "id": "v01"}, {"div": "moving", "name": "선수단 물품창고 (덕아웃 후면)", "order": 1, "createdAt": 1794460001001, "id": "v02"}, {"div": "moving", "name": "선수단 물품창고 (추가공간 확보)", "order": 2, "createdAt": 1794460001002, "id": "v03"}, {"div": "moving", "name": "훈련장비창고", "order": 3, "createdAt": 1794460001003, "id": "v04"}, {"div": "moving", "name": "그라운드키퍼 창고 (덕아웃 인근)", "order": 4, "createdAt": 1794460001004, "id": "v05"}, {"div": "moving", "name": "그라운드키퍼 장비창고 (외야)", "order": 5, "createdAt": 1794460001005, "id": "v06"}, {"div": "moving", "name": "그라운드키퍼 재료창고 (외야)", "order": 6, "createdAt": 1794460001006, "id": "v07"}, {"div": "moving", "name": "예비창고 (외야/지하)", "order": 7, "createdAt": 1794460001007, "id": "v08"}, {"div": "moving", "name": "구단 창고", "order": 8, "createdAt": 1794460001008, "id": "v09"}, {"div": "moving", "name": "덕아웃 인근 창고", "order": 9, "createdAt": 1794460001009, "id": "v10"}, {"div": "moving", "name": "CS용역 사무실", "order": 10, "createdAt": 1794460001010, "id": "v11"}, {"div": "moving", "name": "CS용역 휴게실", "order": 11, "createdAt": 1794460001011, "id": "v12"}, {"div": "moving", "name": "그라운드키퍼 사무실", "order": 12, "createdAt": 1794460001012, "id": "v13"}, {"div": "moving", "name": "그라운드키퍼 락카 및 샤워실", "order": 13, "createdAt": 1794460001013, "id": "v14"}, {"div": "moving", "name": "기사대기실", "order": 14, "createdAt": 1794460001014, "id": "v15"}, {"div": "moving", "name": "경찰 및 소방대기실", "order": 15, "createdAt": 1794460001015, "id": "v16"}]}, "settings": {"start": "2026-09", "end": "2028-02", "markers": [{"ym": "2027-02", "week": 2, "label": "신세계건설 인테리어 공사 시작"}, {"ym": "2027-08", "week": 2, "label": "사무실 인테리어 설계 완료"}, {"ym": "2028-01", "week": 1, "label": "준공 목표 (’27.12)"}]}};
 </script>
 <script>
 /* =========================================================
@@ -443,106 +457,164 @@ const S = {}; COLS.forEach(c => S[c] = []);
 let settings = { start: '', end: '' };
 let localAssets = {};
 const caps = { db:null, assets:null, downloads:null, user:null, myId:null };
+/* =========================================================
+   Firebase 저장소 (Firestore 실시간 동기화 + Google 로그인)
+   ========================================================= */
+const FB_VER = '10.12.2';
+let FB = null;              // { F, AU, fs, auth }
+let fbUser = null;
+const assetCache = {};      // fs_<id> → dataURL
+const assetLoading = {};
 const Store = {
-  mode: 'loading', loaded: new Set(),
+  mode: 'loading', loaded: new Set(), unsubs: [], seeded: false,
   async init(){
-    const C = (window.claude && typeof window.claude.use === 'function') ? window.claude : null;
-    if (C) {
-      try { caps.db = await C.use('db'); } catch(e) { caps.db = null; }
-      try { caps.user = await C.use('user'); } catch(e) {}
-      try { caps.assets = await C.use('assets'); } catch(e) {}
-      try { caps.downloads = await C.use('downloads'); } catch(e) {}
-      try { caps.myId = caps.user ? await caps.user.id() : null; } catch(e) {}
-    }
-    if (caps.db) {
-      this.mode = 'shared';
-      const timer = setTimeout(()=>{ if (this.loaded.size < COLS.length+1) { setSync('warn','공유 데이터 연결 지연 — 표시 내용이 최신이 아닐 수 있음'); render(); } }, 10000);
-      COLS.forEach(c => {
-        caps.db.collection(c).onSnapshot(snap => {
-          S[c] = snap.docs.map(d => Object.assign({ id: d.id }, d.data()));
-          if (!snap.metadata.fromCache) this.loaded.add(c);
-          if (this.loaded.size >= COLS.length+1) { clearTimeout(timer); setSync('ok','공유 저장 · 실시간 동기화'); }
-          scheduleRender();
-        }, err => { setSync('warn','동기화 오류: ' + (err.code||'')); });
+    try {
+      const base = `https://www.gstatic.com/firebasejs/${FB_VER}/`;
+      const [A, F, AU] = await Promise.all([import(base + 'firebase-app.js'), import(base + 'firebase-firestore.js'), import(base + 'firebase-auth.js')]);
+      const app = A.initializeApp(window.FIREBASE_CONFIG);
+      const fs = F.initializeFirestore(app, { ignoreUndefinedProperties: true });
+      const auth = AU.getAuth(app);
+      FB = { F, AU, fs, auth };
+      AU.onAuthStateChanged(auth, user => {
+        fbUser = user;
+        this.unsubs.forEach(u => u()); this.unsubs = []; this.loaded.clear();
+        if (user) { caps.myId = user.email || user.uid; nameCache[caps.myId] = user.displayName || user.email || ''; this.startData(); }
+        else { this.mode = 'login'; renderLogin(); }
+        renderUserChip();
       });
-      caps.db.doc('settings/main').onSnapshot(snap => {
-        if (snap.exists) settings = Object.assign({}, snap.data());
-        if (!snap.metadata.fromCache) this.loaded.add('settings');
-        if (this.loaded.size >= COLS.length+1) { clearTimeout(timer); setSync('ok','공유 저장 · 실시간 동기화'); }
-        scheduleRender();
-      }, err => setSync('warn','동기화 오류'));
-    } else {
-      this.mode = 'local';
-      const saved = lsGet('pmo_local_v2', null) || (window.EMBED_DATA ? JSON.parse(JSON.stringify(window.EMBED_DATA)) : null);
-      if (saved) { COLS.forEach(c => S[c] = saved.S?.[c] || []); settings = saved.settings || settings; localAssets = saved.assets || {}; }
-      if (!S.categories.length) {
-        // 로컬 미리보기에서만 쓰는 기본 대주제
-        [['수치료실','','general','',['업역 협의','장비 반입','사전 준비','공사']],['클럽하우스','야구단 인테리어','space','clubhouse',['인테리어 사전협의','공사','체력단련실']],
-         ['사무실','야구단 인테리어','space','office',['설계','공사']],['이사','가구/가전 · 이사준비','space','moving',['체력단련실 기구조성','가구/가전','이사준비']]]
-          .forEach(([name,group,type,div,rowLabels],i)=> S.categories.push({ id: uid(), name, group, type, div, rowLabels, rows: rowLabels.length, order: i, createdAt: Date.now()+i }));
-      }
-      setSync('warn','파일 모드 — 이 브라우저에만 저장');
-      render();
+    } catch(e) {
+      console.error(e);
+      setSync('warn', 'Firebase 연결 실패');
+      $('#app').innerHTML = `<div class="card" style="padding:30px;text-align:center"><b>Firebase에 연결하지 못했습니다.</b><div class="muted" style="margin-top:6px">인터넷 연결 또는 firebaseConfig 값을 확인해주세요. (${esc(e.message||e)})</div></div>`;
     }
   },
-  persistLocal(){ if (this.mode === 'local') { if(!lsSet('pmo_local_v2', { S, settings, assets: localAssets })) lsSet('pmo_local_v2', { S, settings, assets:{} }); } },
-  get ready(){ return this.mode === 'local' || this.loaded.size >= 1; },
+  startData(){
+    const { F, fs } = FB;
+    this.mode = 'shared';
+    $('#app').innerHTML = '<div class="loading">데이터 불러오는 중…</div>';
+    setSync('', '데이터 불러오는 중…');
+    const done = () => { if (this.loaded.size >= COLS.length + 1) setSync('ok', '공유 저장 · 실시간 동기화'); };
+    const onErr = err => {
+      console.error(err);
+      if (err.code === 'permission-denied') renderDenied();
+      else setSync('warn', '동기화 오류: ' + (err.code || ''));
+    };
+    COLS.forEach(c => {
+      this.unsubs.push(F.onSnapshot(F.collection(fs, c), { includeMetadataChanges: false }, snap => {
+        S[c] = snap.docs.map(d => Object.assign({ id: d.id }, d.data()));
+        if (!snap.metadata.fromCache) this.loaded.add(c);
+        if (c === 'categories' && !snap.metadata.fromCache && snap.empty && !this.seeded) { this.seeded = true; seedFirestore(); }
+        done(); scheduleRender();
+      }, onErr));
+    });
+    this.unsubs.push(F.onSnapshot(F.doc(fs, 'settings', 'main'), snap => {
+      if (snap.exists()) settings = Object.assign({}, snap.data());
+      if (!snap.metadata.fromCache) this.loaded.add('settings');
+      done(); scheduleRender();
+    }, onErr));
+  },
+  get ready(){ return this.mode === 'shared' && this.loaded.size >= 1; },
+  persistLocal(){},
   async add(col, data){
-    data = Object.assign({ createdAt: Date.now() }, data);
-    if (this.mode === 'shared') { const ref = caps.db.collection(col).doc(); await ref.set(data); return ref.id; }
-    const id = uid(); S[col].push(Object.assign({ id }, data)); this.persistLocal(); scheduleRender(); return id;
+    const { F, fs } = FB; data = Object.assign({ createdAt: Date.now() }, data);
+    const ref = F.doc(F.collection(fs, col)); await F.setDoc(ref, data); return ref.id;
   },
-  async upd(col, id, patch){
-    if (this.mode === 'shared') { await caps.db.doc(col + '/' + id).update(patch); return; }
-    const o = S[col].find(x => x.id === id); if (o) Object.assign(o, patch); this.persistLocal(); scheduleRender();
-  },
-  async put(col, id, data){
-    if (this.mode === 'shared') { await caps.db.doc(col + '/' + id).set(data); return; }
-    const i = S[col].findIndex(x => x.id === id);
-    if (i > -1) S[col][i] = Object.assign({ id }, data); else S[col].push(Object.assign({ id }, data));
-    this.persistLocal(); scheduleRender();
-  },
-  async del(col, id){
-    if (this.mode === 'shared') { await caps.db.doc(col + '/' + id).delete(); return; }
-    S[col] = S[col].filter(x => x.id !== id); this.persistLocal(); scheduleRender();
-  },
-  async setSettings(patch){
-    settings = Object.assign({}, settings, patch);
-    if (this.mode === 'shared') await caps.db.doc('settings/main').set(settings);
-    else { this.persistLocal(); scheduleRender(); }
-  }
+  async upd(col, id, patch){ const { F, fs } = FB; await F.updateDoc(F.doc(fs, col, id), patch); },
+  async put(col, id, data){ const { F, fs } = FB; await F.setDoc(F.doc(fs, col, id), data); },
+  async del(col, id){ const { F, fs } = FB; await F.deleteDoc(F.doc(fs, col, id)); },
+  async setSettings(patch){ const { F, fs } = FB; settings = Object.assign({}, settings, patch); await F.setDoc(F.doc(fs, 'settings', 'main'), settings); }
 };
+/* 처음 접속 시(데이터가 비어 있을 때) 기본 데이터 올리기 — 문서 id가 고정이라 두 번 실행돼도 중복되지 않음 */
+async function seedFirestore(){
+  const E = window.EMBED_DATA; if (!E) return;
+  const { F, fs } = FB;
+  try {
+    const ops = [];
+    Object.entries(E.S).forEach(([col, arr]) => arr.forEach(d => { const { id, ...rest } = d; ops.push([col, id, rest]); }));
+    for (let i = 0; i < ops.length; i += 400) {
+      const b = F.writeBatch(fs);
+      ops.slice(i, i + 400).forEach(([col, id, data]) => b.set(F.doc(fs, col, id), data));
+      if (i === 0) b.set(F.doc(fs, 'settings', 'main'), E.settings);
+      await b.commit();
+    }
+    toast(`기본 데이터(마일스톤 ${E.S.ms_tasks.length}개 · 실 ${E.S.rooms.length}개)를 Firebase에 올렸습니다.`);
+  } catch(e) { toast('기본 데이터 업로드 실패: ' + (e.code || e.message), 'err'); }
+}
+function renderLogin(){
+  setSync('', '로그인 필요');
+  $('#app').innerHTML = `<div class="card" style="max-width:440px;margin:60px auto;padding:30px;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center">
+    <h2 style="margin:0;font-size:18px">청라돔 이전 & 구단 인프라 조성 업무관리</h2>
+    <div class="muted" style="font-size:12.5px">팀원 확인을 위해 Google 계정으로 로그인해주세요.<br>로그인한 사람끼리 같은 데이터를 실시간으로 공유합니다.</div>
+    <button class="btn pri" style="padding:10px 18px;font-size:13.5px" onclick="fbLogin()">Google 계정으로 로그인</button></div>`;
+}
+function renderDenied(){
+  setSync('warn', '접근 권한 없음');
+  $('#app').innerHTML = `<div class="card" style="max-width:480px;margin:60px auto;padding:30px;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center">
+    <b style="font-size:15px">접근 권한이 없는 계정입니다</b>
+    <div class="muted" style="font-size:12.5px">${esc(fbUser?.email || '')} 계정은 허용 목록에 없습니다.<br>관리자에게 Firestore 보안 규칙에 이메일 추가를 요청하세요.</div>
+    <button class="btn" onclick="fbLogout()">다른 계정으로 로그인</button></div>`;
+}
+function renderUserChip(){
+  const el = $('#userchip'); if (!el) return;
+  el.innerHTML = fbUser ? `<span>${esc(fbUser.displayName || fbUser.email)}</span><button onclick="fbLogout()">로그아웃</button>` : '';
+}
+async function fbLogin(){
+  try { await FB.AU.signInWithPopup(FB.auth, new FB.AU.GoogleAuthProvider()); }
+  catch(e){ toast(e.code === 'auth/unauthorized-domain' ? '이 주소가 Firebase 승인된 도메인에 없습니다. Authentication → 설정 → 승인된 도메인에 추가하세요.' : '로그인 실패: ' + (e.code || e.message), 'err'); }
+}
+async function fbLogout(){ await FB.AU.signOut(FB.auth); }
+
 async function safe(p, okMsg){
   try { const r = await p; if (okMsg) toast(okMsg); return r; }
   catch(e){
     const code = e && e.code;
-    toast(code === 'quota_exceeded' ? '저장 공간이 가득 찼습니다. 오래된 이력을 정리해주세요.' :
-          code === 'invalid_argument' ? '저장 권한이 없거나 데이터가 너무 큽니다.' : '저장 실패: ' + (e.message || code || e), 'err');
+    toast(code === 'permission-denied' ? '저장 권한이 없습니다. (허용된 계정인지 확인)' :
+          code === 'resource-exhausted' ? '무료 사용량을 초과했습니다. 잠시 후 다시 시도하세요.' :
+          code === 'invalid-argument' ? '데이터가 너무 큽니다.' : '저장 실패: ' + (e.message || code || e), 'err');
     return null;
   }
 }
 function setSync(kind, text){ const el = $('#sync'); el.className = 'sync ' + kind; el.textContent = text; }
-const canUpload = () => Store.mode === 'local' || !!caps.assets;
+const canUpload = () => Store.mode === 'shared' && !!fbUser;
 
-/* 파일 업로드 / 다운로드 */
+/* 파일 업로드 / 다운로드 — Spark 요금제: 이미지를 압축해 Firestore 'assets' 컬렉션에 저장 */
 function readAsDataURL(blob){ return new Promise((res,rej)=>{ const r = new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(blob); }); }
 function mimeOf(file){
   if (file.type && /^(image\/(png|jpeg|gif|webp)|application\/pdf)$/.test(file.type)) return file.type;
   const ext = (file.name.split('.').pop()||'').toLowerCase();
   return ({png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',gif:'image/gif',webp:'image/webp',pdf:'application/pdf'})[ext] || file.type;
 }
-async function uploadBlob(blob, type){
-  if (Store.mode === 'shared') {
-    if (!caps.assets) throw new Error('파일 업로드는 편집 권한(Editor 이상)이 있어야 합니다.');
-    const r = await caps.assets.upload(blob, { type }); return r.id;
+async function compressImage(blob){
+  const src = await readAsDataURL(blob);
+  const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('이미지를 읽지 못했습니다.')); i.src = src; });
+  const LIMIT = 900 * 1024;   // Firestore 문서 1MB 제한 아래로
+  for (const maxSide of [2400, 2000, 1600, 1280, 1000]) {
+    const sc = Math.min(1, maxSide / Math.max(im.naturalWidth, im.naturalHeight));
+    const c = document.createElement('canvas'); c.width = Math.round(im.naturalWidth * sc); c.height = Math.round(im.naturalHeight * sc);
+    const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(im, 0, 0, c.width, c.height);
+    for (const q of [0.85, 0.75, 0.62, 0.5]) { const d = c.toDataURL('image/jpeg', q); if (d.length < LIMIT) return d; }
   }
-  const id = 'local_' + uid(); localAssets[id] = await readAsDataURL(blob); return id;
+  throw new Error('이미지가 너무 커서 압축하지 못했습니다.');
 }
-const assetUrl = id => !id ? '' : id.startsWith('local_') ? (localAssets[id] || '') : '/_blob/' + id;
+async function uploadBlob(blob, type){
+  if (!type.startsWith('image/')) throw new Error('무료(Spark) 요금제에서는 이미지 파일만 저장할 수 있습니다.');
+  const data = await compressImage(blob);
+  const { F, fs } = FB; const ref = F.doc(F.collection(fs, 'assets'));
+  await F.setDoc(ref, { data, type: 'image/jpeg', createdAt: Date.now(), by: caps.myId || '' });
+  const id = 'fs_' + ref.id; assetCache[id] = data; return id;
+}
+function assetUrl(id){
+  if (!id) return '';
+  if (assetCache[id]) return assetCache[id];
+  if (!assetLoading[id] && id.startsWith('fs_') && FB) {
+    assetLoading[id] = FB.F.getDoc(FB.F.doc(FB.fs, 'assets', id.slice(3))).then(s => { if (s.exists()) { assetCache[id] = s.data().data; scheduleRender(); } }).catch(()=>{});
+  }
+  return '';
+}
 async function assetDataUrl(id){
-  if (!id) return null;
-  if (id.startsWith('local_')) return localAssets[id] || null;
-  const r = await fetch(assetUrl(id)); if (!r.ok) return null; return await readAsDataURL(await r.blob());
+  if (!id) return null; if (assetCache[id]) return assetCache[id];
+  const s = await FB.F.getDoc(FB.F.doc(FB.fs, 'assets', id.slice(3))); if (!s.exists()) return null;
+  return assetCache[id] = s.data().data;
 }
 function imgSize(src){ return new Promise(res => { const im = new Image(); im.onload = () => res({ w: im.naturalWidth, h: im.naturalHeight }); im.onerror = () => res({ w: 4, h: 3 }); im.src = src; }); }
 function loadScript(src){ return new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=rej; document.head.appendChild(s); }); }
@@ -559,17 +631,18 @@ async function pdfToPng(file){
   await page.render({ canvasContext: ctx, viewport: vp }).promise;
   return await new Promise(r => c.toBlob(r, 'image/png'));
 }
-/* 도면 파일 하나를 올리고 {fileAsset, imageAsset, fileName, fileType} 반환. PDF는 1페이지를 이미지로 변환 시도 */
+/* 도면: 이미지는 압축 저장, PDF는 1페이지를 이미지로 바꿔 저장 (원본 PDF는 무료 요금제에서 보관 불가) */
 async function uploadDrawingFile(file){
   const type = mimeOf(file);
   if (!/^(image\/(png|jpeg|gif|webp)|application\/pdf)$/.test(type)) throw new Error('PNG/JPG/WEBP 이미지 또는 PDF만 올릴 수 있습니다.');
-  const fileAsset = await uploadBlob(file, type);
-  let imageAsset = type.startsWith('image/') ? fileAsset : null;
+  let imageAsset;
   if (type === 'application/pdf') {
-    try { const png = await Promise.race([pdfToPng(file), new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),25000))]); imageAsset = await uploadBlob(png, 'image/png'); }
-    catch(e){ toast('PDF 미리보기 이미지 변환에 실패했습니다. 배치도에는 이미지 도면을 사용해주세요.', 'warn'); }
-  }
-  return { fileAsset, imageAsset, fileName: file.name, fileType: type };
+    let png;
+    try { png = await Promise.race([pdfToPng(file), new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),25000))]); }
+    catch(e){ throw new Error('PDF를 이미지로 바꾸지 못했습니다. PDF를 이미지(PNG/JPG)로 저장해서 올려주세요.'); }
+    imageAsset = await uploadBlob(png, 'image/png');
+  } else imageAsset = await uploadBlob(file, type);
+  return { fileAsset: imageAsset, imageAsset, fileName: file.name, fileType: type };
 }
 async function saveFile(filename, blob){
   if (caps.downloads) {
@@ -1125,7 +1198,7 @@ function projectPanel(c){
         <div class="panel"><div class="ph">진행상황 공유</div><div class="pb">
           <div class="row" style="margin-bottom:8px;align-items:flex-start"><input type="date" id="pl-date" value="${today()}" style="width:130px"><textarea id="pl-text" rows="2" placeholder="오늘 진행 내용, 회의 결과, 다음 할 일" style="flex:1"></textarea></div>
           <div class="row" style="justify-content:flex-end;margin-bottom:8px"><button class="btn pri sm" onclick="addLog('${c.id}')">공유 등록</button></div>
-          <div class="log">${logs.map(l=>`<div class="it"><div class="m"><b>${esc(l.date)}</b>${who(l.author)?`<span>· ${esc(who(l.author))}</span>`:''}<div class="grow"></div><button class="x" onclick="delRow('proj_logs','${l.id}','공유 기록')">✕</button></div><div class="tx">${esc(l.text)}</div></div>`).join('') || '<div class="muted">아직 공유된 진행상황이 없습니다.</div>'}</div>
+          <div class="log">${logs.map(l=>`<div class="it"><div class="m"><b>${esc(l.date)}</b>${(l.authorName||who(l.author))?`<span>· ${esc(l.authorName||who(l.author))}</span>`:''}<div class="grow"></div><button class="x" onclick="delRow('proj_logs','${l.id}','공유 기록')">✕</button></div><div class="tx">${esc(l.text)}</div></div>`).join('') || '<div class="muted">아직 공유된 진행상황이 없습니다.</div>'}</div>
         </div></div>
         <div class="panel"><div class="ph">특이사항 · 리스크</div><div class="pb">
           <div class="row" style="margin-bottom:6px"><input type="text" id="pi-text" placeholder="예: 장비 통관 지연 가능성" style="flex:1"><button class="btn sm dark" onclick="addIssue('${c.id}')">기재</button></div>
@@ -1145,7 +1218,7 @@ async function upd(col, id, field, value){ await safe(Store.upd(col, id, { [fiel
 async function delRow(col, id, what){ if (await confirmBox(`이 ${what} 항목을 삭제할까요?`)) await safe(Store.del(col, id), '삭제했습니다.'); }
 async function addLog(catId){
   const text = $('#pl-text').value.trim(); if (!text) return toast('공유할 내용을 입력하세요.', 'warn');
-  await safe(Store.add('proj_logs', { catId, date: $('#pl-date').value || today(), text, author: caps.myId || null }), '진행상황을 공유했습니다.');
+  await safe(Store.add('proj_logs', { catId, date: $('#pl-date').value || today(), text, author: caps.myId || null, authorName: nameCache[caps.myId] || '' }), '진행상황을 공유했습니다.');
 }
 async function addIssue(catId){
   const text = $('#pi-text').value.trim(); if (!text) return toast('특이사항을 입력하세요.', 'warn');
@@ -1158,7 +1231,7 @@ function exportProject(catId){
     ['개요', [{ '업무': c.name, '상위 구분': c.group||'', '상태': p.status||'진행중', '총괄 담당': p.owner||'', '데드라인': p.deadline||'', '진행률(%)': pct(catProg(catId)), '상세내용': p.summary||'' }]],
     ['마일스톤 R&R', ts.map(t => { const ppl = msPeople(t); return { '행': laneLabel(c,t), '마일스톤': t.title, '기간': periodText(t), '상태': ST_LABEL[msStatus(t)], '진행률(%)': pct(msProg(t)), '책임자': ppl.leads.join(', '), '실무자': ppl.staff.join(', ') }; })],
     ['세부계획', ts.flatMap(t => plansOf(t.id).map(x => ({ '마일스톤': t.title, '세부계획': x.title, '책임자': x.lead||'', '담당자': (x.staff||[]).join(', '), '기한': x.due||'', '완료': x.done?'O':'', '완료일': x.doneDate||'' })))],
-    ['진행상황', S.proj_logs.filter(l=>l.catId===catId).sort(byDate).map(l=>({ '일자': l.date, '작성자': who(l.author), '내용': l.text }))],
+    ['진행상황', S.proj_logs.filter(l=>l.catId===catId).sort(byDate).map(l=>({ '일자': l.date, '작성자': l.authorName || who(l.author), '내용': l.text }))],
     ['특이사항', S.proj_issues.filter(i=>i.catId===catId).map(i=>({ '등록일': i.date||'', '내용': i.text, '상태': i.status }))]
   ];
   if (c.type === 'space' && c.div === 'moving') sheets.push(['문학이전 집기', movingRows()]);
@@ -1367,7 +1440,7 @@ function tabDrawing(div){
           <div class="t">${esc(d.version||'(버전명 없음)')}</div>
           ${d.author?`<div class="muted">작성: ${esc(d.author)}</div>`:''}
           ${d.changeLog?`<div>${esc(d.changeLog)}</div>`:''}
-          <div class="row">${d.fileAsset?`<a href="${esc(assetUrl(d.fileAsset))}" target="_blank" rel="noopener" style="font-size:11.5px">원본 ${esc(d.fileName||'')}</a>`:''}<div class="grow"></div>${ds[i+1]&&ds[i+1].imageAsset&&d.imageAsset?`<button class="btn sm" onclick="compareDrawing('${d.id}','${ds[i+1].id}')">이전과 비교</button>`:''}</div>
+          <div class="row">${d.fileName?`<span class="muted" style="font-size:11px">${esc(d.fileName)}</span>`:''}<div class="grow"></div>${ds[i+1]&&ds[i+1].imageAsset&&d.imageAsset?`<button class="btn sm" onclick="compareDrawing('${d.id}','${ds[i+1].id}')">이전과 비교</button>`:''}</div>
         </div></div>`).join('')}</div></div>`; }).join('') || '<div class="empty">등록된 도면이 없습니다.</div>'}`;
 }
 function openDrawingUpload(div, room, onDone){
@@ -1822,8 +1895,7 @@ function render(){
   const c = list.find(x=>x.id===ui.cat);
   const y = window.scrollY, gw = $('#gwrap'), gl = gw ? gw.scrollLeft : null;
   document.querySelectorAll('.pnav button').forEach(b => b.classList.toggle('on', b.dataset.p === ui.page));
-  const banner = Store.mode === 'local' ? `<div class="banner">내 컴퓨터용 파일로 열려 있습니다. 입력 내용은 이 브라우저에만 저장되고 다른 사람과 공유되지 않습니다.</div>`
-               : (caps.assets ? '' : `<div class="banner">보기 권한으로 열려 있어 도면·이미지 업로드가 꺼져 있습니다. 텍스트 입력은 Contributor 이상이면 가능합니다.</div>`);
+  const banner = '';
   let html = banner;
   if (ui.page === 'rr') html += renderRR();
   else {
