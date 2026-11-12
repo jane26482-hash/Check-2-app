@@ -1703,7 +1703,7 @@ function siteMapSection(div, maps, map, rooms){
       </div>`;
   return `<section class="sp-card"><div class="sp-h"><span class="sp-no">1</span><b>층별 위치도</b><span class="muted" style="font-size:11.5px">${maps.length ? `${[...new Set(maps.map(floorOf))].join(' · ')}` : ''}</span>
       <div class="grow"></div>
-      ${canUpload() ? `<button class="btn sm pri" onclick="openMapUpload('${div}')">+ 층별 위치도 등록</button>${map?`<button class="btn sm ghost" onclick="openMapUpload('${div}','${map.id}')">이 층 위치도 수정</button>`:''}` : ''}
+      ${canUpload() ? `<button class="btn sm pri" onclick="openMapUpload('${div}')">+ 층별 위치도 등록</button>${map?`<button class="btn sm ghost" onclick="openMapUpload('${div}','${map.id}')">이 층 위치도 수정</button><button class="btn sm ghost" style="color:var(--red)" onclick="delSiteMap('${map.id}')">이 층 위치도 삭제</button>`:''}` : ''}
       ${map ? `<button class="btn sm ${edit?'red':'dark'}" onclick="go({mapEdit:${!edit},placeRoom:''})">${edit?'배치 완료':'실 배치 편집'}</button>` : ''}</div>
     ${tabs}${body}
   </section>`;
@@ -1820,6 +1820,12 @@ function openMapUpload(div, mapId){
       } catch(e){ toast(e.message || '업로드 실패', 'err'); return false; }
     } });
 }
+async function delSiteMap(id){
+  const m = S.sitemaps.find(x => x.id === id); if (!m) return;
+  const n = S.rooms.filter(r=>r.mapId===id).length;
+  if (!await confirmBox(`'${mapLabel(m)}' 위치도를 삭제할까요?${n?`\n배치된 실 ${n}개는 미배치 상태가 됩니다.`:''}`)) return;
+  await safe(Promise.all([Store.del('sitemaps', id), ...S.rooms.filter(r=>r.mapId===id).map(r=>Store.upd('rooms', r.id, { mapId: '' }))]), '삭제했습니다.'); go({ mapId: '', mapEdit: false });
+}
 async function addRoomFromMap(div){
   const n = $('#new-room').value.trim(); if (!n) return toast('실명을 입력하세요.', 'warn');
   const id = await safe(Store.add('rooms', { div, name: n, order: roomsOf(div).length }), `'${n}' 실을 등록했습니다. 위치도 위를 드래그해 배치하세요.`);
@@ -1893,6 +1899,7 @@ function roomDetail(div, r){
         <b>${esc(cur.x.date)}</b> ${cur.t==='ly'?'집기 배치도':esc(cur.x.kind||'도면')}${cur.t==='dw'&&cur.x.version?` · <b>${esc(cur.x.version)}</b>`:''}
         ${cur.t==='dw'&&cur.x.author?`<span class="muted">· 작성 ${esc(cur.x.author)}</span>`:''}
         ${!isLatest&&latestOf(cur.t)?`<span class="muted">· 최신은 ${esc(latestOf(cur.t).x.date)}</span>`:''}
+        ${canUpload()||Store.mode!=='shared'?`<button class="btn sm ghost" style="margin-left:auto;color:var(--red)" onclick="delRoomVersion('${cur.t}','${cur.x.id}','${div}','${r.id}')">이 ${cur.t==='ly'?'배치도':'도면'} 삭제</button>`:''}
         ${cur.t==='dw'&&cur.x.changeLog?`<div class="dv-log">변경내역: ${esc(cur.x.changeLog)}</div>`:''}${cur.t==='ly'&&cur.x.memo?`<div class="dv-log">메모: ${esc(cur.x.memo)}</div>`:''}
         ${cur.t==='ly'?`<button class="btn sm" style="margin-left:auto" onclick="ui.layEdit=true;ui.laySnap='${cur.x.id}';draft=null;render()">이 배치도 편집</button>`:''}</div>` : ''}
       ${ver.length > 1 ? `<div class="dv-thumbs">${ver.map(v => `<div class="th ${v.t==='ly'?'ly':''} ${cur&&v.key===cur.key?'on':''}" title="${esc(label(v))}" style="background-image:url('${esc(assetUrl(v.x.imageAsset))}')" onclick="ui.dwSel='${v.key}';render()"><span>${esc(v.x.date.slice(2))} ${v.t==='ly'?'배치도':esc(v.x.kind==='렌더링'?'렌더':(v.x.version||'도면'))}</span></div>`).join('')}</div>` : ''}
@@ -2189,6 +2196,14 @@ function compareDrawing(a, b){
   const A = S.drawings.find(x=>x.id===a), B = S.drawings.find(x=>x.id===b);
   modal({ title: `${roomName(A.room)} 도면 비교`, size: 'xwide', ok: '', body: `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
     ${[B,A].map(d=>`<div class="imgbox"><div class="cap">${esc(d.date)} · ${esc(d.version||'')}</div><img src="${esc(assetUrl(d.imageAsset))}" style="width:100%;display:block;background:#fff"><div style="padding:6px 8px;font-size:11.5px;background:#fff">${esc(d.changeLog||'')}</div></div>`).join('')}</div>` });
+}
+async function delRoomVersion(t, id, div, room){
+  const x = S[t==='ly'?'layouts':'drawings'].find(o => o.id === id); if (!x) return;
+  const what = t === 'ly' ? `${x.date} 집기 배치도` : `${x.date} ${x.kind||'도면'}${x.version?' '+x.version:''}`;
+  const used = t === 'dw' && (S.layouts.some(l=>l.drawingId===id) || S.renders.some(r=>r.planDrawingId===id));
+  if (!await confirmBox(`'${what}'을(를) 삭제할까요?${used?'\n이 도면 위에 그린 집기 배치도는 그대로 남습니다.':''}\n삭제하면 되돌릴 수 없습니다.`)) return;
+  const ok = await safe(Store.del(t==='ly'?'layouts':'drawings', id), '삭제했습니다.');
+  if (ok !== null) { ui.dwSel = ''; draft = null; saveUi(); logRoom(div, room, t==='ly'?'집기':'도면', `${what} 삭제`); render(); }
 }
 async function delDrawing(id){
   const used = S.layouts.some(l=>l.drawingId===id) || S.renders.some(r=>r.planDrawingId===id);
