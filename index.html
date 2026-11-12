@@ -2701,11 +2701,11 @@ function renderOvMonthly(){
 function renderOvWeekly(){
   const now = nowWeekAbs();
   const col = (w, cur) => { const its = weekItems(w).filter(x => x.t.key), n = its.filter(x=>!x.ing).length, ing = its.filter(x=>x.ing).length;
-    return `<div><div class="wh ${cur?'cur':''}">${cur?'이번 주':'다음 주'} <span class="muted" style="font-weight:600">${absLabel(w)}</span><div class="grow"></div><span class="chip">${n}건${ing?` · 진행 중 ${ing}`:''}</span></div>
+    return `<div><div class="wh ${cur?'cur':''}">${cur?'이번 주':'다음 주'} <span class="muted" style="font-weight:600">${absLabel(w)}</span></div>
       ${its.map(x => `<div class="wit ${x.ing?'ing':''}" onclick="${ovOpen(x.t.id)}"><span class="tg ${x.tg}">${x.lb}</span><span class="c" title="${esc(catNm(x.t.catId))}">${esc(catNm(x.t.catId))}</span>
         <span class="t"><b>${esc(x.t.title)}</b> <span class="muted" style="font-size:11px">· ${esc(ovSub(x.t))}</span></span>
         <span class="p">${x.t.kind==='point'?'시점':'마감'} ${shortAbs(x.t.kind==='point' ? taskAbs(x.t) : taskEnd(x.t))}</span>${dnToggle(x.t)}</div>`).join('') || `<div class="empty">${liveTasks().some(t=>t.key)?'이번 주에 해당하는 주요업무가 없습니다.':'지정된 주요업무가 없습니다. 마일스톤에서 막대나 ◆를 눌러 ‘주요업무로 지정’을 체크하면 여기에 표시됩니다.'}</div>`}</div>`; };
-  return `<section class="card"><div class="card-h"><h2>주간 주요 업무</h2><span class="hint">★ 주요업무만 표시 · 오른쪽 버튼으로 미결 ↔ 완료 전환</span></div><div class="wk2" style="grid-template-columns:1fr">${col(now, true)}</div></section>`;
+  return `<section class="card"><div class="card-h"><h2>주간 주요 업무</h2></div><div class="wk2" style="grid-template-columns:1fr">${col(now, true)}</div></section>`;
 }
 function renderOvPending(){
   const now = nowWeekAbs();
