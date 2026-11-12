@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>청라돔 이전 & 구단 인프라 조성 업무관리</title>
+<title>청라돔 이전·입주 통합관리</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -355,7 +355,7 @@ tr.pdone td input[type=text]{text-decoration:line-through;color:var(--mute)}
 .lane.room .gb{top:4px;height:30px}
 .lane.room .pt i{top:13px}
 .lane.room .pt span{top:11px;left:9px}
-.gc.rl{white-space:normal!important;line-height:1.2;word-break:keep-all}
+.gc.rl{white-space:nowrap!important;line-height:1.2;overflow:visible}
 .gc.rl.room{font-size:11px}
 
 /* 워크플로우 픽토그램 */
@@ -386,6 +386,235 @@ tr.pdone td input[type=text]{text-decoration:line-through;color:var(--mute)}
 @media (max-width:1100px){.fp-wrap{grid-template-columns:1fr}.fp-phase,.fp-step,.fp-arr,.fp-fork,.fp-end{grid-column:1!important;grid-row:auto!important}.fp-arr{transform:rotate(90deg)}.fp-fork{display:none}}
 .pnav-sep{width:1px;height:20px;background:#3d4862;margin:0 4px}
 .pnav button{padding:7px 14px}
+.roombar button.vr{border-color:#c7d5fb;color:var(--acc);font-weight:800}
+.roombar button.vr.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.banner.vrb{background:var(--acc-weak);border-color:#c7d5fb;color:#1f3a8a}
+
+/* 구역 페이지 */
+.pnav-lbl{font-size:10.5px;color:#8f9ab0;font-weight:800;padding:0 4px}
+.spwrap{display:flex;flex-direction:column;gap:14px}
+.spwrap>.ws-h{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin:0}
+.sp-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:12px 16px 16px}
+.sp-card.sel{border-color:#b9c6e4;box-shadow:0 0 0 3px var(--acc-weak)}
+.sp-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.sp-h b{font-size:14.5px}
+.sp-no{width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.map-lay{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:12px}
+.map-lay.edit{grid-template-columns:minmax(0,1fr) 300px}
+@media (max-width:1000px){.map-lay,.map-lay.edit{grid-template-columns:1fr}}
+.map-box{border:1px solid var(--line);border-radius:10px;background:#eef1f6;padding:8px;display:flex;justify-content:center;overflow:auto}
+.smap{position:relative;display:inline-block;user-select:none;touch-action:none;max-width:100%}
+.smap img{display:block;max-width:100%;max-height:70vh;pointer-events:none;background:#fff}
+.smap.edit.placing{cursor:crosshair}
+.rbox{position:absolute;border:2px solid #4d5b78;background:rgba(255,255,255,.82);border-radius:5px;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;overflow:hidden;padding:1px 3px;transition:box-shadow .1s}
+.rbox span{font-size:11px;font-weight:800;line-height:1.15;color:var(--ink);word-break:keep-all}
+.rbox.st-open{border-color:#d08a00;background:rgba(255,244,222,.9)}
+.rbox.st-ok{border-color:#14834a;background:rgba(229,245,236,.9)}
+.rbox.st-none{border-color:#9aa4b6;border-style:dashed}
+.rbox:hover{box-shadow:0 0 0 3px rgba(47,91,234,.3)}
+.rbox.sel{border-color:var(--red);box-shadow:0 0 0 3px rgba(217,52,43,.35);z-index:2}
+.rbox.placing{box-shadow:0 0 0 3px rgba(47,91,234,.5)}
+.smap.edit .rbox{cursor:move}
+.rbox .rs{position:absolute;right:-1px;bottom:-1px;width:10px;height:10px;background:#4d5b78;cursor:nwse-resize;border-radius:2px 0 3px 0}
+.map-side{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fbfcfe;max-height:72vh;overflow:auto}
+.ms-rooms .it{display:flex;align-items:center;gap:6px;padding:5px 6px;border-radius:7px;cursor:pointer;font-size:12px}
+.ms-rooms .it:hover{background:#eef3ff}.ms-rooms .it.on{background:var(--acc);color:#fff}.ms-rooms .it.on .muted{color:#dbe4ff}
+.ms-rooms .it .nm{flex:1}
+.ms-rooms .dot{width:8px;height:8px;border-radius:50%;background:#d0d6e0;flex:none}.ms-rooms .dot.here{background:var(--green)}.ms-rooms .dot.other{background:var(--acc)}
+.legend2{display:flex;flex-direction:column;gap:5px;font-size:12px}
+.legend2 i{display:inline-block;width:18px;height:12px;border-radius:3px;border:2px solid;margin-right:6px;vertical-align:-2px}
+.legend2 i.st-open{border-color:#d08a00;background:#fff4de}.legend2 i.st-ok{border-color:#14834a;background:#e5f5ec}.legend2 i.st-none{border-color:#9aa4b6;border-style:dashed}
+.rd-sec{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+.rd-t{display:flex;align-items:center;gap:6px;font-weight:800;font-size:13.5px;margin-bottom:8px}
+.rd-g2{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px}
+@media (max-width:1100px){.rd-g2{grid-template-columns:1fr}}
+.dv-main{border:1px solid var(--line);border-radius:10px;background:#eef1f6;padding:6px;display:flex;justify-content:center;min-height:220px;align-items:center}
+.dv-img{max-width:100%;max-height:420px;cursor:zoom-in;background:#fff}
+.dv-cap{font-size:11.5px;color:var(--ink2);margin-top:4px;font-weight:700}
+.dv-thumbs{display:flex;gap:6px;overflow-x:auto;margin-top:8px;padding-bottom:2px}
+.dv-thumbs .th{flex:none;width:96px;height:68px;border-radius:7px;border:1px solid var(--line);background:#eef1f6 center/cover no-repeat;cursor:pointer;position:relative}
+.dv-thumbs .th span{position:absolute;left:0;right:0;bottom:0;background:rgba(21,26,38,.75);color:#fff;font-size:10px;padding:1px 4px;border-radius:0 0 6px 6px}
+.dv-thumbs .th.ly{border-color:#f3c3bf}
+.cvro{position:relative;display:inline-block;max-width:100%}
+.cvro img{display:block;max-width:100%;max-height:300px;background:#fff}
+.cvro.big img{max-height:420px}
+.cvro .shp .lb{font-size:9.5px}
+.hist{display:flex;flex-direction:column;max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+.hist .hi{display:flex;align-items:center;gap:8px;padding:7px 10px;border-bottom:1px solid var(--line2);font-size:12px}
+.hist .hd{font-weight:800;color:var(--ink2);width:82px;flex:none}
+.hist .ht{flex:1}
+.sheet{border:1px solid #cfd7e5;border-radius:12px;padding:14px;background:linear-gradient(#fff,#fbfcff)}
+.sh-h{display:flex;align-items:flex-end;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:10px}
+.sh-h b{font-size:16px}
+.sh-k{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px}
+.sh-k div{background:#f3f5f9;border-radius:8px;padding:7px 9px;display:flex;flex-direction:column}
+.sh-k span{font-size:10.5px;color:var(--mute);font-weight:700}.sh-k b{font-size:14px}.sh-k small{font-size:10.5px;color:var(--ink2)}
+.sh-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:12px}
+.sh-img{border:1px solid var(--line);border-radius:8px;background:#eef1f6;padding:4px;display:flex;justify-content:center;align-items:center;min-height:160px}
+.sh-img img{max-width:100%;max-height:300px}
+.sh-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px}
+.sh-st{font-weight:800;font-size:11.5px;color:var(--acc);margin-bottom:4px}
+.sh-li{padding:2px 0;border-bottom:1px dashed var(--line2)}
+@media (max-width:1000px){.sh-k{grid-template-columns:repeat(2,1fr)}.sh-g,.sh-cols{grid-template-columns:1fr}}
+table.lu tbody tr{cursor:pointer}
+table.lu tbody tr.on td{background:#fff4f3}
+table.lu tr.vrow td{background:#f5f8ff}
+.pnav button{line-height:1.15}
+.dv-sel{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.dv-sel .lbl{font-size:11px;font-weight:800;color:var(--ink2)}
+.dv-sel select{min-width:260px;font-weight:700}
+.dv-info{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;margin-top:6px;padding:7px 10px;background:#f7f9fc;border:1px solid var(--line);border-radius:8px}
+.dv-log{width:100%;color:var(--ink2);font-size:11.5px}
+.dv-thumbs .th.on{outline:3px solid var(--acc);outline-offset:1px}
+.cmgr2{display:flex;flex-direction:column;gap:6px}
+.cmgr2 .it{display:grid;grid-template-columns:24px 1fr 1.6fr auto auto;gap:6px;align-items:center;padding:6px;border:1px solid var(--line);border-radius:8px}
+.cm-no{width:22px;height:22px;border-radius:50%;background:#eef1f6;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.mhelp{display:flex;gap:10px;align-items:stretch;padding:10px 16px;border-bottom:1px solid var(--line);background:#f7f9fc;flex-wrap:wrap}
+.mh-t{font-size:12px;align-self:center;color:var(--acc);white-space:nowrap}
+.mh-i{display:flex;gap:8px;align-items:flex-start;flex:1;min-width:210px;background:#fff;border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:11.5px;color:var(--ink2);line-height:1.45}
+.mh-i b{display:block;color:var(--ink);font-size:12px;margin-bottom:1px}
+.mh-ic{flex:none;width:44px;height:30px;display:flex;align-items:center;justify-content:center;gap:4px}
+.mh-cell{width:22px;height:22px;border:1.5px dashed #9fb0cc;border-radius:3px;background:#eef3ff}
+.mh-bar{position:relative;width:30px;height:14px;border-radius:3px;background:#203864;display:block;overflow:hidden}
+.mh-bar u{position:absolute;left:0;bottom:0;height:3px;width:60%;background:#e3262c}
+.mh-bar.now{outline:2px solid #e3262c;outline-offset:1px}
+.mh-dia{width:9px;height:9px;background:#e3262c;transform:rotate(45deg);display:block}
+.mhelp>.x{align-self:flex-start}
+
+/* 종합현황 */
+.pend-auto th{background:#f3f5f9;color:var(--ink2);text-align:left;padding:7px 10px;font-weight:700;font-size:11.5px;border-bottom:1px solid var(--line)}
+.wk2{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.wk2>div{min-width:0}.wk2>div+div{border-left:1px solid var(--line)}
+.wk2 .wh{padding:9px 14px;font-weight:800;font-size:13px;display:flex;gap:8px;align-items:center;border-bottom:1px solid var(--line2);background:#fafbfd}
+.wk2 .wh.cur{background:#eef3ff}
+.wit{display:grid;grid-template-columns:62px 120px 1fr auto;gap:8px;align-items:center;padding:6px 14px;font-size:12px;border-bottom:1px solid var(--line2);cursor:pointer}
+.wit:hover{background:#fafbfd}
+.wit .c{color:var(--mute);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wit .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wit .p{font-size:11px;color:var(--ink2);white-space:nowrap}
+.wit.ing{opacity:.75}
+.tg{display:inline-block;font-size:10.5px;font-weight:800;padding:1px 7px;border-radius:99px;text-align:center;white-space:nowrap}
+.tg.s{background:var(--blue-weak,#e8efff);color:var(--acc)}.tg.e{background:#eef1f5;color:var(--ink2)}.tg.d{background:var(--red-weak);color:var(--red)}
+.tg.pl{background:var(--amber-weak);color:var(--amber)}.tg.i{background:#f3f5f9;color:var(--mute)}
+.mcal{display:grid;font-size:11.5px;overflow-x:auto}
+.mcal .hd{background:#f3f5f9;font-weight:800;color:var(--ink2);padding:6px 8px;border-bottom:1px solid var(--line);border-left:1px solid var(--line2);font-size:11px;text-align:center}
+.mcal .hd.mo{font-size:12px;color:var(--ink)}
+.mcal .hd.mo{color:var(--mute);font-weight:700}
+.mcal .hd.mo.tm{color:var(--ink);font-weight:800}
+.mcal .hd.tm,.mcal .hd.mo.tm{background:#eef3ff}
+.mcal .cl.tm{background:#f8faff}
+.mcal .hd.cur,.mcal .cl.cur{background:#e6eefd}
+.mcal .nm1{border-left:2px solid var(--line)!important}
+.mcal .rl{padding:8px 10px;font-weight:800;border-bottom:1px solid var(--line2);display:flex;flex-direction:column;justify-content:center}
+.mcal .rl small{font-size:10px;color:var(--mute);font-weight:700}
+.mcal .cl{border-left:1px solid var(--line2);border-bottom:1px solid var(--line2);padding:4px;display:flex;flex-direction:column;gap:3px;min-height:44px;min-width:0}
+.mcal .ci{font-size:10.5px;line-height:1.35;padding:2px 5px;border-radius:5px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mcal .ci:hover{filter:brightness(.95)}
+.mcal .ci.s{background:#e8efff;color:#1d4fd8}.mcal .ci.i{background:#f6f8fc;color:#5b6b86;border:1px dashed #d5ddea;padding:1px 4px}.mcal .ci.e{background:#eef1f5;color:var(--ink2)}.mcal .ci.d{background:var(--red-weak);color:var(--red);font-weight:700}
+.sp-mx{width:100%;border-collapse:collapse;font-size:12px}
+.sp-mx th{background:#f3f5f9;color:var(--ink2);padding:7px 10px;font-weight:700;font-size:11.5px;border-bottom:1px solid var(--line);text-align:center}
+.sp-mx th:first-child{text-align:left}
+.sp-mx td{padding:8px 10px;border-bottom:1px solid var(--line2);text-align:center}
+.sp-mx td:first-child{text-align:left;font-weight:800;cursor:pointer}
+.sp-mx td:first-child:hover{color:var(--acc)}
+.sp-mx .cel{display:flex;flex-direction:column;gap:3px;align-items:center}
+.sp-mx .cel b{font-size:13px}.sp-mx .cel span{font-size:10.5px;color:var(--mute)}
+.sp-mx .pbar{width:80%;height:4px}
+.feed .fi{display:grid;grid-template-columns:86px 90px 1fr;gap:10px;padding:8px 14px;border-bottom:1px solid var(--line2);font-size:12px;cursor:pointer}
+.feed .fi:hover{background:#fafbfd}
+.feed .fi .d{color:var(--mute);font-size:11.5px}
+.feed .fi .tx{white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ov-head{display:grid;grid-template-columns:1.3fr 1fr 1fr 1.2fr;gap:0;padding:0}
+.ov-head>div{padding:14px 18px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:3px;justify-content:center}
+.ov-head>div:last-child{border-right:none}
+.ov-head .k{font-size:11.5px;font-weight:800;color:var(--mute)}
+.ov-head .v{font-size:26px;font-weight:800;letter-spacing:-.5px;line-height:1.15}
+.ov-head .v small{font-size:13px;font-weight:700;margin-left:2px}
+.ov-head .s{font-size:11.5px;color:var(--ink2)}
+.ov-title{font-size:18px!important;letter-spacing:-.3px!important}
+.ov-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.ov-card{border:1px solid var(--line);background:#fff;border-radius:var(--r);padding:12px 14px;text-align:left;display:flex;flex-direction:column;gap:7px;border-top:4px solid #c9d1de}
+.ov-card:hover{border-color:#b9c6e4}
+.ov-card.sg-ok{border-top-color:var(--green)}.ov-card.sg-warn{border-top-color:#e8a10c}.ov-card.sg-bad{border-top-color:var(--red)}
+.ov-card .hd{display:flex;align-items:center;gap:6px}
+.ov-card .hd b{font-size:15px;font-weight:800}
+.ov-card .pc{font-size:20px;font-weight:800;margin-left:auto}
+.sig{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;padding:2px 8px;border-radius:99px}
+.sig i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.sig.ok{background:var(--green-weak);color:var(--green)}.sig.ok i{background:var(--green)}
+.sig.warn{background:var(--amber-weak);color:var(--amber)}.sig.warn i{background:#e8a10c}
+.sig.bad{background:var(--red-weak);color:var(--red)}.sig.bad i{background:var(--red)}
+.ov-card .ln{font-size:11.5px;display:grid;grid-template-columns:54px 1fr;gap:6px;align-items:start}
+.ov-card .ln>span:first-child{color:var(--mute);font-weight:700}
+.ov-card .ln b{font-weight:700}
+.ov-card .why{font-size:10.5px;color:var(--mute)}
+.ov-two{display:grid;grid-template-columns:1.6fr 1fr;gap:12px}
+.ov-list{width:100%;border-collapse:collapse;font-size:12px}
+.ov-list td{padding:6px 10px;border-bottom:1px solid var(--line2);vertical-align:middle}
+.ov-list tr{cursor:pointer}.ov-list tr:hover td{background:#fafbfd}
+.ov-list .cat{color:var(--mute);font-size:11px;white-space:nowrap}
+.ov-list .per{color:var(--ink2);font-size:11.5px;white-space:nowrap;text-align:right}
+.ov-chk{display:flex;flex-direction:column}
+.ov-chk .grp{padding:8px 12px 4px;font-size:11px;font-weight:800;color:var(--ink2)}
+.ov-chk .it{padding:5px 12px 5px 22px;font-size:12px;cursor:pointer;display:flex;gap:6px;align-items:baseline}
+.ov-chk .it:hover{background:#fafbfd}
+.ov-chk .it .m{color:var(--mute);font-size:11px;margin-left:auto;white-space:nowrap}
+.ov-tl{padding:10px 16px 14px}
+.tl-row{display:grid;grid-template-columns:110px 1fr;align-items:stretch}
+.tl-lbl{font-weight:800;font-size:12.5px;display:flex;flex-direction:column;justify-content:center;border-right:2px solid var(--line);padding-right:8px}
+.tl-lbl small{font-size:10px;color:var(--mute);font-weight:700}
+.tl-trk{position:relative;height:62px;border-bottom:1px solid var(--line2)}
+.tl-mo{position:relative;height:22px;border-bottom:1px solid var(--line)}
+.tl-mo span{position:absolute;top:3px;font-size:11px;font-weight:800;color:var(--ink2);transform:translateX(4px);white-space:nowrap}
+.tl-mo span em{font-style:normal;color:var(--mute);font-size:10px;margin-right:2px}
+.tl-grid{position:absolute;top:0;bottom:0;width:0;border-left:1px solid var(--line2)}
+.tl-span{position:absolute;top:28px;height:6px;border-radius:3px;background:#dfe6f2}
+.tl-pt{position:absolute;top:24px;width:0;cursor:pointer;z-index:2}
+.tl-pt i{position:absolute;left:-6px;top:1px;width:11px;height:11px;background:#e3262c;transform:rotate(45deg);border:1.5px solid #fff;box-shadow:0 0 0 1px #e3262c}
+.tl-pt.done i{background:var(--green);box-shadow:0 0 0 1px var(--green)}
+.tl-pt span{position:absolute;left:-4px;white-space:nowrap;font-size:10px;font-weight:700;max-width:130px;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
+.tl-pt span small{color:var(--mute);font-weight:500;margin-left:2px}
+.tl-pt.up span{top:-20px}.tl-pt.dn span{top:15px}
+.tl-pt:hover span{max-width:none;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.15);z-index:5;padding:0 3px}
+.tl-vl{position:absolute;top:0;bottom:0;width:0;pointer-events:none;z-index:1}
+.tl-vl.now{border-left:2px solid rgba(227,38,44,.85)}
+.tl-vl.mk{border-left:1.5px dashed rgba(227,38,44,.6)}
+.tl-mk{position:absolute;top:3px;font-size:10px;font-weight:800;color:var(--red);white-space:nowrap;transform:translateX(3px)}
+@media (max-width:1100px){.ov-head,.ov-cards,.ov-two{grid-template-columns:1fr}.ov-head>div{border-right:none;border-bottom:1px solid var(--line)}}
+.ov-card .pbar{height:5px}
+.ov-grid{display:grid;gap:12px}
+
+/* 층별 위치도 */
+.fl-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.fl-tabs button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:6px 12px;font-size:12.5px;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.fl-tabs button b{font-size:13px;color:var(--ink)}
+.fl-tabs button small{font-size:10.5px;color:var(--mute);background:#f1f4f9;border-radius:99px;padding:1px 7px}
+.fl-tabs button.on{background:var(--dark);border-color:var(--dark);color:#cfd6e4}.fl-tabs button.on b{color:#fff}.fl-tabs button.on small{background:#2c3447;color:#cfd6e4}
+.fl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:12px}
+.fl-card{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.fl-card .fl-h{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--line);cursor:pointer;background:#f7f9fc}
+.fl-card .fl-h b{font-size:15px}.fl-card .fl-h:hover{background:#eef3ff}
+.map-box.mini{border:none;border-radius:0;padding:6px}
+.smap.mini{cursor:pointer}.smap.mini img{max-height:300px}
+.smap.mini .rbox{border-width:1.5px;padding:0 1px}.smap.mini .rbox span{font-size:8.5px}
+.fl-rooms{margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
+.fl-rooms .t{font-weight:800;font-size:12px;margin-bottom:4px}
+.fl-rooms .it{font-size:12px;padding:4px 6px;border-radius:6px;cursor:pointer}.fl-rooms .it:hover{background:#eef3ff}.fl-rooms .it.on{background:var(--acc);color:#fff}
+.mu-grid{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:14px}
+.mu-pages{display:flex;gap:8px;overflow-x:auto;padding:4px 0 8px}
+.mu-pages .pg{flex:none;width:130px;border:2px solid var(--line);border-radius:8px;overflow:hidden;cursor:pointer;background:#fff}
+.mu-pages .pg img{display:block;width:100%}.mu-pages .pg span{display:block;font-size:11px;font-weight:700;padding:2px 6px;color:var(--ink2)}
+.mu-pages .pg.on{border-color:var(--acc)}.mu-pages .pg.on span{background:var(--acc);color:#fff}
+.mu-stage{border:1px solid var(--line);border-radius:10px;background:#eef1f6;min-height:200px;display:flex;justify-content:center;align-items:center;padding:6px}
+.mu-cv{position:relative;display:inline-block;cursor:crosshair;user-select:none;touch-action:none}
+.mu-cv img{display:block;max-width:100%;max-height:58vh;background:#fff}
+.mu-crop{position:absolute;border:2px solid var(--red);background:rgba(217,52,43,.08);box-shadow:0 0 0 9999px rgba(20,26,40,.35);pointer-events:none}
+.mu-tip{position:absolute;left:8px;top:8px;background:rgba(21,26,38,.8);color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;pointer-events:none}
+.mu-side{display:flex;flex-direction:column;gap:6px}
+.mu-list{display:flex;flex-direction:column;gap:6px;max-height:34vh;overflow:auto}
+.mu-list .it{display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:5px;font-size:12px}
+.mu-list .it img{width:64px;height:44px;object-fit:contain;background:#f3f5f9;border-radius:4px}
+@media (max-width:900px){.mu-grid{grid-template-columns:1fr}.fl-grid{grid-template-columns:1fr}}
 .userchip{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#c9d1e0}
 .userchip button{border:1px solid #3d4862;background:none;color:#c9d1e0;border-radius:7px;padding:3px 8px;font-size:11px}
 .userchip:empty{display:none}
@@ -394,9 +623,9 @@ tr.pdone td input[type=text]{text-decoration:line-through;color:var(--mute)}
 <body>
 <header class="top"><div class="in">
   <div>
-    <h1>청라돔 이전 & 구단 인프라 조성 업무관리</h1>
+    <h1>청라돔 이전·입주 통합관리</h1>
   </div>
-  <nav class="pnav" id="pnav"><button class="on" onclick="goPage('ms')">마일스톤</button><button onclick="goPage('rr')">R&amp;R</button></nav>
+  <nav class="pnav" id="pnav"><button class="on" onclick="goPage('ov')">종합현황</button></nav>
   <div class="sp"></div>
   <span id="sync" class="sync">연결 중…</span>
   <span id="userchip" class="userchip"></span>
@@ -417,7 +646,7 @@ window.FIREBASE_CONFIG = {
   appId: "1:252399656299:web:3037a9658290147476402e"
 };
 /* 처음 접속 시 Firestore가 비어 있으면 올라가는 기본 데이터 */
-window.EMBED_DATA = {"S": {"categories": [{"name": "수치료실", "group": "", "type": "general", "div": "", "rowLabels": ["업역 협의", "장비 반입", "사전 준비", "공사"], "rows": 4, "order": 0, "createdAt": 1794460000000, "id": "hydro"}, {"name": "클럽하우스", "group": "야구단 인테리어", "type": "space", "div": "clubhouse", "rowLabels": ["인테리어 사전협의", "공사", "체력단련실"], "rows": 3, "order": 1, "createdAt": 1794460000001, "id": "club"}, {"name": "사무실", "group": "야구단 인테리어", "type": "space", "div": "office", "rowLabels": ["설계", "공사"], "rows": 2, "order": 2, "createdAt": 1794460000002, "id": "office"}, {"name": "이사", "group": "가구/가전 · 이사준비", "type": "space", "div": "moving", "rowLabels": ["체력단련실 기구조성", "가구/가전", "이사준비"], "rows": 3, "order": 3, "createdAt": 1794460000003, "id": "moving"}], "ms_tasks": [{"catId": "hydro", "row": 0, "startYm": "2026-11", "startWeek": 2, "weeks": 3, "title": "3자 회의", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000100, "id": "m01"}, {"catId": "hydro", "row": 0, "startYm": "2026-12", "startWeek": 1, "weeks": 9, "title": "장비 시공 계약 준비", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000101, "id": "m02"}, {"catId": "hydro", "row": 0, "startYm": "2027-02", "startWeek": 1, "weeks": 1, "title": "구단–ATPT 시공 계약", "kind": "point", "memo": "’27.02", "color": "", "done": false, "createdAt": 1794460000102, "id": "m03"}, {"catId": "hydro", "row": 1, "startYm": "2026-09", "startWeek": 3, "weeks": 4, "title": "발주", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000103, "id": "m04"}, {"catId": "hydro", "row": 1, "startYm": "2026-10", "startWeek": 3, "weeks": 21, "title": "장비 제작 (6±1개월)", "kind": "light", "memo": "*ATPT ’26.12~’27.01 미국 출국 예정", "color": "", "done": false, "createdAt": 1794460000104, "id": "m05"}, {"catId": "hydro", "row": 1, "startYm": "2027-03", "startWeek": 4, "weeks": 6, "title": "운송 (3월 말 출하)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000105, "id": "m06"}, {"catId": "hydro", "row": 1, "startYm": "2027-05", "startWeek": 1, "weeks": 1, "title": "장비 국내 도착", "kind": "point", "memo": "’27.04 · 5월 1단계 설치 착수", "color": "", "done": false, "createdAt": 1794460000106, "id": "m07"}, {"catId": "hydro", "row": 2, "startYm": "2026-11", "startWeek": 2, "weeks": 13, "title": "일정 재점검 (ATPT·구단·신세계건설)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000107, "id": "m08"}, {"catId": "hydro", "row": 2, "startYm": "2027-02", "startWeek": 2, "weeks": 12, "title": "설치 공정 시뮬레이션 (ATPT)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000108, "id": "m09"}, {"catId": "hydro", "row": 3, "startYm": "2027-01", "startWeek": 2, "weeks": 15, "title": "[신세계건설] 설치 前 공정 : 골조·피트·설비·배관", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000109, "id": "m10"}, {"catId": "hydro", "row": 3, "startYm": "2027-05", "startWeek": 2, "weeks": 7, "title": "[ATPT] 장비 반입·설치", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000110, "id": "m11"}, {"catId": "hydro", "row": 3, "startYm": "2027-07", "startWeek": 2, "weeks": 8, "title": "[신세계건설] 마감 인테리어", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000111, "id": "m12"}, {"catId": "club", "row": 0, "startYm": "2026-10", "startWeek": 2, "weeks": 7, "title": "야구단 시공 범위 협의", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000112, "id": "m13"}, {"catId": "club", "row": 0, "startYm": "2026-11", "startWeek": 4, "weeks": 1, "title": "최종 실시도서·내역서 완료", "kind": "point", "memo": "’26.11", "color": "", "done": false, "createdAt": 1794460000113, "id": "m14"}, {"catId": "club", "row": 0, "startYm": "2026-12", "startWeek": 1, "weeks": 8, "title": "클럽하우스 시공사 선정", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000114, "id": "m15"}, {"catId": "club", "row": 1, "startYm": "2026-10", "startWeek": 2, "weeks": 7, "title": "실시설계 (다우건축)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000115, "id": "m16"}, {"catId": "club", "row": 1, "startYm": "2026-12", "startWeek": 1, "weeks": 7, "title": "RFP 작성 및 협의", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000116, "id": "m17"}, {"catId": "club", "row": 1, "startYm": "2027-01", "startWeek": 4, "weeks": 5, "title": "시공 계약", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000117, "id": "m18"}, {"catId": "club", "row": 1, "startYm": "2027-02", "startWeek": 4, "weeks": 1, "title": "인테리어 시공업체 계약", "kind": "point", "memo": "’27.02", "color": "", "done": false, "createdAt": 1794460000118, "id": "m19"}, {"catId": "club", "row": 1, "startYm": "2027-03", "startWeek": 1, "weeks": 4, "title": "시공 준비", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000119, "id": "m20"}, {"catId": "club", "row": 1, "startYm": "2027-04", "startWeek": 1, "weeks": 28, "title": "클럽하우스 인테리어 공사 (’27.04~’27.10)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000120, "id": "m21"}, {"catId": "club", "row": 1, "startYm": "2027-10", "startWeek": 4, "weeks": 1, "title": "인테리어 완료", "kind": "point", "memo": "’27.10", "color": "", "done": false, "createdAt": 1794460000121, "id": "m22"}, {"catId": "club", "row": 2, "startYm": "2027-03", "startWeek": 2, "weeks": 8, "title": "기구 리스트 협의", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000122, "id": "m23"}, {"catId": "club", "row": 2, "startYm": "2027-05", "startWeek": 2, "weeks": 7, "title": "업체 견적·제안 비교 (RFP)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000123, "id": "m24"}, {"catId": "club", "row": 2, "startYm": "2027-07", "startWeek": 2, "weeks": 4, "title": "업체 선정", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000124, "id": "m25"}, {"catId": "club", "row": 2, "startYm": "2027-08", "startWeek": 1, "weeks": 1, "title": "기구 구매 계약", "kind": "point", "memo": "’27.08", "color": "", "done": false, "createdAt": 1794460000125, "id": "m26"}, {"catId": "club", "row": 2, "startYm": "2027-08", "startWeek": 2, "weeks": 8, "title": "기구 제작·운송", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000126, "id": "m27"}, {"catId": "office", "row": 0, "startYm": "2026-10", "startWeek": 2, "weeks": 10, "title": "기획 (평면 레이아웃)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000127, "id": "m28"}, {"catId": "office", "row": 0, "startYm": "2026-12", "startWeek": 3, "weeks": 1, "title": "레이아웃 확정", "kind": "point", "memo": "’26.12", "color": "", "done": false, "createdAt": 1794460000128, "id": "m29"}, {"catId": "office", "row": 0, "startYm": "2026-12", "startWeek": 4, "weeks": 8, "title": "설계업체 선정·협의 (8주)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000129, "id": "m30"}, {"catId": "office", "row": 0, "startYm": "2027-02", "startWeek": 4, "weeks": 1, "title": "설계업체 선정", "kind": "point", "memo": "’27.02", "color": "", "done": false, "createdAt": 1794460000130, "id": "m31"}, {"catId": "office", "row": 0, "startYm": "2027-03", "startWeek": 1, "weeks": 4, "title": "설계업체 협의 (4주)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000131, "id": "m32"}, {"catId": "office", "row": 0, "startYm": "2027-04", "startWeek": 2, "weeks": 12, "title": "인테리어 설계 (12주)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000132, "id": "m33"}, {"catId": "office", "row": 0, "startYm": "2027-07", "startWeek": 1, "weeks": 1, "title": "실시설계 완료", "kind": "point", "memo": "’27.07", "color": "", "done": false, "createdAt": 1794460000133, "id": "m34"}, {"catId": "office", "row": 1, "startYm": "2027-07", "startWeek": 2, "weeks": 4, "title": "공사업체 선정 (4주)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000134, "id": "m35"}, {"catId": "office", "row": 1, "startYm": "2027-08", "startWeek": 1, "weeks": 1, "title": "인테리어 공사 시작", "kind": "point", "memo": "’27.08", "color": "", "done": false, "createdAt": 1794460000135, "id": "m36"}, {"catId": "office", "row": 1, "startYm": "2027-08", "startWeek": 2, "weeks": 11, "title": "인테리어 공사 (12주)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000136, "id": "m37"}, {"catId": "office", "row": 1, "startYm": "2027-10", "startWeek": 4, "weeks": 1, "title": "인테리어 완료", "kind": "point", "memo": "’27.10", "color": "", "done": false, "createdAt": 1794460000137, "id": "m38"}, {"catId": "moving", "row": 0, "startYm": "2027-10", "startWeek": 2, "weeks": 3, "title": "체력단련실 기구 설치", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000138, "id": "m39"}, {"catId": "moving", "row": 0, "startYm": "2027-10", "startWeek": 4, "weeks": 1, "title": "체력단련실 기구 입고 완료", "kind": "point", "memo": "’27.10", "color": "", "done": false, "createdAt": 1794460000139, "id": "m40"}, {"catId": "moving", "row": 1, "startYm": "2027-07", "startWeek": 2, "weeks": 4, "title": "구단현황(자산) 파악", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000140, "id": "m41"}, {"catId": "moving", "row": 1, "startYm": "2027-08", "startWeek": 2, "weeks": 3, "title": "필요가구 리스트업", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000141, "id": "m42"}, {"catId": "moving", "row": 1, "startYm": "2027-09", "startWeek": 1, "weeks": 4, "title": "크로스체크", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000142, "id": "m43"}, {"catId": "moving", "row": 1, "startYm": "2027-10", "startWeek": 1, "weeks": 4, "title": "구매자산/이사자산 결정", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000143, "id": "m44"}, {"catId": "moving", "row": 1, "startYm": "2027-11", "startWeek": 1, "weeks": 8, "title": "가구·가전 세팅", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000144, "id": "m45"}, {"catId": "moving", "row": 1, "startYm": "2027-12", "startWeek": 4, "weeks": 1, "title": "이사 완료", "kind": "point", "memo": "’27.12", "color": "", "done": false, "createdAt": 1794460000145, "id": "m46"}, {"catId": "moving", "row": 2, "startYm": "2027-09", "startWeek": 1, "weeks": 8, "title": "가구·가전·이사업체 입찰", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000146, "id": "m47"}, {"catId": "moving", "row": 2, "startYm": "2027-10", "startWeek": 4, "weeks": 1, "title": "업체 선정", "kind": "point", "memo": "’27.10", "color": "", "done": false, "createdAt": 1794460000147, "id": "m48"}], "rooms": [{"div": "clubhouse", "name": "덕아웃", "order": 0, "createdAt": 1794460001000, "id": "c01"}, {"div": "clubhouse", "name": "덕아웃 화장실", "order": 1, "createdAt": 1794460001001, "id": "c02"}, {"div": "clubhouse", "name": "덕아웃 흡연실", "order": 2, "createdAt": 1794460001002, "id": "c03"}, {"div": "clubhouse", "name": "락커룸", "order": 3, "createdAt": 1794460001003, "id": "c04"}, {"div": "clubhouse", "name": "샤워실, 파우더룸", "order": 4, "createdAt": 1794460001004, "id": "c05"}, {"div": "clubhouse", "name": "화장실", "order": 5, "createdAt": 1794460001005, "id": "c06"}, {"div": "clubhouse", "name": "트레이너 사무실", "order": 6, "createdAt": 1794460001006, "id": "c07"}, {"div": "clubhouse", "name": "물리치료실", "order": 7, "createdAt": 1794460001007, "id": "c08"}, {"div": "clubhouse", "name": "물리치료 약/물품 보관창고", "order": 8, "createdAt": 1794460001008, "id": "c09"}, {"div": "clubhouse", "name": "타격훈련실 (1루)", "order": 9, "createdAt": 1794460001009, "id": "c10"}, {"div": "clubhouse", "name": "타격훈련실 내 분석실", "order": 10, "createdAt": 1794460001010, "id": "c11"}, {"div": "clubhouse", "name": "타격훈련실 창고", "order": 11, "createdAt": 1794460001011, "id": "c12"}, {"div": "clubhouse", "name": "선수단 라운지", "order": 12, "createdAt": 1794460001012, "id": "c13"}, {"div": "clubhouse", "name": "배트보관실", "order": 13, "createdAt": 1794460001013, "id": "c14"}, {"div": "clubhouse", "name": "선수 수면실", "order": 14, "createdAt": 1794460001014, "id": "c15"}, {"div": "clubhouse", "name": "선수식당", "order": 15, "createdAt": 1794460001015, "id": "c16"}, {"div": "clubhouse", "name": "선수식당 전용 주방", "order": 16, "createdAt": 1794460001016, "id": "c17"}, {"div": "clubhouse", "name": "감독실", "order": 17, "createdAt": 1794460001017, "id": "c18"}, {"div": "clubhouse", "name": "감독 휴게실", "order": 18, "createdAt": 1794460001018, "id": "c19"}, {"div": "clubhouse", "name": "감독 샤워실/화장실", "order": 19, "createdAt": 1794460001019, "id": "c20"}, {"div": "clubhouse", "name": "코치실", "order": 20, "createdAt": 1794460001020, "id": "c21"}, {"div": "clubhouse", "name": "코치 샤워실/화장실", "order": 21, "createdAt": 1794460001021, "id": "c22"}, {"div": "clubhouse", "name": "코치 수면실", "order": 22, "createdAt": 1794460001022, "id": "c23"}, {"div": "clubhouse", "name": "코치 회의실", "order": 23, "createdAt": 1794460001023, "id": "c24"}, {"div": "clubhouse", "name": "전력분석실", "order": 24, "createdAt": 1794460001024, "id": "c25"}, {"div": "clubhouse", "name": "전력분석회의실", "order": 25, "createdAt": 1794460001025, "id": "c26"}, {"div": "clubhouse", "name": "심판실", "order": 26, "createdAt": 1794460001026, "id": "c27"}, {"div": "clubhouse", "name": "대기심판실", "order": 27, "createdAt": 1794460001027, "id": "c28"}, {"div": "clubhouse", "name": "보조락커", "order": 28, "createdAt": 1794460001028, "id": "c29"}, {"div": "clubhouse", "name": "보조락커 샤워 및 화장실", "order": 29, "createdAt": 1794460001029, "id": "c30"}, {"div": "clubhouse", "name": "현장직원 및 훈련보조 락커", "order": 30, "createdAt": 1794460001030, "id": "c31"}, {"div": "clubhouse", "name": "선수가족실", "order": 31, "createdAt": 1794460001031, "id": "c32"}, {"div": "clubhouse", "name": "선수단 의무실", "order": 32, "createdAt": 1794460001032, "id": "c33"}, {"div": "clubhouse", "name": "인터뷰실", "order": 33, "createdAt": 1794460001033, "id": "c34"}, {"div": "clubhouse", "name": "홈 사진 기자석", "order": 34, "createdAt": 1794460001034, "id": "c35"}, {"div": "clubhouse", "name": "홈 공용 화장실", "order": 35, "createdAt": 1794460001035, "id": "c36"}, {"div": "clubhouse", "name": "접견실", "order": 36, "createdAt": 1794460001036, "id": "c37"}, {"div": "clubhouse", "name": "상황실", "order": 37, "createdAt": 1794460001037, "id": "c38"}, {"div": "clubhouse", "name": "이벤트대기실", "order": 38, "createdAt": 1794460001038, "id": "c39"}, {"div": "clubhouse", "name": "시구자대기실", "order": 39, "createdAt": 1794460001039, "id": "c40"}, {"div": "clubhouse", "name": "체력단련실", "order": 40, "createdAt": 1794460001040, "id": "c41"}, {"div": "office", "name": "홈임원실", "order": 0, "createdAt": 1794460001000, "id": "o01"}, {"div": "office", "name": "단장실", "order": 1, "createdAt": 1794460001001, "id": "o02"}, {"div": "office", "name": "원정임원실", "order": 2, "createdAt": 1794460001002, "id": "o03"}, {"div": "office", "name": "직원 및 홈경기 관계자 식당", "order": 3, "createdAt": 1794460001003, "id": "o04"}, {"div": "office", "name": "주방", "order": 4, "createdAt": 1794460001004, "id": "o05"}, {"div": "office", "name": "주방창고", "order": 5, "createdAt": 1794460001005, "id": "o06"}, {"div": "office", "name": "사무공간2 (B1F)", "order": 6, "createdAt": 1794460001006, "id": "o07"}, {"div": "office", "name": "사무공간1 (6F)", "order": 7, "createdAt": 1794460001007, "id": "o08"}, {"div": "office", "name": "임원실", "order": 8, "createdAt": 1794460001008, "id": "o09"}, {"div": "office", "name": "복도", "order": 9, "createdAt": 1794460001009, "id": "o10"}, {"div": "office", "name": "회의실", "order": 10, "createdAt": 1794460001010, "id": "o11"}, {"div": "office", "name": "대회의실", "order": 11, "createdAt": 1794460001011, "id": "o12"}, {"div": "office", "name": "사무실 창고, 서류보관실", "order": 12, "createdAt": 1794460001012, "id": "o13"}, {"div": "office", "name": "사료 창고", "order": 13, "createdAt": 1794460001013, "id": "o14"}, {"div": "office", "name": "라운지", "order": 14, "createdAt": 1794460001014, "id": "o15"}, {"div": "office", "name": "구단 여직원 휴게실", "order": 15, "createdAt": 1794460001015, "id": "o16"}, {"div": "office", "name": "구단 6F 화장실", "order": 16, "createdAt": 1794460001016, "id": "o17"}, {"div": "office", "name": "구단 B1F 화장실", "order": 17, "createdAt": 1794460001017, "id": "o18"}, {"div": "office", "name": "스튜디오(쓱튜브)", "order": 18, "createdAt": 1794460001018, "id": "o19"}, {"div": "office", "name": "치어리더실", "order": 19, "createdAt": 1794460001019, "id": "o20"}, {"div": "office", "name": "치어리더연습실", "order": 20, "createdAt": 1794460001020, "id": "o21"}, {"div": "office", "name": "치어리더 샤워실/화장실", "order": 21, "createdAt": 1794460001021, "id": "o22"}, {"div": "office", "name": "치어리더 대기실 (홈, 3F)", "order": 22, "createdAt": 1794460001022, "id": "o23"}, {"div": "office", "name": "마스코트 대기실", "order": 23, "createdAt": 1794460001023, "id": "o24"}, {"div": "office", "name": "응원단 대기실", "order": 24, "createdAt": 1794460001024, "id": "o25"}, {"div": "office", "name": "치어리더실 화장실/샤워실 (원정)", "order": 25, "createdAt": 1794460001025, "id": "o26"}, {"div": "office", "name": "치어리더실 (원정)", "order": 26, "createdAt": 1794460001026, "id": "o27"}, {"div": "office", "name": "고객 의무실 (1F)", "order": 27, "createdAt": 1794460001027, "id": "o28"}, {"div": "office", "name": "랜더스 센터", "order": 28, "createdAt": 1794460001028, "id": "o29"}, {"div": "office", "name": "1루매표소", "order": 29, "createdAt": 1794460001029, "id": "o30"}, {"div": "office", "name": "3루 매표소", "order": 30, "createdAt": 1794460001030, "id": "o31"}, {"div": "office", "name": "내야 매표소", "order": 31, "createdAt": 1794460001031, "id": "o32"}, {"div": "office", "name": "외야 매표소", "order": 32, "createdAt": 1794460001032, "id": "o33"}, {"div": "office", "name": "MD 샵", "order": 33, "createdAt": 1794460001033, "id": "o34"}, {"div": "moving", "name": "보도기자실 (7F)", "order": 16, "createdAt": 1794460001034, "id": "o35"}, {"div": "moving", "name": "보도기자 화장실 (7F)", "order": 17, "createdAt": 1794460001035, "id": "o36"}, {"div": "moving", "name": "중계실 화장실 (6F)", "order": 18, "createdAt": 1794460001036, "id": "o37"}, {"div": "moving", "name": "방송 중계실 (6F)", "order": 19, "createdAt": 1794460001037, "id": "o38"}, {"div": "moving", "name": "미디어 흡연실 (7F)", "order": 20, "createdAt": 1794460001038, "id": "o39"}, {"div": "moving", "name": "전광판/음향/조명 주조정실", "order": 21, "createdAt": 1794460001039, "id": "o40"}, {"div": "moving", "name": "전광판/음향/조명 장비실", "order": 22, "createdAt": 1794460001040, "id": "o41"}, {"div": "moving", "name": "트래킹,ABS,체크스윙 주조정실 (6F)", "order": 23, "createdAt": 1794460001041, "id": "o42"}, {"div": "moving", "name": "전광판/음향/조명 주조정실 화장실 (6F)", "order": 24, "createdAt": 1794460001042, "id": "o43"}, {"div": "moving", "name": "장내방송 및 기록실 (6F)", "order": 25, "createdAt": 1794460001043, "id": "o44"}, {"div": "moving", "name": "경기감독관실 (6F)", "order": 26, "createdAt": 1794460001044, "id": "o45"}, {"div": "moving", "name": "선수단 물품창고(1루)", "order": 0, "createdAt": 1794460001000, "id": "v01"}, {"div": "moving", "name": "선수단 물품창고 (덕아웃 후면)", "order": 1, "createdAt": 1794460001001, "id": "v02"}, {"div": "moving", "name": "선수단 물품창고 (추가공간 확보)", "order": 2, "createdAt": 1794460001002, "id": "v03"}, {"div": "moving", "name": "훈련장비창고", "order": 3, "createdAt": 1794460001003, "id": "v04"}, {"div": "moving", "name": "그라운드키퍼 창고 (덕아웃 인근)", "order": 4, "createdAt": 1794460001004, "id": "v05"}, {"div": "moving", "name": "그라운드키퍼 장비창고 (외야)", "order": 5, "createdAt": 1794460001005, "id": "v06"}, {"div": "moving", "name": "그라운드키퍼 재료창고 (외야)", "order": 6, "createdAt": 1794460001006, "id": "v07"}, {"div": "moving", "name": "예비창고 (외야/지하)", "order": 7, "createdAt": 1794460001007, "id": "v08"}, {"div": "moving", "name": "구단 창고", "order": 8, "createdAt": 1794460001008, "id": "v09"}, {"div": "moving", "name": "덕아웃 인근 창고", "order": 9, "createdAt": 1794460001009, "id": "v10"}, {"div": "moving", "name": "CS용역 사무실", "order": 10, "createdAt": 1794460001010, "id": "v11"}, {"div": "moving", "name": "CS용역 휴게실", "order": 11, "createdAt": 1794460001011, "id": "v12"}, {"div": "moving", "name": "그라운드키퍼 사무실", "order": 12, "createdAt": 1794460001012, "id": "v13"}, {"div": "moving", "name": "그라운드키퍼 락카 및 샤워실", "order": 13, "createdAt": 1794460001013, "id": "v14"}, {"div": "moving", "name": "기사대기실", "order": 14, "createdAt": 1794460001014, "id": "v15"}, {"div": "moving", "name": "경찰 및 소방대기실", "order": 15, "createdAt": 1794460001015, "id": "v16"}]}, "settings": {"start": "2026-09", "end": "2028-02", "markers": [{"ym": "2027-02", "week": 2, "label": "신세계건설 인테리어 공사 시작"}, {"ym": "2027-08", "week": 2, "label": "사무실 인테리어 설계 완료"}, {"ym": "2028-01", "week": 1, "label": "준공 목표 (’27.12)"}], "migRooms1": true}};
+window.EMBED_DATA = {"S": {"categories": [{"name": "선수단시설-홈경기시설", "group": "", "type": "space", "div": "clubhouse", "rowLabels": ["인테리어 사전협의", "공사", "체력단련실"], "rows": 3, "order": 1, "createdAt": 1794460000001, "id": "club"}, {"name": "구단 사무실", "group": "", "type": "space", "div": "office", "rowLabels": ["설계", "공사"], "rows": 2, "order": 2, "createdAt": 1794460000002, "id": "office"}, {"name": "기타시설", "group": "", "type": "space", "div": "moving", "rowLabels": ["체력단련실 기구조성", "가구/가전", "이사준비"], "rows": 3, "order": 3, "createdAt": 1794460000003, "id": "moving"}], "ms_tasks": [{"catId": "club", "row": -1, "startYm": "2026-11", "startWeek": 2, "weeks": 3, "title": "3자 회의", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000100, "roomId": "c42", "id": "m01"}, {"catId": "club", "row": -1, "startYm": "2026-12", "startWeek": 1, "weeks": 9, "title": "장비 시공 계약 준비", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000101, "roomId": "c42", "id": "m02"}, {"catId": "club", "row": -1, "startYm": "2027-02", "startWeek": 1, "weeks": 1, "title": "구단–ATPT 시공 계약", "kind": "point", "memo": "’27.02", "color": "", "done": false, "createdAt": 1794460000102, "roomId": "c42", "id": "m03"}, {"catId": "club", "row": -1, "startYm": "2026-09", "startWeek": 3, "weeks": 4, "title": "발주", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000103, "roomId": "c42", "id": "m04"}, {"catId": "club", "row": -1, "startYm": "2026-10", "startWeek": 3, "weeks": 21, "title": "장비 제작 (6±1개월)", "kind": "light", "memo": "*ATPT ’26.12~’27.01 미국 출국 예정", "color": "", "done": false, "createdAt": 1794460000104, "roomId": "c42", "id": "m05"}, {"catId": "club", "row": -1, "startYm": "2027-03", "startWeek": 4, "weeks": 6, "title": "운송 (3월 말 출하)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000105, "roomId": "c42", "id": "m06"}, {"catId": "club", "row": -1, "startYm": "2027-05", "startWeek": 1, "weeks": 1, "title": "장비 국내 도착", "kind": "point", "memo": "’27.04 · 5월 1단계 설치 착수", "color": "", "done": false, "createdAt": 1794460000106, "roomId": "c42", "id": "m07"}, {"catId": "club", "row": -1, "startYm": "2026-11", "startWeek": 2, "weeks": 13, "title": "일정 재점검 (ATPT·구단·신세계건설)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000107, "roomId": "c42", "id": "m08"}, {"catId": "club", "row": -1, "startYm": "2027-02", "startWeek": 2, "weeks": 12, "title": "설치 공정 시뮬레이션 (ATPT)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000108, "roomId": "c42", "id": "m09"}, {"catId": "club", "row": -1, "startYm": "2027-01", "startWeek": 2, "weeks": 15, "title": "[신세계건설] 설치 前 공정 : 골조·피트·설비·배관", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000109, "roomId": "c42", "id": "m10"}, {"catId": "club", "row": -1, "startYm": "2027-05", "startWeek": 2, "weeks": 7, "title": "[ATPT] 장비 반입·설치", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000110, "roomId": "c42", "id": "m11"}, {"catId": "club", "row": -1, "startYm": "2027-07", "startWeek": 2, "weeks": 8, "title": "[신세계건설] 마감 인테리어", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000111, "roomId": "c42", "id": "m12"}, {"catId": "club", "row": 0, "startYm": "2026-10", "startWeek": 2, "weeks": 7, "title": "야구단 시공 범위 협의", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000112, "id": "m13"}, {"catId": "club", "row": 0, "startYm": "2026-11", "startWeek": 4, "weeks": 1, "title": "최종 실시도서·내역서 완료", "kind": "point", "memo": "’26.11", "color": "", "done": false, "createdAt": 1794460000113, "id": "m14"}, {"catId": "club", "row": 0, "startYm": "2026-12", "startWeek": 1, "weeks": 8, "title": "클럽하우스 시공사 선정", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000114, "id": "m15"}, {"catId": "club", "row": 1, "startYm": "2026-10", "startWeek": 2, "weeks": 7, "title": "실시설계 (다우건축)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000115, "id": "m16"}, {"catId": "club", "row": 1, "startYm": "2026-12", "startWeek": 1, "weeks": 7, "title": "RFP 작성 및 협의", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000116, "id": "m17"}, {"catId": "club", "row": 1, "startYm": "2027-01", "startWeek": 4, "weeks": 5, "title": "시공 계약", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000117, "id": "m18"}, {"catId": "club", "row": 1, "startYm": "2027-02", "startWeek": 4, "weeks": 1, "title": "인테리어 시공업체 계약", "kind": "point", "memo": "’27.02", "color": "", "done": false, "createdAt": 1794460000118, "id": "m19"}, {"catId": "club", "row": 1, "startYm": "2027-03", "startWeek": 1, "weeks": 4, "title": "시공 준비", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000119, "id": "m20"}, {"catId": "club", "row": 1, "startYm": "2027-04", "startWeek": 1, "weeks": 28, "title": "클럽하우스 인테리어 공사 (’27.04~’27.10)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000120, "id": "m21"}, {"catId": "club", "row": 1, "startYm": "2027-10", "startWeek": 4, "weeks": 1, "title": "인테리어 완료", "kind": "point", "memo": "’27.10", "color": "", "done": false, "createdAt": 1794460000121, "id": "m22"}, {"catId": "club", "row": 2, "startYm": "2027-03", "startWeek": 2, "weeks": 8, "title": "기구 리스트 협의", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000122, "id": "m23"}, {"catId": "club", "row": 2, "startYm": "2027-05", "startWeek": 2, "weeks": 7, "title": "업체 견적·제안 비교 (RFP)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000123, "id": "m24"}, {"catId": "club", "row": 2, "startYm": "2027-07", "startWeek": 2, "weeks": 4, "title": "업체 선정", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000124, "id": "m25"}, {"catId": "club", "row": 2, "startYm": "2027-08", "startWeek": 1, "weeks": 1, "title": "기구 구매 계약", "kind": "point", "memo": "’27.08", "color": "", "done": false, "createdAt": 1794460000125, "id": "m26"}, {"catId": "club", "row": 2, "startYm": "2027-08", "startWeek": 2, "weeks": 8, "title": "기구 제작·운송", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000126, "id": "m27"}, {"catId": "office", "row": 0, "startYm": "2026-10", "startWeek": 2, "weeks": 10, "title": "기획 (평면 레이아웃)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000127, "id": "m28"}, {"catId": "office", "row": 0, "startYm": "2026-12", "startWeek": 3, "weeks": 1, "title": "레이아웃 확정", "kind": "point", "memo": "’26.12", "color": "", "done": false, "createdAt": 1794460000128, "id": "m29"}, {"catId": "office", "row": 0, "startYm": "2026-12", "startWeek": 4, "weeks": 8, "title": "설계업체 선정·협의 (8주)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000129, "id": "m30"}, {"catId": "office", "row": 0, "startYm": "2027-02", "startWeek": 4, "weeks": 1, "title": "설계업체 선정", "kind": "point", "memo": "’27.02", "color": "", "done": false, "createdAt": 1794460000130, "id": "m31"}, {"catId": "office", "row": 0, "startYm": "2027-03", "startWeek": 1, "weeks": 4, "title": "설계업체 협의 (4주)", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000131, "id": "m32"}, {"catId": "office", "row": 0, "startYm": "2027-04", "startWeek": 2, "weeks": 12, "title": "인테리어 설계 (12주)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000132, "id": "m33"}, {"catId": "office", "row": 0, "startYm": "2027-07", "startWeek": 1, "weeks": 1, "title": "실시설계 완료", "kind": "point", "memo": "’27.07", "color": "", "done": false, "createdAt": 1794460000133, "id": "m34"}, {"catId": "office", "row": 1, "startYm": "2027-07", "startWeek": 2, "weeks": 4, "title": "공사업체 선정 (4주)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000134, "id": "m35"}, {"catId": "office", "row": 1, "startYm": "2027-08", "startWeek": 1, "weeks": 1, "title": "인테리어 공사 시작", "kind": "point", "memo": "’27.08", "color": "", "done": false, "createdAt": 1794460000135, "id": "m36"}, {"catId": "office", "row": 1, "startYm": "2027-08", "startWeek": 2, "weeks": 11, "title": "인테리어 공사 (12주)", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000136, "id": "m37"}, {"catId": "office", "row": 1, "startYm": "2027-10", "startWeek": 4, "weeks": 1, "title": "인테리어 완료", "kind": "point", "memo": "’27.10", "color": "", "done": false, "createdAt": 1794460000137, "id": "m38"}, {"catId": "moving", "row": 0, "startYm": "2027-10", "startWeek": 2, "weeks": 3, "title": "체력단련실 기구 설치", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000138, "id": "m39"}, {"catId": "moving", "row": 0, "startYm": "2027-10", "startWeek": 4, "weeks": 1, "title": "체력단련실 기구 입고 완료", "kind": "point", "memo": "’27.10", "color": "", "done": false, "createdAt": 1794460000139, "id": "m40"}, {"catId": "moving", "row": 1, "startYm": "2027-07", "startWeek": 2, "weeks": 4, "title": "구단현황(자산) 파악", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000140, "id": "m41"}, {"catId": "moving", "row": 1, "startYm": "2027-08", "startWeek": 2, "weeks": 3, "title": "필요가구 리스트업", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000141, "id": "m42"}, {"catId": "moving", "row": 1, "startYm": "2027-09", "startWeek": 1, "weeks": 4, "title": "크로스체크", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000142, "id": "m43"}, {"catId": "moving", "row": 1, "startYm": "2027-10", "startWeek": 1, "weeks": 4, "title": "구매자산/이사자산 결정", "kind": "light", "memo": "", "color": "", "done": false, "createdAt": 1794460000143, "id": "m44"}, {"catId": "moving", "row": 1, "startYm": "2027-11", "startWeek": 1, "weeks": 8, "title": "가구·가전 세팅", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000144, "id": "m45"}, {"catId": "moving", "row": 1, "startYm": "2027-12", "startWeek": 4, "weeks": 1, "title": "이사 완료", "kind": "point", "memo": "’27.12", "color": "", "done": false, "createdAt": 1794460000145, "id": "m46"}, {"catId": "moving", "row": 2, "startYm": "2027-09", "startWeek": 1, "weeks": 8, "title": "가구·가전·이사업체 입찰", "kind": "main", "memo": "", "color": "", "done": false, "createdAt": 1794460000146, "id": "m47"}, {"catId": "moving", "row": 2, "startYm": "2027-10", "startWeek": 4, "weeks": 1, "title": "업체 선정", "kind": "point", "memo": "’27.10", "color": "", "done": false, "createdAt": 1794460000147, "id": "m48"}], "rooms": [{"div": "clubhouse", "name": "덕아웃", "order": 0, "createdAt": 1794460001000, "id": "c01"}, {"div": "clubhouse", "name": "덕아웃 화장실", "order": 1, "createdAt": 1794460001001, "id": "c02"}, {"div": "clubhouse", "name": "덕아웃 흡연실", "order": 2, "createdAt": 1794460001002, "id": "c03"}, {"div": "clubhouse", "name": "락커룸", "order": 3, "createdAt": 1794460001003, "id": "c04"}, {"div": "clubhouse", "name": "샤워실, 파우더룸", "order": 4, "createdAt": 1794460001004, "id": "c05"}, {"div": "clubhouse", "name": "화장실", "order": 5, "createdAt": 1794460001005, "id": "c06"}, {"div": "clubhouse", "name": "트레이너 사무실", "order": 6, "createdAt": 1794460001006, "id": "c07"}, {"div": "clubhouse", "name": "물리치료실", "order": 7, "createdAt": 1794460001007, "id": "c08"}, {"div": "clubhouse", "name": "물리치료 약/물품 보관창고", "order": 8, "createdAt": 1794460001008, "id": "c09"}, {"div": "clubhouse", "name": "타격훈련실 (1루)", "order": 9, "createdAt": 1794460001009, "id": "c10"}, {"div": "clubhouse", "name": "타격훈련실 내 분석실", "order": 10, "createdAt": 1794460001010, "id": "c11"}, {"div": "clubhouse", "name": "타격훈련실 창고", "order": 11, "createdAt": 1794460001011, "id": "c12"}, {"div": "clubhouse", "name": "선수단 라운지", "order": 12, "createdAt": 1794460001012, "id": "c13"}, {"div": "clubhouse", "name": "배트보관실", "order": 13, "createdAt": 1794460001013, "id": "c14"}, {"div": "clubhouse", "name": "선수 수면실", "order": 14, "createdAt": 1794460001014, "id": "c15"}, {"div": "clubhouse", "name": "선수식당", "order": 15, "createdAt": 1794460001015, "id": "c16"}, {"div": "clubhouse", "name": "선수식당 전용 주방", "order": 16, "createdAt": 1794460001016, "id": "c17"}, {"div": "clubhouse", "name": "감독실", "order": 17, "createdAt": 1794460001017, "id": "c18"}, {"div": "clubhouse", "name": "감독 휴게실", "order": 18, "createdAt": 1794460001018, "id": "c19"}, {"div": "clubhouse", "name": "감독 샤워실/화장실", "order": 19, "createdAt": 1794460001019, "id": "c20"}, {"div": "clubhouse", "name": "코치실", "order": 20, "createdAt": 1794460001020, "id": "c21"}, {"div": "clubhouse", "name": "코치 샤워실/화장실", "order": 21, "createdAt": 1794460001021, "id": "c22"}, {"div": "clubhouse", "name": "코치 수면실", "order": 22, "createdAt": 1794460001022, "id": "c23"}, {"div": "clubhouse", "name": "코치 회의실", "order": 23, "createdAt": 1794460001023, "id": "c24"}, {"div": "clubhouse", "name": "전력분석실", "order": 24, "createdAt": 1794460001024, "id": "c25"}, {"div": "clubhouse", "name": "전력분석회의실", "order": 25, "createdAt": 1794460001025, "id": "c26"}, {"div": "clubhouse", "name": "심판실", "order": 26, "createdAt": 1794460001026, "id": "c27"}, {"div": "clubhouse", "name": "대기심판실", "order": 27, "createdAt": 1794460001027, "id": "c28"}, {"div": "clubhouse", "name": "보조락커", "order": 28, "createdAt": 1794460001028, "id": "c29"}, {"div": "clubhouse", "name": "보조락커 샤워 및 화장실", "order": 29, "createdAt": 1794460001029, "id": "c30"}, {"div": "clubhouse", "name": "현장직원 및 훈련보조 락커", "order": 30, "createdAt": 1794460001030, "id": "c31"}, {"div": "clubhouse", "name": "선수가족실", "order": 31, "createdAt": 1794460001031, "id": "c32"}, {"div": "clubhouse", "name": "선수단 의무실", "order": 32, "createdAt": 1794460001032, "id": "c33"}, {"div": "clubhouse", "name": "인터뷰실", "order": 33, "createdAt": 1794460001033, "id": "c34"}, {"div": "clubhouse", "name": "홈 사진 기자석", "order": 34, "createdAt": 1794460001034, "id": "c35"}, {"div": "clubhouse", "name": "홈 공용 화장실", "order": 35, "createdAt": 1794460001035, "id": "c36"}, {"div": "clubhouse", "name": "접견실", "order": 36, "createdAt": 1794460001036, "id": "c37"}, {"div": "clubhouse", "name": "상황실", "order": 37, "createdAt": 1794460001037, "id": "c38"}, {"div": "clubhouse", "name": "이벤트대기실", "order": 38, "createdAt": 1794460001038, "id": "c39"}, {"div": "clubhouse", "name": "시구자대기실", "order": 39, "createdAt": 1794460001039, "id": "c40"}, {"div": "clubhouse", "name": "체력단련실", "order": 40, "createdAt": 1794460001040, "id": "c41"}, {"div": "office", "name": "홈임원실", "order": 0, "createdAt": 1794460001000, "id": "o01"}, {"div": "office", "name": "단장실", "order": 1, "createdAt": 1794460001001, "id": "o02"}, {"div": "office", "name": "원정임원실", "order": 2, "createdAt": 1794460001002, "id": "o03"}, {"div": "office", "name": "직원 및 홈경기 관계자 식당", "order": 3, "createdAt": 1794460001003, "id": "o04"}, {"div": "office", "name": "주방", "order": 4, "createdAt": 1794460001004, "id": "o05"}, {"div": "office", "name": "주방창고", "order": 5, "createdAt": 1794460001005, "id": "o06"}, {"div": "office", "name": "사무공간2 (B1F)", "order": 6, "createdAt": 1794460001006, "id": "o07"}, {"div": "office", "name": "사무공간1 (6F)", "order": 7, "createdAt": 1794460001007, "id": "o08"}, {"div": "office", "name": "임원실", "order": 8, "createdAt": 1794460001008, "id": "o09"}, {"div": "office", "name": "복도", "order": 9, "createdAt": 1794460001009, "id": "o10"}, {"div": "office", "name": "회의실", "order": 10, "createdAt": 1794460001010, "id": "o11"}, {"div": "office", "name": "대회의실", "order": 11, "createdAt": 1794460001011, "id": "o12"}, {"div": "office", "name": "사무실 창고, 서류보관실", "order": 12, "createdAt": 1794460001012, "id": "o13"}, {"div": "office", "name": "사료 창고", "order": 13, "createdAt": 1794460001013, "id": "o14"}, {"div": "office", "name": "라운지", "order": 14, "createdAt": 1794460001014, "id": "o15"}, {"div": "office", "name": "구단 여직원 휴게실", "order": 15, "createdAt": 1794460001015, "id": "o16"}, {"div": "office", "name": "구단 6F 화장실", "order": 16, "createdAt": 1794460001016, "id": "o17"}, {"div": "office", "name": "구단 B1F 화장실", "order": 17, "createdAt": 1794460001017, "id": "o18"}, {"div": "office", "name": "스튜디오(쓱튜브)", "order": 18, "createdAt": 1794460001018, "id": "o19"}, {"div": "office", "name": "치어리더실", "order": 19, "createdAt": 1794460001019, "id": "o20"}, {"div": "office", "name": "치어리더연습실", "order": 20, "createdAt": 1794460001020, "id": "o21"}, {"div": "office", "name": "치어리더 샤워실/화장실", "order": 21, "createdAt": 1794460001021, "id": "o22"}, {"div": "office", "name": "치어리더 대기실 (홈, 3F)", "order": 22, "createdAt": 1794460001022, "id": "o23"}, {"div": "office", "name": "마스코트 대기실", "order": 23, "createdAt": 1794460001023, "id": "o24"}, {"div": "office", "name": "응원단 대기실", "order": 24, "createdAt": 1794460001024, "id": "o25"}, {"div": "office", "name": "치어리더실 화장실/샤워실 (원정)", "order": 25, "createdAt": 1794460001025, "id": "o26"}, {"div": "office", "name": "치어리더실 (원정)", "order": 26, "createdAt": 1794460001026, "id": "o27"}, {"div": "office", "name": "고객 의무실 (1F)", "order": 27, "createdAt": 1794460001027, "id": "o28"}, {"div": "office", "name": "랜더스 센터", "order": 28, "createdAt": 1794460001028, "id": "o29"}, {"div": "office", "name": "1루매표소", "order": 29, "createdAt": 1794460001029, "id": "o30"}, {"div": "office", "name": "3루 매표소", "order": 30, "createdAt": 1794460001030, "id": "o31"}, {"div": "office", "name": "내야 매표소", "order": 31, "createdAt": 1794460001031, "id": "o32"}, {"div": "office", "name": "외야 매표소", "order": 32, "createdAt": 1794460001032, "id": "o33"}, {"div": "office", "name": "MD 샵", "order": 33, "createdAt": 1794460001033, "id": "o34"}, {"div": "moving", "name": "보도기자실 (7F)", "order": 16, "createdAt": 1794460001034, "id": "o35"}, {"div": "moving", "name": "보도기자 화장실 (7F)", "order": 17, "createdAt": 1794460001035, "id": "o36"}, {"div": "moving", "name": "중계실 화장실 (6F)", "order": 18, "createdAt": 1794460001036, "id": "o37"}, {"div": "moving", "name": "방송 중계실 (6F)", "order": 19, "createdAt": 1794460001037, "id": "o38"}, {"div": "moving", "name": "미디어 흡연실 (7F)", "order": 20, "createdAt": 1794460001038, "id": "o39"}, {"div": "moving", "name": "전광판/음향/조명 주조정실", "order": 21, "createdAt": 1794460001039, "id": "o40"}, {"div": "moving", "name": "전광판/음향/조명 장비실", "order": 22, "createdAt": 1794460001040, "id": "o41"}, {"div": "moving", "name": "트래킹,ABS,체크스윙 주조정실 (6F)", "order": 23, "createdAt": 1794460001041, "id": "o42"}, {"div": "moving", "name": "전광판/음향/조명 주조정실 화장실 (6F)", "order": 24, "createdAt": 1794460001042, "id": "o43"}, {"div": "moving", "name": "장내방송 및 기록실 (6F)", "order": 25, "createdAt": 1794460001043, "id": "o44"}, {"div": "moving", "name": "경기감독관실 (6F)", "order": 26, "createdAt": 1794460001044, "id": "o45"}, {"div": "moving", "name": "선수단 물품창고(1루)", "order": 0, "createdAt": 1794460001000, "id": "v01"}, {"div": "moving", "name": "선수단 물품창고 (덕아웃 후면)", "order": 1, "createdAt": 1794460001001, "id": "v02"}, {"div": "moving", "name": "선수단 물품창고 (추가공간 확보)", "order": 2, "createdAt": 1794460001002, "id": "v03"}, {"div": "moving", "name": "훈련장비창고", "order": 3, "createdAt": 1794460001003, "id": "v04"}, {"div": "moving", "name": "그라운드키퍼 창고 (덕아웃 인근)", "order": 4, "createdAt": 1794460001004, "id": "v05"}, {"div": "moving", "name": "그라운드키퍼 장비창고 (외야)", "order": 5, "createdAt": 1794460001005, "id": "v06"}, {"div": "moving", "name": "그라운드키퍼 재료창고 (외야)", "order": 6, "createdAt": 1794460001006, "id": "v07"}, {"div": "moving", "name": "예비창고 (외야/지하)", "order": 7, "createdAt": 1794460001007, "id": "v08"}, {"div": "moving", "name": "구단 창고", "order": 8, "createdAt": 1794460001008, "id": "v09"}, {"div": "moving", "name": "덕아웃 인근 창고", "order": 9, "createdAt": 1794460001009, "id": "v10"}, {"div": "moving", "name": "CS용역 사무실", "order": 10, "createdAt": 1794460001010, "id": "v11"}, {"div": "moving", "name": "CS용역 휴게실", "order": 11, "createdAt": 1794460001011, "id": "v12"}, {"div": "moving", "name": "그라운드키퍼 사무실", "order": 12, "createdAt": 1794460001012, "id": "v13"}, {"div": "moving", "name": "그라운드키퍼 락카 및 샤워실", "order": 13, "createdAt": 1794460001013, "id": "v14"}, {"div": "moving", "name": "기사대기실", "order": 14, "createdAt": 1794460001014, "id": "v15"}, {"div": "moving", "name": "경찰 및 소방대기실", "order": 15, "createdAt": 1794460001015, "id": "v16"}, {"div": "clubhouse", "name": "수치료실", "order": 41, "createdAt": 1794460001041, "id": "c42"}]}, "settings": {"start": "2026-09", "end": "2028-02", "markers": [{"ym": "2027-02", "week": 2, "label": "신세계건설 인테리어 공사 시작"}, {"ym": "2027-08", "week": 2, "label": "사무실 인테리어 설계 완료"}, {"ym": "2028-01", "week": 1, "label": "준공 목표 (’27.12)"}], "migRooms1": true, "migNames1": true, "migHydro1": true, "migNames2": true}};
 </script>
 <script>
 /* =========================================================
@@ -454,7 +683,7 @@ function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); return tr
    저장소 (공유 DB / 로컬 미리보기 폴백)
    ========================================================= */
 const COLS = ['categories','ms_tasks','projects','proj_tasks','proj_logs','proj_issues',
-              'rooms','decisions','drawings','fixtures','spec_snaps','layouts','interior_reqs','renders','plans'];
+              'rooms','decisions','drawings','fixtures','spec_snaps','layouts','interior_reqs','renders','plans','sitemaps','room_logs'];
 const S = {}; COLS.forEach(c => S[c] = []);
 let settings = { start: '', end: '' };
 let localAssets = {};
@@ -545,7 +774,7 @@ async function seedFirestore(){
 function renderLogin(){
   setSync('', '로그인 필요');
   $('#app').innerHTML = `<div class="card" style="max-width:440px;margin:60px auto;padding:30px;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center">
-    <h2 style="margin:0;font-size:18px">청라돔 이전 & 구단 인프라 조성 업무관리</h2>
+    <h2 style="margin:0;font-size:18px">청라돔 이전·입주 통합관리</h2>
     <div class="muted" style="font-size:12.5px">팀원 확인을 위해 Google 계정으로 로그인해주세요.<br>로그인한 사람끼리 같은 데이터를 실시간으로 공유합니다.</div>
     <button class="btn pri" style="padding:10px 18px;font-size:13.5px" onclick="fbLogin()">Google 계정으로 로그인</button></div>`;
 }
@@ -706,7 +935,7 @@ function lightbox(id, caption){
 /* =========================================================
    UI 상태 (보기 상태만 브라우저에 기억)
    ========================================================= */
-const ui = Object.assign({ page: 'ms', msCol: {}, rrOpen: {}, rrCat: 'ALL', rrSt: 'ALL', rrQ: '', cat: null, div: 'clubhouse', tab: 'pm', fxTab: 'list', inTab: 'req', room: 'ALL',
+const ui = Object.assign({ page: 'ov', msCol: {}, rrOpen: {}, rrCat: 'ALL', rrSt: 'ALL', rrQ: '', cat: null, div: 'clubhouse', tab: 'pm', fxTab: 'list', inTab: 'req', room: 'ALL',
   specSnap: {}, layRoom: '', laySnap: '', decOpen: false, labels: true }, lsGet('pmo_ui_v1', {}));
 const saveUi = () => lsSet('pmo_ui_v1', ui);
 function go(patch){ Object.assign(ui, patch); saveUi(); render(); }
@@ -716,7 +945,35 @@ function go(patch){ Object.assign(ui, patch); saveUi(); render(); }
 const MIG_ROOMS = ['o35','o36','o37','o38','o39','o40','o41','o42','o43','o44','o45'];
 let migRunning = false;
 async function runMigrations(){
-  if (migRunning || Store.mode !== 'shared' || !Store.loaded.has('rooms') || !Store.loaded.has('settings') || settings.migRooms1 || !settings.start || !S.categories.length) return;
+  if (migRunning || Store.mode !== 'shared' || !Store.loaded.has('rooms') || !Store.loaded.has('categories') || !Store.loaded.has('settings') || !settings.start || !S.categories.length) return;
+  if (!settings.migNames1) {
+    migRunning = true;
+    try {
+      const NAMES = { club: '선수단시설-홈경기시설', office: '구단 사무실', moving: '기타시설' };
+      for (const [id, name] of Object.entries(NAMES)) { const c = S.categories.find(x => x.id === id); if (c && (c.name !== name || c.group)) await Store.upd('categories', id, { name, group: '' }); }
+      await Store.setSettings({ migNames1: true });
+    } catch(e) { console.error(e); } finally { migRunning = false; }
+    return;
+  }
+  if (!settings.migNames2) {
+    migRunning = true;
+    try { const c = S.categories.find(x => x.id === 'moving'); if (c && c.name === '그 외 시설') await Store.upd('categories', 'moving', { name: '기타시설' }); await Store.setSettings({ migNames2: true }); }
+    catch(e) { console.error(e); } finally { migRunning = false; }
+    return;
+  }
+  if (!settings.migHydro1) {
+    migRunning = true;
+    try {
+      if (S.categories.some(c => c.id === 'club') && (S.categories.some(c => c.id === 'hydro') || S.ms_tasks.some(t => t.catId === 'hydro'))) {
+        if (!S.rooms.some(r => r.id === 'c42')) await Store.put('rooms', 'c42', { div: 'clubhouse', name: '수치료실', order: roomsOf('clubhouse').length, createdAt: Date.now() });
+        for (const t of S.ms_tasks.filter(t => t.catId === 'hydro')) await Store.upd('ms_tasks', t.id, { catId: 'club', roomId: 'c42', row: -1 });
+        if (S.categories.some(c => c.id === 'hydro')) await Store.del('categories', 'hydro');
+      }
+      await Store.setSettings({ migHydro1: true });
+    } catch(e) { console.error(e); } finally { migRunning = false; }
+    return;
+  }
+  if (settings.migRooms1) return;
   migRunning = true;
   try {
     const base = S.rooms.filter(r => r.div === 'moving' && !MIG_ROOMS.includes(r.id)).length;
@@ -740,7 +997,9 @@ document.addEventListener('focusout', () => { if (renderPending) { renderPending
 const ymN = ym => { const [y,m] = ym.split('-').map(Number); return y*12 + m - 1; };
 const nYm = n => `${Math.floor(n/12)}-${pad(n%12+1)}`;
 const ymLabel = ym => { const [y,m] = ym.split('-'); return `${y}년 ${+m}월`; };
-const WK = 28, LW1 = 112, LW2 = 176, LW = LW1 + LW2;
+const WK = 28, LW1 = 112; let LW2 = 176, LW = LW1 + LW2;
+let _mctx = null;
+function measureText(t, font){ if (!_mctx) _mctx = document.createElement('canvas').getContext('2d'); _mctx.font = font; return _mctx.measureText(t).width; }
 const KIND = {
   light: { name: '사전협의 및 제작/운송', bg: '#dce8f6', fg: '#1f3864' },
   main:  { name: '주요일정', bg: '#203864', fg: '#ffffff' },
@@ -769,7 +1028,7 @@ const PALETTE = ['#203864','#dce8f6','#2f5bea','#0e8f8f','#14834a','#b86e00','#e
 
 /* ---------- 진행률 (R&R 세부계획 기반) ---------- */
 const plansOf = id => S.plans.filter(p => p.msId === id).sort(byOrder);
-function msProg(t){ const ps = plansOf(t.id); if (ps.length) return ps.filter(p => p.done).length / ps.length; return t.done ? 1 : 0; }
+function msProg(t){ const ps = plansOf(t.id); if (ps.length) return ps.filter(p => p.done).length / ps.length; if (t.done) return 1; return clamp((Number(t.progress)||0) / 100, 0, 1); }
 function msPeople(t){
   const L = new Set(), W = new Set();
   plansOf(t.id).forEach(p => { if (p.lead && p.lead.trim()) L.add(p.lead.trim()); (p.staff || []).forEach(s => s && s.trim() && W.add(s.trim())); });
@@ -779,11 +1038,11 @@ function msStatus(t){ const n = nowWeekAbs(), a = taskAbs(t), b = taskEnd(t); if
 const ST_LABEL = { done: '완료', late: '기한 경과', now: '진행 중', plan: '예정' };
 const ST_CHIP = { done: 'g', late: 'r', now: 'b', plan: '' };
 const liveTasks = () => S.ms_tasks.filter(taskLive);
-function taskLive(t){ return S.categories.some(c => c.id === t.catId) && (!t.roomId || S.rooms.some(r => r.id === t.roomId)); }
+function taskLive(t){ return S.categories.some(c => c.id === t.catId) && (!t.roomId || VROOMS[t.roomId] || S.rooms.some(r => r.id === t.roomId)); }
 const laneKey = t => t.roomId ? 'room:' + t.roomId : 'r:' + (Number(t.row)||0);
 function catLanes(c){
   const L = rowLabels(c).map((lb,i) => ({ key: 'r:' + i, label: lb, room: false }));
-  if (c.type === 'space') roomsOf(c.div).forEach(r => L.push({ key: 'room:' + r.id, label: r.name, room: true }));
+  if (c.type === 'space') navRooms(c.div).forEach(r => L.push({ key: 'room:' + r.id, label: r.name, room: true }));
   return L;
 }
 const laneLabel = (c, t) => t.roomId ? roomName(t.roomId) : (rowLabels(c)[Number(t.row)||0] || '');
@@ -833,49 +1092,60 @@ function renderSummary(){
   return `<section class="card sum">
     <div class="sum-main"><div class="k">전체 진행률</div><div class="big">${pct(all)}<small>%</small></div>
       <div class="pbar lg ${pct(all)===100?'g':''}"><i style="width:${pct(all)}%"></i></div>
-      <div class="muted" style="font-size:11px">마일스톤 ${ts.length}개의 R&R 세부계획 완료율 평균</div></div>
+      <div class="muted" style="font-size:11px">마일스톤 ${ts.length}개 진행률 평균 (막대를 눌러 진행률 입력)</div></div>
     <div class="sum-cats">${list.map(c => { const p = pct(catProg(c.id)); return `<button class="sum-cat" onclick="selectCat('${c.id}')">
       <div class="row"><span class="muted" style="font-size:10.5px">${esc(c.group||'')}</span></div>
       <div class="row"><b>${esc(c.name)}</b><div class="grow"></div><b>${p}%</b></div><div class="pbar ${p===100?'g':''}"><i style="width:${p}%"></i></div></button>`; }).join('')}</div>
     <div class="sum-side"><div class="row"><span class="chip b">진행 중 ${cur.length}</span><span class="chip ${late.length?'r':''}">기한 경과 ${late.length}</span></div>
       <div class="muted" style="font-size:11.5px">이번 주 · ${absLabel(nowWeekAbs())}</div>
-      <button class="btn sm" onclick="goPage('rr')">R&R에서 세부계획 관리 →</button></div>
+</div>
   </section>`;
 }
 
 function renderMilestone(){
   const ms = period(), total = ms.length*4, base = ymN(ms[0])*4, nowI = nowWeekAbs() - base;
   const list = cats();
+  { const labs = list.flatMap(c => catLanes(c).map(l => l.label)); const font = "700 11.5px 'Noto Sans KR', 'Malgun Gothic', sans-serif";
+    LW2 = clamp(Math.ceil(Math.max(0, ...labs.map(x => measureText(x, font)))) + 58, 176, 380); LW = LW1 + LW2; }
   const marks = (settings.markers || []).map(m => Object.assign({}, m, { i: ymN(m.ym)*4 + (Number(m.week)||1) - 1 - base })).filter(m => m.i >= 0 && m.i < total);
-  let h = `<section class="card"><div class="card-h"><h2>마일스톤</h2><span class="hint">빈 칸 클릭 → 그 주차부터 추진업무 등록 · 막대/◆ 클릭 → 수정 · 막대 아래 가는 선 = 진행률</span><div class="grow"></div>
+  let h = `<section class="card"><div class="card-h"><h2>마일스톤</h2><button class="btn sm ${ui.msHelpOn?'pri':'ghost'}" onclick="go({msHelpOn:!ui.msHelpOn})">ⓘ 사용법 ${ui.msHelpOn?'접기 ▴':'보기 ▾'}</button><div class="grow"></div>
     <div class="ms-tools">
       <span class="muted" style="font-size:11.5px;font-weight:700">기간</span>
       <input type="month" value="${ms[0]}" onchange="setPeriod('start',this.value)"><span class="muted">~</span><input type="month" value="${ms[ms.length-1]}" onchange="setPeriod('end',this.value)">
       <button class="btn" onclick="openMarkerMgr()">기준선</button>
-      <button class="btn" onclick="openCatMgr()">업무명 / 행 설정</button>
+      <button class="btn" onclick="openCatMgr()">구역 / 행 설정</button>
       <button class="btn pri" onclick="openTaskModal()">+ 추진업무</button>
-      <button class="btn xl" onclick="exportMilestone()">엑셀</button></div></div>`;
+      <button class="btn xl" onclick="exportMilestone()">엑셀</button></div></div>
+    ${!ui.msHelpOn ? '' : `<div class="mhelp"><b class="mh-t">사용법</b>
+      <div class="mh-i"><span class="mh-ic"><i class="mh-cell"></i></span><div><b>새 일정 넣기</b>표에서 비어 있는 칸을 누르면, 그 줄·그 주차부터 시작하는 일정을 바로 등록할 수 있어요.</div></div>
+      <div class="mh-i"><span class="mh-ic"><i class="mh-bar"></i><i class="mh-dia"></i></span><div><b>일정 고치기</b>막대나 빨간 ◆를 누르면 일정 이름·기간·색·진행률을 수정하거나 삭제할 수 있어요.</div></div>
+      <div class="mh-i"><span class="mh-ic"><i class="mh-bar"><u></u></i></span><div><b>진행률 보기</b>막대 아래쪽 빨간 선이 진행률이에요. 선이 길수록 많이 진행된 일정이에요. 막대를 눌러 %를 입력하면 바뀝니다.</div></div>
+      <div class="mh-i"><span class="mh-ic"><i class="mh-bar now"></i></span><div><b>지금 진행 중</b>빨간 테두리 막대는 이번 주가 기간에 포함된 일정이고, 세로 빨간 선이 오늘 위치예요.</div></div>
+      <button class="x" title="사용법 닫기" onclick="go({msHelpOn:false})">✕</button></div>`}`;
   h += `<div class="gwrap" id="gwrap"><div class="gantt" style="width:${LW + total*WK}px;grid-template-columns:${LW1}px ${LW2}px ${total*WK}px">`;
   h += `<div class="gh corner" style="grid-row:span 3">구분</div>`;
   h += `<div class="gh mk">${marks.map(m => `<span style="left:${m.i*WK}px">▼ ${esc(m.label)}</span>`).join('')}${nowI>=0&&nowI<total?`<b class="nowtag" style="left:${nowI*WK+WK/2}px">현재 (’${String(new Date().getFullYear()).slice(2)}.${new Date().getMonth()+1})</b>`:''}</div>`;
   h += `<div class="gh mo">${ms.map((m,i) => { const mm = +m.slice(5); return `<span style="width:${4*WK}px">${(i===0||mm===1)?`<em>’${m.slice(2,4)}</em>`:''}${mm}월</span>`; }).join('')}</div>`;
   h += `<div class="gh wk">${Array.from({length: total}, (_,i) => `<span class="${i===nowI?'now':''}" style="width:${WK}px">${i%4+1}</span>`).join('')}</div>`;
-  if (!list.length) h += `<div style="grid-column:1/4" class="empty">‘업무명 / 행 설정’에서 업무를 추가하세요.</div>`;
+  if (!list.length) h += `<div style="grid-column:1/4" class="empty">‘구역 / 행 설정’에서 구역을 추가하세요.</div>`;
   list.forEach((c, ci) => {
     const tasks = S.ms_tasks.filter(t => t.catId === c.id && taskLive(t));
     const all = catLanes(c), nRooms = all.filter(l => l.room).length, col = !!(ui.msCol||{})[c.id];
     const lanes = col ? all.filter(l => !l.room || tasks.some(t => laneKey(t) === l.key)) : all;
     const p = pct(catProg(c.id));
     h += `<div class="gc cat ${ui.cat===c.id?'on':''}" style="grid-row:span ${lanes.length}" onclick="selectCat('${c.id}')"><div class="catin">
-      ${c.group?`<div class="grp">${esc(c.group)}</div>`:''}<div class="nm">${esc(c.name)}</div><div class="pc">${p}%</div>
+      ${c.group?`<div class="grp">${esc(c.group)}</div>`:''}<div class="nm">${dispName(c.name)}</div><div class="pc">${p}%</div>
       ${nRooms?`<div class="rc" title="${col?'상세실 펼치기':'일정 없는 상세실 접기'}" onclick="event.stopPropagation();toggleMsCol('${c.id}')">상세실 ${nRooms}개 ${col?'▾ 펼치기':'▴ 접기'}</div>`:''}</div></div>`;
     let roomNo = 0, firstRoom = true;
     lanes.forEach((l, li) => {
       const last = li === lanes.length - 1, fr = l.room && firstRoom; if (l.room) { firstRoom = false; roomNo++; }
       const cls = `${last?'endrow':''} ${l.room?'room':''} ${fr?'firstroom':''}`;
       h += `<div class="gc rl ${cls}" title="${esc(l.label)}">${l.room?`<span class="rn">${col?'':roomNo}</span>${esc(l.label)}`:`${nRooms?'<span class="cm">공통</span>':''}${esc(l.label)}`}</div>`;
-      h += `<div class="lane ${cls}" style="background-size:${4*WK}px 100%,${WK}px 100%" onclick="laneClick(event,'${c.id}','${l.key}',${base})">`;
-      tasks.filter(t => laneKey(t) === l.key).sort(sortTasks).forEach(t => {
+      const lt = tasks.filter(t => laneKey(t) === l.key).sort(sortTasks), ends = [], trk = {};
+      lt.filter(t => t.kind !== 'point').forEach(t => { const a = taskAbs(t); let i = ends.findIndex(e => e < a); if (i < 0) { i = ends.length; ends.push(0); } ends[i] = taskEnd(t); trk[t.id] = i; });
+      const nT = Math.max(1, ends.length), top0 = l.room ? 4 : 21, laneH = (l.room ? 38 : 54) + (nT - 1) * 34;
+      h += `<div class="lane ${cls}" style="background-size:${4*WK}px 100%,${WK}px 100%;height:${laneH}px" onclick="laneClick(event,'${c.id}','${l.key}',${base})">`;
+      lt.forEach(t => {
         const s = taskAbs(t) - base, e = taskEnd(t) - base; if (e < 0 || s > total-1) return;
         const pr = pct(msProg(t)), st = msStatus(t), ppl = msPeople(t);
         const tip = `${t.title}\n${periodText(t)} · 진행률 ${pr}%${ppl.leads.length?'\n책임자: '+ppl.leads.join(', '):''}${ppl.staff.length?'\n실무자: '+ppl.staff.join(', '):''}${t.memo?'\n'+t.memo:''}`;
@@ -884,7 +1154,7 @@ function renderMilestone(){
         } else {
           const cs = Math.max(0, s), ce = Math.min(total-1, e), k = KIND[t.kind] || KIND.main;
           const bg = t.color || k.bg, fg = t.color ? textOn(t.color) : k.fg;
-          h += `<div class="gb st-${st} ${s<0?'cl':''} ${e>total-1?'cr':''}" style="left:${cs*WK+1}px;width:${(ce-cs+1)*WK-2}px;background:${esc(bg)};color:${fg}" onclick="event.stopPropagation();openTaskModal('${t.id}')" title="${esc(tip)}"><span>${esc(t.title)}</span><em style="width:${pr}%"></em></div>`;
+          h += `<div class="gb st-${st} ${s<0?'cl':''} ${e>total-1?'cr':''}" style="top:${top0 + (trk[t.id]||0)*34}px;left:${cs*WK+1}px;width:${(ce-cs+1)*WK-2}px;background:${esc(bg)};color:${fg}" onclick="event.stopPropagation();openTaskModal('${t.id}')" title="${esc(tip)}"><span>${esc(t.title)}</span><em style="width:${pr}%"></em></div>`;
         }
       });
       h += `</div>`;
@@ -894,7 +1164,7 @@ function renderMilestone(){
   if (nowI >= 0 && nowI < total) h += `<div class="vline now" style="left:${LW + nowI*WK + WK/2 - 1}px"></div>`;
   h += `</div></div><div class="legend">
       <span><i class="lg-l"></i>${KIND.light.name}</span><span><i class="lg-m"></i>${KIND.main.name}</span><span><i class="lg-p"></i>${KIND.point.name}</span>
-      <span><i class="lg-n"></i>빨간 테두리 = 지금 진행 중</span><span>같은 행에서 막대 기간이 겹치면 다른 행을 선택하세요 (◆은 겹쳐도 됩니다)</span></div></section>`;
+      <span><i class="lg-n"></i>빨간 테두리 = 지금 진행 중</span></div></section>`;
   return h;
 }
 function laneClick(e, catId, key, base){
@@ -931,7 +1201,7 @@ function openTaskModal(taskId = null, catId = null, row = 0, abs = null){
       <input type="color" id="tm-color" value="${esc(cur.color||'#203864')}" style="width:34px;height:26px;padding:0;border:none;background:none"></div></div>
     <div id="tm-end" class="muted" style="font-size:11.5px"></div>
     <label class="f">메모 / 날짜 표기 (◆ 옆에 작게 표시)<input type="text" id="tm-memo" value="${esc(cur.memo)}" placeholder="예: ’27.02"></label>
-    ${t ? `<div class="muted" style="font-size:11.5px">R&R 세부계획 ${pl.filter(p=>p.done).length}/${pl.length} 완료 · 진행률 ${pct(msProg(t))}% <a href="#rnr" onclick="event.preventDefault();openRR('${t.id}')">세부계획 편집 →</a></div>` : ''}`;
+    <label class="f">진행률${pl.length?` <span class="muted" style="font-weight:500">(세부계획 ${pl.filter(p=>p.done).length}/${pl.length} 완료 기준으로 자동 계산)</span>`:''}<select id="tm-prog" ${pl.length?'disabled':''}>${[0,10,20,30,40,50,60,70,80,90,100].map(v=>`<option value="${v}" ${v===(t?Math.round(msProg(t)*10)*10:0)?'selected':''}>${v}%${v===100?' (완료)':''}</option>`).join('')}</select></label>`;
   let useColor = !!cur.color;
   modal({ title: t ? '추진업무 수정' : '추진업무 등록', body, ok: t ? '수정 저장' : '마일스톤에 반영',
     left: t ? `<button class="btn" style="color:var(--red)" id="tm-del">삭제</button>` : '',
@@ -958,9 +1228,9 @@ function openTaskModal(taskId = null, catId = null, row = 0, abs = null){
       const kind = v('#tm-kind');
       const key = v('#tm-row'), isRoom = key.startsWith('room:');
       const data = { catId: v('#tm-cat'), row: isRoom ? -1 : Number(key.slice(2)), roomId: isRoom ? key.slice(5) : '', startYm: v('#tm-ym'), startWeek: Number(v('#tm-wk')), kind,
-        weeks: kind === 'point' ? 1 : clamp(Number(v('#tm-weeks'))||1, 1, 150), title: v('#tm-title').trim(), color: useColor ? v('#tm-color') : '', memo: v('#tm-memo').trim() };
+        progress: Number(v('#tm-prog'))||0, done: Number(v('#tm-prog')) === 100, weeks: kind === 'point' ? 1 : clamp(Number(v('#tm-weeks'))||1, 1, 150), title: v('#tm-title').trim(), color: useColor ? v('#tm-color') : '', memo: v('#tm-memo').trim() };
       if (!data.title) { toast('추진업무 내용을 입력하세요.', 'warn'); return false; }
-      if (kind !== 'point') {
+      if (kind !== 'point' && !key.startsWith('room:')) {
         const a = ymN(data.startYm)*4 + data.startWeek - 1, b = a + data.weeks - 1;
         const clash = S.ms_tasks.find(x => x.id !== taskId && x.kind !== 'point' && x.catId === data.catId && laneKey(x) === key && !(b < taskAbs(x) || a > taskEnd(x)));
         if (clash) { toast(`같은 행의 '${clash.title}'과(와) 기간이 겹칩니다. 다른 행을 선택하세요.`, 'warn'); return false; }
@@ -974,48 +1244,45 @@ const catTypeVal = c => c.type === 'space' ? 'space:' + (c.div || 'clubhouse') :
 function openCatMgr(){
   const draw = el => {
     const list = cats();
-    el.querySelector('#cm-list').innerHTML = list.map((c,i) => `<div class="it" data-id="${c.id}">
-      <input type="text" value="${esc(c.group||'')}" data-f="group" placeholder="상위 구분(선택)">
-      <input type="text" value="${esc(c.name)}" data-f="name">
-      <input type="text" value="${esc(rowLabels(c).join(', '))}" data-f="rowLabels" title="행 이름을 쉼표로 구분 (행 개수 = 이름 개수)">
-      <select data-f="type">${CAT_TYPES.map(([k,v])=>`<option value="${k}" ${catTypeVal(c)===k?'selected':''}>${v}</option>`).join('')}</select>
-      <div class="row" style="gap:2px"><button class="x" data-mv="-1" ${i===0?'disabled':''}>↑</button><button class="x" data-mv="1" ${i===list.length-1?'disabled':''}>↓</button><button class="x" data-del>🗑</button></div></div>`).join('') || '<div class="muted">업무가 없습니다.</div>';
+    el.querySelector('#cm-list').innerHTML = list.map((c,i) => { const nR = c.type === 'space' ? roomsOf(c.div).length : 0;
+      return `<div class="it" data-id="${c.id}">
+      <span class="cm-no">${i+1}</span>
+      <input type="text" value="${esc(c.name)}" data-f="name" placeholder="구역명">
+      <input type="text" value="${esc(rowLabels(c).join(', '))}" data-f="rowLabels" placeholder="공통 일정 행 (쉼표로 구분)">
+      ${c.type === 'space' ? `<button class="btn sm" data-rooms>상세실 ${nR}개 관리</button>` : '<span class="muted" style="font-size:11px">상세실 없음</span>'}
+      <div class="row" style="gap:2px"><button class="x" data-mv="-1" ${i===0?'disabled':''}>↑</button><button class="x" data-mv="1" ${i===list.length-1?'disabled':''}>↓</button><button class="x" data-del>🗑</button></div></div>`; }).join('') || '<div class="muted">구역이 없습니다.</div>';
     el.querySelectorAll('#cm-list .it').forEach(it => {
       const id = it.dataset.id, c = S.categories.find(x=>x.id===id);
       it.querySelectorAll('[data-f]').forEach(inp => inp.onchange = async () => {
-        const f = inp.dataset.f; let patch = {};
-        if (f === 'name') { if (!inp.value.trim()) return; patch.name = inp.value.trim(); }
-        else if (f === 'group') patch.group = inp.value.trim();
-        else if (f === 'type') { const [tp, dv] = inp.value.split(':'); patch.type = tp; patch.div = dv || ''; }
-        else { const labels = inp.value.split(',').map(s=>s.trim()).filter(Boolean); if (!labels.length) return;
-          const maxRow = Math.max(-1, ...S.ms_tasks.filter(t=>t.catId===id && !t.roomId).map(t=>Number(t.row)||0));
-          if (labels.length <= maxRow) { toast(`${maxRow+1}번째 행에 일정이 있어 행을 ${maxRow+1}개 미만으로 줄일 수 없습니다.`, 'warn'); inp.value = rowLabels(c).join(', '); return; }
-          patch.rowLabels = labels; patch.rows = labels.length; }
-        await safe(Store.upd('categories', id, patch)); });
+        if (inp.dataset.f === 'name') { if (!inp.value.trim()) { inp.value = c.name; return; } return safe(Store.upd('categories', id, { name: inp.value.trim() })); }
+        const labels = inp.value.split(',').map(s=>s.trim()).filter(Boolean); if (!labels.length) { inp.value = rowLabels(c).join(', '); return; }
+        const maxRow = Math.max(-1, ...S.ms_tasks.filter(t=>t.catId===id && !t.roomId).map(t=>Number(t.row)||0));
+        if (labels.length <= maxRow) { toast(`${maxRow+1}번째 공통 행에 일정이 있어 행을 ${maxRow+1}개 미만으로 줄일 수 없습니다.`, 'warn'); inp.value = rowLabels(c).join(', '); return; }
+        await safe(Store.upd('categories', id, { rowLabels: labels, rows: labels.length }));
+      });
+      const rb = it.querySelector('[data-rooms]'); if (rb) rb.onclick = () => openRoomMgr(c.div);
       it.querySelectorAll('[data-mv]').forEach(b => b.onclick = async () => {
         const L = cats(), i = L.findIndex(x=>x.id===id), j = i + Number(b.dataset.mv); if (j<0||j>=L.length) return;
         await safe(Promise.all(L.map((x,k)=>{ const o = k===i?j:k===j?i:k; return x.order===o?null:Store.upd('categories', x.id, { order:o }); })));
         setTimeout(()=>draw(el), 120); });
       it.querySelector('[data-del]').onclick = async () => {
         const ts = S.ms_tasks.filter(t=>t.catId===id), pls = S.plans.filter(p=>ts.some(t=>t.id===p.msId));
-        if (!await confirmBox(`'${c.name}' 업무를 삭제할까요?\n마일스톤 ${ts.length}건과 R&R 세부계획 ${pls.length}건도 함께 삭제됩니다.`)) return;
+        if (!await confirmBox(`'${c.name}' 구역을 삭제할까요?\n마일스톤 ${ts.length}건도 함께 삭제됩니다. (상세실·도면·집기 기록은 남습니다)`)) return;
         await safe(Promise.all([Store.del('categories', id), ...ts.map(t=>Store.del('ms_tasks', t.id)), ...pls.map(p=>Store.del('plans', p.id))]), '삭제했습니다.');
-        if (ui.cat === id) go({ cat: null }); setTimeout(()=>draw(el), 150); };
+        if (ui.cat === id) ui.cat = null; setTimeout(()=>draw(el), 150); };
     });
   };
-  modal({ title: '업무명 / 행 설정', size: 'xwide', ok: '', cancel: '완료',
-    body: `<div class="muted" style="font-size:12px">행 이름은 쉼표로 구분합니다 (예: 업역 협의, 장비 반입, 사전 준비, 공사). ‘공간관리’ 유형은 실별 의사결정·도면·집기·인테리어 탭이 함께 열립니다.</div>
-      <div class="cmgr" id="cm-list" style="display:flex;flex-direction:column;gap:6px"></div>
-      <div class="form" style="grid-template-columns:1fr 1fr 2fr 190px auto;margin:0">
-        <label class="f">상위 구분<input type="text" id="cm-group" placeholder="예: 야구단 인테리어"></label>
-        <label class="f">새 업무명<input type="text" id="cm-name" placeholder="예: 미디어센터"></label>
-        <label class="f">행 이름 (쉼표 구분)<input type="text" id="cm-rows" placeholder="예: 설계, 공사"></label>
-        <label class="f">유형<select id="cm-type">${CAT_TYPES.map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label>
-        <button class="btn dark" id="cm-add">추가</button></div>`,
+  modal({ title: '구역 / 행 설정', size: 'wide', ok: '', cancel: '완료',
+    body: `<div class="muted" style="font-size:12px">구역명과 마일스톤의 ‘공통 일정’ 행을 정합니다. 공통 행은 쉼표로 구분하고(예: 인테리어 사전협의, 공사), 상세실은 ‘상세실 관리’에서 추가·이름변경·순서변경합니다.</div>
+      <div class="cmgr2" id="cm-list"></div>
+      <div class="form" style="grid-template-columns:1fr 1.6fr auto;margin:0">
+        <label class="f">새 구역명<input type="text" id="cm-name" placeholder="예: 미디어센터"></label>
+        <label class="f">공통 일정 행 (쉼표 구분)<input type="text" id="cm-rows" placeholder="예: 설계, 공사"></label>
+        <button class="btn dark" id="cm-add">구역 추가</button></div>`,
     onOpen: el => { draw(el); el.querySelector('#cm-add').onclick = async () => {
-      const name = el.querySelector('#cm-name').value.trim(); if (!name) return toast('업무명을 입력하세요.', 'warn');
-      const labels = el.querySelector('#cm-rows').value.split(',').map(s=>s.trim()).filter(Boolean); const [tp, dv] = el.querySelector('#cm-type').value.split(':');
-      await safe(Store.add('categories', { name, group: el.querySelector('#cm-group').value.trim(), rowLabels: labels.length ? labels : ['1행'], rows: Math.max(1, labels.length), type: tp, div: dv || '', order: S.categories.length }), `'${name}'을(를) 추가했습니다.`);
+      const name = el.querySelector('#cm-name').value.trim(); if (!name) return toast('구역명을 입력하세요.', 'warn');
+      const labels = el.querySelector('#cm-rows').value.split(',').map(s=>s.trim()).filter(Boolean);
+      await safe(Store.add('categories', { name, group: '', rowLabels: labels.length ? labels : ['공통 일정'], rows: Math.max(1, labels.length), type: 'space', div: 'z' + uid(), order: S.categories.length }), `'${name}' 구역을 추가했습니다.`);
       el.querySelector('#cm-name').value = ''; el.querySelector('#cm-rows').value = ''; setTimeout(()=>draw(el), 150); }; } });
 }
 function openMarkerMgr(){
@@ -1151,7 +1418,7 @@ function renderRoomsOverview(){
           <button class="btn sm ghost" onclick="openRoomMgr('${c.div}')">실 추가·수정</button>`
         : `<div class="muted" style="font-size:12px;padding:8px 2px">${esc(c.name)}은(는) 공간 단위가 아닌 별도 프로젝트로 관리합니다.</div>`}</div>`; }).join('')}</div></section>`;
 }
-function goRoom(catId, roomId){ ui.room = roomId; ui.div = (S.categories.find(c=>c.id===catId)||{}).div; ui.tab = 'decision'; goPage('cat', catId); }
+function goRoom(catId, roomId){ ui.room = roomId; ui.lastCat = catId; ui.div = (S.categories.find(c=>c.id===catId)||{}).div; ui.tab = 'decision'; goPage('cat', catId); }
 function renderCats(){
   const list = cats(); if (!list.length) return '';
   return `<section class="cats">${list.map(c => {
@@ -1164,6 +1431,7 @@ function renderCats(){
       <div class="now">${cur.length ? '지금: ' + esc(cur.map(t=>t.title).join(', ')) : '<span class="muted">지금 진행 중인 마일스톤 없음</span>'}</div>
     </button>`; }).join('')}</section>`;
 }
+const dispName = n => esc(n).replace(/\s*-\s*/, '<br>-');
 const typeLabel = c => c.type === 'space' ? '공간·도면 관리' : '상세 R&R';
 function selectCat(id){ goPage('cat', id); }
 
@@ -1199,14 +1467,14 @@ function projectPanel(c){
     <div class="grid2">
       <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
         <div class="panel"><div class="ph">프로젝트 상세내용</div><div class="pb"><textarea rows="4" placeholder="목적, 범위, 예산, 주요 이해관계자 등" onchange="projSet('${c.id}','summary',this.value)">${esc(p.summary||'')}</textarea></div></div>
-        <div class="panel"><div class="ph">마일스톤별 R&R 현황 <span class="muted" style="font-weight:500">세부계획·책임자·담당자는 R&R 탭에서 작성</span><div class="grow"></div><button class="btn sm" onclick="go({rrCat:'${c.id}'});goPage('rr')">R&R 열기 →</button></div>
+        <div class="panel"><div class="ph">마일스톤별 상세 R&R <span class="muted" style="font-weight:500">행을 누르면 세부계획·책임자·담당자를 작성합니다</span></div>
           <div class="tbl-wrap" style="border:none;border-radius:0"><table class="t"><thead><tr><th style="width:84px">상태</th><th>행</th><th style="min-width:200px">마일스톤</th><th>기간</th><th>책임자</th><th>실무자</th><th style="width:120px">진행률</th></tr></thead><tbody>
-          ${ts.map(t => { const st = msStatus(t), ppl = msPeople(t), q = pct(msProg(t)); return `<tr style="cursor:pointer" onclick="openRR('${t.id}')">
+          ${ts.map(t => { const st = msStatus(t), ppl = msPeople(t), q = pct(msProg(t)); const op = !!(ui.rrOpen||{})[t.id]; return `<tr style="cursor:pointer;${op?'background:#f5f8ff':''}" onclick="toggleRR('${t.id}')">
             <td><span class="chip ${ST_CHIP[st]}">${ST_LABEL[st]}</span></td><td class="muted" style="white-space:nowrap">${esc(laneLabel(c,t))}</td>
             <td><span class="kd kd-${t.kind||'main'}"></span> <b>${esc(t.title)}</b></td><td class="muted" style="white-space:nowrap">${periodText(t)}</td>
             <td>${ppl.leads.map(n=>`<span class="chip d">${esc(n)}</span>`).join(' ')||'<span class="muted">-</span>'}</td>
             <td>${ppl.staff.map(n=>`<span class="chip">${esc(n)}</span>`).join(' ')||'<span class="muted">-</span>'}</td>
-            <td><div class="row" style="gap:6px"><div class="pbar" style="flex:1"><i style="width:${q}%"></i></div><b style="font-size:11.5px">${q}%</b></div></td></tr>`; }).join('') || `<tr><td colspan="7" class="empty">이 업무의 마일스톤이 없습니다.</td></tr>`}
+            <td><div class="row" style="gap:6px"><div class="pbar" style="flex:1"><i style="width:${q}%"></i></div><b style="font-size:11.5px">${q}%</b></div></td></tr>${op?`<tr><td colspan="7" style="padding:0">${planEditor(t)}</td></tr>`:''}`; }).join('') || `<tr><td colspan="7" class="empty">이 업무의 마일스톤이 없습니다.</td></tr>`}
           </tbody></table></div></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
@@ -1254,7 +1522,7 @@ function exportProject(catId){
 }
 
 /* 이사 ↔ 청라돔 집기 크로스체크 */
-const DIVS = { clubhouse: '클럽하우스', office: '사무실(프런트 시설)', moving: '이사(창고·지원시설)' };
+const DIVS = { clubhouse: '선수단시설-홈경기시설', office: '구단 사무실', moving: '기타시설' };
 function movingRows(){
   return S.fixtures.filter(f=>f.source==='문학 이전').map(f=>({ '구분': DIVS[f.div]||'', '실': roomName(f.room), '집기명': f.name, '수량': Number(f.qty)||0, '문학 현위치': f.fromLoc||'', '이사 확인': f.moveChecked?'확인':'미확인', '청라 도면반영': f.drawing?'O':'', '비고': f.remark||'' }));
 }
@@ -1276,11 +1544,18 @@ function renderMovingCross(){
    청라돔 이전 — 실(Room) 관리
    ========================================================= */
 const roomsOf = div => S.rooms.filter(r=>r.div===div).sort(byOrder);
-const roomName = id => id === '_all' ? '전체(공용)' : (S.rooms.find(r=>r.id===id)?.name || '(삭제된 실)');
-const roomOrder = id => { const r = S.rooms.find(x=>x.id===id); return r ? (r.order ?? 0) : 999; };
+/* 이사 구분의 가상 실: 클럽하우스·사무실 탭의 DB를 그대로 보여줌 */
+const VROOMS = {
+  _club_all:   { id: '_club_all',   name: DIVS.clubhouse + ' 전체실', div: 'clubhouse', order: -2, virtual: true },
+  _office_all: { id: '_office_all', name: DIVS.office + ' 전체실',     div: 'office',    order: -1, virtual: true }
+};
+const navRooms = div => div === 'moving' ? [VROOMS._club_all, VROOMS._office_all, ...roomsOf(div)] : roomsOf(div);
+const curRoom = () => VROOMS[ui.room] ? 'ALL' : ui.room;
+const roomName = id => id === '_all' ? '전체(공용)' : VROOMS[id] ? VROOMS[id].name : (S.rooms.find(r=>r.id===id)?.name || '(삭제된 실)');
+const roomOrder = id => { if (VROOMS[id]) return VROOMS[id].order - 100; const r = S.rooms.find(x=>x.id===id); return r ? (r.order ?? 0) : 999; };
 const roomOpts = (div, sel, withAll) => (withAll ? `<option value="_all" ${sel==='_all'?'selected':''}>전체(공용)</option>` : '') + roomsOf(div).map(r=>`<option value="${r.id}" ${r.id===sel?'selected':''}>${esc(r.name)}</option>`).join('');
-const defRoom = div => (ui.room !== 'ALL' && S.rooms.some(r=>r.id===ui.room && r.div===div)) ? ui.room : (roomsOf(div)[0]?.id || '_all');
-const inDiv = (arr, div) => arr.filter(x => x.div === div && (ui.room === 'ALL' || x.room === ui.room || x.room === '_all'));
+const defRoom = div => (curRoom() !== 'ALL' && S.rooms.some(r=>r.id===ui.room && r.div===div)) ? ui.room : (roomsOf(div)[0]?.id || '_all');
+const inDiv = (arr, div) => { const rm = curRoom(); return arr.filter(x => x.div === div && (rm === 'ALL' || x.room === rm || x.room === '_all')); };
 function openRoomMgr(div){
   const draw = el => {
     const list = roomsOf(div);
@@ -1309,18 +1584,22 @@ function openRoomMgr(div){
    ========================================================= */
 const CTABS = [['pm','상세 R&R'],['flow','워크플로우 현황'],['decision','실별 의사결정사항'],['drawing','도면 DB'],['fixture','실별 집기배치'],['interior','실별 인테리어상세계획']];
 function renderCheongna(c){
-  const div = DIVS[c.div] ? c.div : 'clubhouse';
-  if (ui.div !== div) { ui.div = div; ui.room = 'ALL'; draft = null; }
-  const tabs = div === 'moving' ? [...CTABS.filter(([k]) => k !== 'interior'), ['cross','문학↔청라 크로스체크']] : CTABS;
+  const div0 = DIVS[c.div] ? c.div : 'clubhouse';
+  if (ui.lastCat !== c.id) { ui.lastCat = c.id; ui.room = 'ALL'; draft = null; }
+  const navR = navRooms(div0);
+  if (ui.room !== 'ALL' && !navR.some(r=>r.id===ui.room)) ui.room = 'ALL';
+  const vr = VROOMS[ui.room];
+  const div = vr ? vr.div : div0;          // 가상 실이면 원래 구분(클럽하우스/사무실) DB를 그대로 사용
+  if (ui.div !== div) { ui.div = div; draft = null; }
+  const tabs = div0 === 'moving' ? [...CTABS.filter(([k]) => k !== 'interior'), ['cross','문학↔청라 크로스체크']] : CTABS;
   if (!tabs.some(([k]) => k === ui.tab)) ui.tab = 'pm';
-  const rooms = roomsOf(div);
-  if (ui.room !== 'ALL' && !rooms.some(r=>r.id===ui.room)) ui.room = 'ALL';
+  const rooms = roomsOf(div0);
   const cnt = { decision: inDiv(S.decisions, div).filter(d=>d.status!=='완결').length, drawing: inDiv(S.drawings, div).length,
                 fixture: inDiv(S.fixtures, div).length, interior: inDiv(S.interior_reqs, div).length,
                 cross: S.fixtures.filter(f=>f.source==='문학 이전' && !f.moveChecked).length };
   let body = '';
-  if (ui.tab === 'pm') body = projectPanel(c) + `<div class="panel" style="margin-top:14px"><div class="ph">${esc(DIVS[div])} 실 목록 <span class="chip">${rooms.length}실</span><span class="muted" style="font-weight:500">실 이름을 누르면 해당 실의 의사결정사항으로 이동</span><div class="grow"></div><button class="btn sm ghost" onclick="openRoomMgr('${div}')">실 추가·수정</button></div>
-      <div class="pb"><ol class="rov-list wide">${rooms.map(r=>`<li onclick="goRoom('${c.id}','${r.id}')">${esc(r.name)}</li>`).join('') || '<li class="muted">등록된 실이 없습니다</li>'}</ol></div></div>`;
+  if (ui.tab === 'pm') body = projectPanel(c) + `<div class="panel" style="margin-top:14px"><div class="ph">${esc(DIVS[div0])} 실 목록 <span class="chip">${navR.length}실</span><span class="muted" style="font-weight:500">실 이름을 누르면 해당 실의 의사결정사항으로 이동</span><div class="grow"></div><button class="btn sm ghost" onclick="openRoomMgr('${div0}')">실 추가·수정</button></div>
+      <div class="pb"><ol class="rov-list wide">${navR.map(r=>`<li onclick="goRoom('${c.id}','${r.id}')"${r.virtual?' style="font-weight:800;color:var(--acc)"':''}>${esc(r.name)}</li>`).join('') || '<li class="muted">등록된 실이 없습니다</li>'}</ol></div></div>`;
   else if (ui.tab === 'cross') body = renderMovingCross();
   else if (ui.tab === 'decision') body = tabDecision(div);
   else if (ui.tab === 'drawing') body = tabDrawing(div);
@@ -1328,15 +1607,440 @@ function renderCheongna(c){
   else if (ui.tab === 'interior') body = tabInterior(div);
   else body = tabFlow(div);
   const noRoomBar = ui.tab === 'pm' || ui.tab === 'cross' || (ui.tab === 'fixture' && ui.fxTab === 'layout');
-  return `<div class="ws-h"><div>${c.group?`<div class="muted" style="font-size:11.5px">${esc(c.group)}</div>`:''}<h3>${esc(c.name)}</h3><div class="d">실별 요청사항 → 리스트업(인테리어·집기) → 도면 DB → 공사 구현 · 이사 크로스체크 흐름으로 관리합니다. · 공간 구분: ${esc(DIVS[div])} (${rooms.length}실)</div></div></div>
+  return `<div class="ws-h"><div>${c.group?`<div class="muted" style="font-size:11.5px">${esc(c.group)}</div>`:''}<h3>${esc(c.name)}</h3><div class="d">실별 요청사항 → 리스트업(인테리어·집기) → 도면 DB → 공사 구현 · 이사 크로스체크 흐름으로 관리합니다. · 공간 구분: ${esc(DIVS[div0])} (${navR.length}실)</div></div></div>
     <div class="tabs">${tabs.map(([k,v])=>`<button class="${ui.tab===k?'on':''}" onclick="go({tab:'${k}'})">${v}${cnt[k]?`<span class="n">${k==='decision'?'미결 ':k==='cross'?'미확인 ':''}${cnt[k]}</span>`:''}</button>`).join('')}</div>
     ${noRoomBar ? '' : `<div class="roombar"><span class="lbl">실 선택</span>
       <button class="${ui.room==='ALL'?'on':''}" onclick="go({room:'ALL'})">전체</button>
-      ${rooms.map(r=>`<button class="${ui.room===r.id?'on':''}" onclick="go({room:'${r.id}'})">${esc(r.name)}</button>`).join('')}
-      <div class="grow"></div><button class="btn sm ghost" onclick="openRoomMgr('${div}')">실 추가·수정</button></div>
-      ${rooms.length ? '' : `<div class="banner" style="margin-bottom:12px">${DIVS[div]}에 등록된 실이 없습니다. ‘실 추가·수정’에서 실을 먼저 등록하세요.</div>`}`}
+      ${navR.map(r=>`<button class="${ui.room===r.id?'on':''} ${r.virtual?'vr':''}" onclick="go({room:'${r.id}'})">${esc(r.name)}</button>`).join('')}
+      <div class="grow"></div><button class="btn sm ghost" onclick="openRoomMgr('${div0}')">실 추가·수정</button></div>
+      ${vr ? `<div class="banner vrb" style="margin-bottom:12px"><b>${esc(vr.name)}</b> — ${esc(DIVS[vr.div])} 탭에서 정리한 의사결정·도면·집기 DB를 그대로 보여줍니다. 여기서 수정하거나 추가하면 ${esc(DIVS[vr.div])} 탭에도 똑같이 반영됩니다.</div>` : ''}
+      ${navR.length ? '' : `<div class="banner" style="margin-bottom:12px">${DIVS[div0]}에 등록된 실이 없습니다. ‘실 추가·수정’에서 실을 먼저 등록하세요.</div>`}`}
     ${body}`;
 }
+
+/* =========================================================
+   구역 페이지 (CCTV형): ① 전체 위치도 → ② 선택한 실 상세 → ③ 실별 요약 리스트
+   ========================================================= */
+const reqSt = d => ({ '미결': '검토중', '완결': '반영' })[d.status] || d.status || '검토중';
+const REQ_ST = ['검토중', '반영', '미반영'];
+const LOG_KINDS = ['도면', '집기', '인테리어', '요청', '기타'];
+function roomData(div, rid){
+  const f = col => S[col].filter(x => x.div === div && x.room === rid);
+  const req = f('decisions').sort((a,b)=>String(b.reqDate||'').localeCompare(String(a.reqDate||'')) || (b.createdAt??0)-(a.createdAt??0));
+  const fx = f('fixtures').sort(byOrder), dw = f('drawings').sort(byDate), ly = f('layouts').sort(byDate);
+  const logs = f('room_logs').sort((a,b)=>String(b.date).localeCompare(String(a.date)) || (b.createdAt??0)-(a.createdAt??0));
+  const cnt = s => req.filter(d => reqSt(d) === s).length;
+  const open = cnt('검토중');
+  const status = open ? 'open' : (req.length || fx.length || dw.length || ly.length) ? 'ok' : 'none';
+  const lastDw = [...dw].reverse().find(d => d.kind !== '렌더링') || dw[dw.length-1];
+  return { req, fx, dw, ly, logs, open, done: cnt('반영'), no: cnt('미반영'), status, lastDw, lastLy: ly[ly.length-1],
+           qty: fx.reduce((s,x)=>s+(Number(x.qty)||0),0), fxOk: fx.filter(x=>x.reflected==='반영완료').length,
+           lastChange: logs[0] };
+}
+const RST = { open: ['검토 필요', 'a'], ok: ['진행 중', 'g'], none: ['정보 없음', ''] };
+async function logRoom(div, room, kind, text){
+  if (!div || !room || VROOMS[room]) return;
+  await safe(Store.add('room_logs', { div, room, date: today(), kind, text, author: nameCache[caps.myId] || '' }));
+}
+
+function renderSpace(c){
+  const div = DIVS[c.div] ? c.div : 'clubhouse';
+  if (ui.lastCat !== c.id) { ui.lastCat = c.id; ui.selRoom = ''; ui.mapId = ''; ui.mapEdit = false; ui.layEdit = false; ui.placeRoom = ''; draft = null; }
+  ui.div = div;
+  const rooms = roomsOf(div), nav = navRooms(div);
+  const maps = S.sitemaps.filter(m => m.div === div).sort(byOrder);
+  const map = maps.find(m => m.id === ui.mapId) || maps[0];
+  const sel = rooms.find(r => r.id === ui.selRoom);
+  const placed = rooms.filter(r => r.mapId && maps.some(m => m.id === r.mapId)).length;
+  const openAll = S.decisions.filter(d => d.div === div && reqSt(d) === '검토중').length;
+  return `<div class="ws-h"><div><h3>${esc(c.name)}</h3><div class="d">위치도에서 실을 누르면 그 실의 도면·집기·요청사항·변경 이력과 최신 요약을 볼 수 있습니다.</div></div><div class="grow"></div>
+      <div class="row"><span class="chip">실 ${nav.length}</span><span class="chip b">위치도 배치 ${placed}/${rooms.length}</span><span class="chip ${openAll?'a':''}">검토 중 요청 ${openAll}</span></div></div>
+    ${siteMapSection(div, maps, map, rooms)}
+    <div id="room-detail">${sel ? roomDetail(div, sel) : `<section class="sp-card"><div class="empty">위치도나 아래 리스트에서 실을 누르면 이 자리에 실 상세정보가 나옵니다.</div></section>`}</div>
+    ${roomListup(div, rooms)}`;
+}
+
+/* ---------- ① 전체 위치도 (층별) ---------- */
+const FLOORS = ['B3F','B2F','B1F','1F','2F','3F','4F','5F','6F','7F','8F','기타'];
+function floorOf(m){ if (!m) return ''; if (m.floor) return m.floor; const t = String(m.name||'');
+  let x = t.match(/B\s*(\d)\s*F/i) || t.match(/지하\s*(\d)/); if (x) return 'B' + x[1] + 'F';
+  x = t.match(/(\d{1,2})\s*F/i) || t.match(/지상\s*(\d{1,2})/) || t.match(/(\d{1,2})\s*층/); if (x) return (+x[1]) + 'F';
+  return '기타'; }
+const floorRank = f => { const b = /^B(\d)F$/.exec(f); if (b) return -Number(b[1]); const n = /^(\d+)F$/.exec(f); return n ? Number(n[1]) : 99; };
+const mapsOf = div => S.sitemaps.filter(m => m.div === div).sort((a,b) => floorRank(floorOf(a)) - floorRank(floorOf(b)) || byOrder(a,b));
+const mapLabel = m => { if (!m) return ''; const f = floorOf(m), n = String(m.name||'').trim(); return n && n !== f ? `${f} · ${n}` : f; };
+const mapLabelOf = id => mapLabel(S.sitemaps.find(m => m.id === id));
+function curMap(div){ const maps = mapsOf(div);
+  if (ui.mapId === 'ALL') return maps.length > 1 ? null : maps[0] || null;
+  return maps.find(m => m.id === ui.mapId) || (maps.length > 1 ? null : maps[0] || null); }
+function siteMapSection(div, maps, map, rooms){
+  maps = mapsOf(div); map = curMap(div);
+  const all = !map && maps.length > 1;
+  const edit = ui.mapEdit && map;
+  const onMap = map ? rooms.filter(r => r.mapId === map.id) : [];
+  const unplaced = rooms.filter(r => !r.mapId || !maps.some(m => m.id === r.mapId));
+  const cnt = m => rooms.filter(r => r.mapId === m.id).length;
+  const boxes = (m, ed) => rooms.filter(r => r.mapId === m.id).map(r => { const st = roomData(div, r.id).status; return `<div class="rbox st-${st} ${r.id===ui.selRoom?'sel':''} ${r.id===ui.placeRoom?'placing':''}" data-id="${r.id}" style="left:${r.mx}%;top:${r.my}%;width:${r.mw}%;height:${r.mh}%" title="${esc(r.name)}"><span>${esc(r.name)}</span>${ed?'<i class="rs"></i>':''}</div>`; }).join('');
+  const tabs = maps.length ? `<div class="fl-tabs">${maps.length > 1 ? `<button class="${all?'on':''}" onclick="go({mapId:'ALL',mapEdit:false,placeRoom:''})">전체 층<small>${maps.length}개</small></button>` : ''}
+      ${maps.map(m=>`<button class="${map&&m.id===map.id?'on':''}" onclick="go({mapId:'${m.id}',placeRoom:''})"><b>${esc(floorOf(m))}</b>${m.name && m.name!==floorOf(m)?` ${esc(m.name)}`:''}<small>${cnt(m)}실</small></button>`).join('')}</div>` : '';
+  let body;
+  if (!maps.length) body = `<div class="empty">${canUpload() ? '‘+ 층별 위치도 등록’으로 층별 평면도(PDF·이미지)를 올린 뒤 실 이름을 도면 위에 배치하세요.<br>PDF는 여러 장을 한 번에 올리고, 페이지마다 층을 지정하거나 필요한 부분만 잘라서 등록할 수 있어요.' : '등록된 위치도가 없습니다.'}</div>`;
+  else if (all) body = `<div class="fl-grid">${maps.map(m => `<div class="fl-card"><div class="fl-h" onclick="go({mapId:'${m.id}'})"><b>${esc(floorOf(m))}</b><span>${esc(m.name && m.name!==floorOf(m) ? m.name : '')}</span><div class="grow"></div><span class="chip ${cnt(m)?'b':''}">${cnt(m)}실</span><span class="muted" style="font-size:11px">크게 보기 →</span></div>
+        <div class="map-box mini"><div class="smap mini" data-map="${m.id}"><img src="${esc(assetUrl(m.imageAsset))}" draggable="false">${boxes(m,false)}</div></div></div>`).join('')}</div>
+      ${unplaced.length ? `<div class="muted" style="font-size:11.5px;margin-top:8px">위치도에 아직 배치하지 않은 실 ${unplaced.length}개 — 층을 고른 뒤 ‘실 배치 편집’에서 배치하세요.</div>` : ''}`;
+  else body = `<div class="map-lay ${edit?'edit':''}">
+        <div class="map-box"><div class="smap ${edit?'edit':''} ${edit&&ui.placeRoom?'placing':''}" id="smap"><img src="${esc(assetUrl(map.imageAsset))}" draggable="false">${boxes(map, edit)}</div></div>
+        ${edit ? `<div class="map-side">
+            <div class="muted" style="font-size:11.5px;margin-bottom:6px">① 아래 목록에서 실을 고르고 ② 위치도 위를 드래그하면 그 자리에 실 이름이 배치됩니다. 배치된 실은 끌어서 옮기고 모서리로 크기를 바꿀 수 있어요.</div>
+            <div class="row" style="margin-bottom:8px"><input type="text" id="new-room" placeholder="새 실명 작성" style="flex:1"><button class="btn sm dark" onclick="addRoomFromMap('${div}')">등록</button></div>
+            <div class="row" style="margin-bottom:6px"><label class="muted" style="font-size:11.5px;display:flex;gap:4px;align-items:center"><input type="checkbox" ${ui.mapOnlyUn?'checked':''} onchange="go({mapOnlyUn:this.checked})">미배치 실만 보기</label></div>
+            <div class="ms-rooms">${rooms.filter(r => !ui.mapOnlyUn || !r.mapId || !maps.some(m=>m.id===r.mapId) || r.id===ui.placeRoom).map(r => { const pl = r.mapId && maps.some(m=>m.id===r.mapId), here = r.mapId === map.id;
+              return `<div class="it ${r.id===ui.placeRoom?'on':''}" onclick="go({placeRoom:'${r.id}'})"><span class="dot ${here?'here':pl?'other':''}"></span><span class="nm">${esc(r.name)}</span>
+                ${pl ? `<span class="muted" style="font-size:10.5px">${here?'이 층':esc(floorOf(maps.find(m=>m.id===r.mapId)))}</span><button class="x" title="배치 해제" onclick="event.stopPropagation();unplaceRoom('${r.id}')">✕</button>` : '<span class="chip a" style="font-size:10px">미배치</span>'}</div>`; }).join('')}</div></div>`
+          : `<div class="map-side view"><div class="legend2"><span><i class="st-open"></i>검토 필요</span><span><i class="st-ok"></i>진행 중</span><span><i class="st-none"></i>정보 없음</span></div>
+            <div class="fl-rooms"><div class="t">${esc(mapLabel(map))} 실 ${onMap.length}개</div>${onMap.map(r => `<div class="it ${r.id===ui.selRoom?'on':''}" onclick="selectRoom('${r.id}')">${esc(r.name)}</div>`).join('') || '<div class="muted" style="font-size:11.5px">아직 배치된 실이 없습니다.</div>'}</div>
+            ${unplaced.length ? `<div class="muted" style="font-size:11.5px;margin-top:8px">미배치 실 ${unplaced.length}개 — ‘실 배치 편집’에서 배치하세요.</div>` : ''}</div>`}
+      </div>`;
+  return `<section class="sp-card"><div class="sp-h"><span class="sp-no">1</span><b>층별 위치도</b><span class="muted" style="font-size:11.5px">${maps.length ? `${[...new Set(maps.map(floorOf))].join(' · ')}` : ''}</span>
+      <div class="grow"></div>
+      ${canUpload() ? `<button class="btn sm pri" onclick="openMapUpload('${div}')">+ 층별 위치도 등록</button>${map?`<button class="btn sm ghost" onclick="openMapUpload('${div}','${map.id}')">이 층 위치도 수정</button>`:''}` : ''}
+      ${map ? `<button class="btn sm ${edit?'red':'dark'}" onclick="go({mapEdit:${!edit},placeRoom:''})">${edit?'배치 완료':'실 배치 편집'}</button>` : ''}</div>
+    ${tabs}${body}
+  </section>`;
+}
+/* PDF·이미지 → 캔버스 (페이지 선택 · 영역 자르기) */
+async function loadPdfJs(){
+  if (!window.pdfjsLib) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+async function pageCanvas(page, longSide){
+  const v0 = page.getViewport({ scale: 1 }), vp = page.getViewport({ scale: longSide / Math.max(v0.width, v0.height) });
+  const c = document.createElement('canvas'); c.width = Math.round(vp.width); c.height = Math.round(vp.height);
+  const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0,0,c.width,c.height);
+  await page.render({ canvasContext: ctx, viewport: vp }).promise; return c;
+}
+async function guessFloors(page){
+  try { const tc = await page.getTextContent(); const t = tc.items.map(i => i.str).join(' '), out = new Set();
+    for (const x of t.matchAll(/지하\s*(\d)\s*층|B\s*(\d)\s*F/gi)) out.add('B' + (x[1]||x[2]) + 'F');
+    for (const x of t.matchAll(/지상\s*(\d{1,2})\s*층/g)) out.add((+x[1]) + 'F');
+    return [...out].sort((a,b) => floorRank(a) - floorRank(b)); } catch(e) { return []; }
+}
+const guessFloor = async page => (await guessFloors(page))[0] || '';
+function cropCanvas(src, r){
+  if (!r || r.w < 1 || r.h < 1) return src;
+  const sx = Math.round(src.width * r.x / 100), sy = Math.round(src.height * r.y / 100), sw = Math.round(src.width * r.w / 100), sh = Math.round(src.height * r.h / 100);
+  const c = document.createElement('canvas'); c.width = sw; c.height = sh; c.getContext('2d').drawImage(src, sx, sy, sw, sh, 0, 0, sw, sh); return c;
+}
+function openMapUpload(div, mapId){
+  const m = mapId ? S.sitemaps.find(x => x.id === mapId) : null;
+  const st = { pdf: null, pages: 0, page: 0, src: null, crop: null, items: [], fileName: '' };
+  const flOpts = sel => FLOORS.map(f => `<option ${f===sel?'selected':''}>${f}</option>`).join('');
+  const md = modal({ title: m ? `위치도 수정 — ${mapLabel(m)}` : '층별 위치도 등록', size: 'xwide', ok: m ? '저장' : '등록', body: `
+    <div class="mu-grid">
+      <div>
+        <label class="f">${m ? '새 이미지로 교체 (선택)' : '평면도 파일 (PDF 여러 페이지 · PNG · JPG)'}<input type="file" id="mu-file" accept="image/png,image/jpeg,image/webp,application/pdf"></label>
+        <div id="mu-pages" class="mu-pages"></div>
+        <div id="mu-stage" class="mu-stage"><div class="muted" style="padding:40px;text-align:center">${m ? '이미지를 바꾸지 않으려면 층·이름만 수정하고 저장하세요.' : 'PDF를 올리면 페이지가 나옵니다. 페이지를 고르고, 필요하면 도면 위를 드래그해 그 층 부분만 잘라내세요.'}</div></div>
+      </div>
+      <div class="mu-side">
+        <label class="f">층<select id="mu-floor">${flOpts(m ? floorOf(m) : '')}</select></label>
+        <label class="f">이름 (선택)<input type="text" id="mu-name" value="${esc(m && m.name !== floorOf(m) ? m.name||'' : '')}" placeholder="예: 구단 사무실, 매표소·의무실"></label>
+        <div class="muted" style="font-size:11.5px;line-height:1.5">· 한 페이지에 여러 층이 있으면 영역을 드래그해 잘라서 층마다 따로 추가하세요.<br>· 영역을 안 그리면 페이지 전체가 들어갑니다.${m?'<br>· 이미지를 바꿔도 배치된 실 위치(%)는 그대로라 위치를 다시 맞춰야 할 수 있어요.':''}</div>
+        ${m ? '' : `<button class="btn dark" id="mu-add" style="width:100%;margin-top:6px" disabled>이 화면을 위치도로 추가 ↓</button>
+        <div class="t" style="font-weight:800;font-size:12px;margin:10px 0 4px">등록할 위치도 <span id="mu-n">0</span></div><div id="mu-list" class="mu-list"><div class="muted" style="font-size:11.5px">아직 추가한 위치도가 없습니다.</div></div>`}
+      </div>
+    </div>`,
+    left: m ? `<button class="btn" style="color:var(--red)" id="mu-del">위치도 삭제</button>` : '',
+    onOpen: (el, close) => {
+      const stage = el.querySelector('#mu-stage'), pagesEl = el.querySelector('#mu-pages');
+      const d = el.querySelector('#mu-del'); if (d) d.onclick = async () => { close();
+        const n = S.rooms.filter(r=>r.mapId===m.id).length;
+        if (!await confirmBox(`'${mapLabel(m)}' 위치도를 삭제할까요?${n?`\n배치된 실 ${n}개는 미배치 상태가 됩니다.`:''}`)) return;
+        await safe(Promise.all([Store.del('sitemaps', m.id), ...S.rooms.filter(r=>r.mapId===m.id).map(r=>Store.upd('rooms', r.id, { mapId: '' }))]), '삭제했습니다.'); go({ mapId: '' }); };
+      const showStage = () => {
+        if (!st.src) return; stage.innerHTML = ''; const wrap = document.createElement('div'); wrap.className = 'mu-cv';
+        const img = document.createElement('img'); img.src = st.src.toDataURL('image/jpeg', .7); img.draggable = false; wrap.appendChild(img);
+        const box = document.createElement('div'); box.className = 'mu-crop'; box.style.display = 'none'; wrap.appendChild(box);
+        const tip = document.createElement('div'); tip.className = 'mu-tip'; tip.textContent = '드래그해서 영역 자르기 (선택)'; wrap.appendChild(tip);
+        stage.appendChild(wrap); st.crop = null;
+        let p0 = null; const pt = e => { const r = wrap.getBoundingClientRect(); return { x: clamp((e.clientX-r.left)/r.width*100,0,100), y: clamp((e.clientY-r.top)/r.height*100,0,100) }; };
+        wrap.onpointerdown = e => { p0 = pt(e); wrap.setPointerCapture(e.pointerId); e.preventDefault(); };
+        wrap.onpointermove = e => { if (!p0) return; const p = pt(e); st.crop = { x: Math.min(p0.x,p.x), y: Math.min(p0.y,p.y), w: Math.abs(p.x-p0.x), h: Math.abs(p.y-p0.y) };
+          Object.assign(box.style, { display: 'block', left: st.crop.x+'%', top: st.crop.y+'%', width: st.crop.w+'%', height: st.crop.h+'%' }); tip.textContent = '선택한 영역만 위치도로 들어갑니다 · 다시 드래그하면 새로 선택'; };
+        wrap.onpointerup = () => { p0 = null; if (st.crop && (st.crop.w < 2 || st.crop.h < 2)) { st.crop = null; box.style.display = 'none'; tip.textContent = '드래그해서 영역 자르기 (선택)'; } };
+        const ab = el.querySelector('#mu-add'); if (ab) ab.disabled = false;
+      };
+      const openPage = async i => { st.page = i; pagesEl.querySelectorAll('.pg').forEach((x,j)=>x.classList.toggle('on', j===i));
+        stage.innerHTML = '<div class="muted" style="padding:40px;text-align:center">페이지를 불러오는 중…</div>';
+        const pg = await st.pdf.getPage(i+1); st.src = await pageCanvas(pg, 2600); const f = await guessFloor(pg); if (f) el.querySelector('#mu-floor').value = f; showStage(); };
+      el.querySelector('#mu-file').onchange = async e => { const file = e.target.files[0]; if (!file) return; st.fileName = file.name.replace(/\.[^.]+$/, '');
+        const type = mimeOf(file); pagesEl.innerHTML = ''; st.src = null; st.pdf = null;
+        try {
+          if (type === 'application/pdf') { stage.innerHTML = '<div class="muted" style="padding:40px;text-align:center">PDF를 읽는 중…</div>';
+            await loadPdfJs(); st.pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise; st.pages = st.pdf.numPages;
+            for (let i = 0; i < st.pages; i++) { const pg = await st.pdf.getPage(i+1), c = await pageCanvas(pg, 220), f = (await guessFloors(pg)).join('·');
+              const b = document.createElement('div'); b.className = 'pg'; b.innerHTML = `<img src="${c.toDataURL('image/jpeg',.7)}"><span>${i+1}p${f?` · ${f}`:''}</span>`; b.onclick = () => openPage(i); pagesEl.appendChild(b); }
+            await openPage(0);
+          } else if (/^image\//.test(type)) { const url = await readAsDataURL(file); const im = await new Promise((res,rej)=>{ const i = new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=url; });
+            const sc = Math.min(1, 2600 / Math.max(im.naturalWidth, im.naturalHeight)); const c = document.createElement('canvas'); c.width = Math.round(im.naturalWidth*sc); c.height = Math.round(im.naturalHeight*sc);
+            const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0,0,c.width,c.height); ctx.drawImage(im, 0, 0, c.width, c.height); st.src = c; showStage(); }
+          else toast('PDF 또는 PNG·JPG만 올릴 수 있습니다.', 'warn');
+        } catch(err){ stage.innerHTML = '<div class="muted" style="padding:40px;text-align:center">파일을 읽지 못했습니다. PDF를 이미지(PNG/JPG)로 저장해서 올려주세요.</div>'; }
+      };
+      const listEl = el.querySelector('#mu-list');
+      const drawList = () => { if (!listEl) return; el.querySelector('#mu-n').textContent = st.items.length;
+        const okb = el.querySelector('[data-ok]'); if (okb) okb.textContent = st.items.length ? `등록 (${st.items.length})` : '등록';
+        listEl.innerHTML = st.items.map((it,i) => `<div class="it"><img src="${it.thumb}"><div style="flex:1;min-width:0"><b>${esc(it.floor)}</b>${it.name?` <span class="muted">${esc(it.name)}</span>`:''}<div class="muted" style="font-size:10.5px">${esc(it.from)}</div></div><button class="x" data-i="${i}">✕</button></div>`).join('') || '<div class="muted" style="font-size:11.5px">아직 추가한 위치도가 없습니다.</div>';
+        listEl.querySelectorAll('[data-i]').forEach(b => b.onclick = () => { st.items.splice(+b.dataset.i, 1); drawList(); }); };
+      const ab = el.querySelector('#mu-add');
+      if (ab) ab.onclick = () => { if (!st.src) return; const c = cropCanvas(st.src, st.crop), floor = el.querySelector('#mu-floor').value, name = el.querySelector('#mu-name').value.trim();
+        const th = document.createElement('canvas'), s = 120 / Math.max(c.width, c.height); th.width = Math.round(c.width*s); th.height = Math.round(c.height*s); th.getContext('2d').drawImage(c, 0, 0, th.width, th.height);
+        st.items.push({ canvas: c, floor, name, thumb: th.toDataURL('image/jpeg', .7), from: `${st.fileName}${st.pdf?` ${st.page+1}p`:''}${st.crop?' (부분)':''}` });
+        drawList(); el.querySelector('#mu-name').value = ''; toast(`${floor} 위치도를 목록에 추가했습니다. 다른 페이지·영역도 이어서 추가할 수 있어요.`); };
+    },
+    onOk: async el => {
+      const toFile = (c, nm) => new Promise(res => c.toBlob(b => res(new File([b], nm + '.png', { type: 'image/png' })), 'image/png'));
+      try {
+        if (m) {
+          const floor = el.querySelector('#mu-floor').value, name = el.querySelector('#mu-name').value.trim();
+          let imageAsset = m.imageAsset;
+          if (st.src) { toast('위치도를 올리는 중입니다…'); const up = await uploadDrawingFile(await toFile(cropCanvas(st.src, st.crop), floor)); imageAsset = up.imageAsset; }
+          await Store.upd('sitemaps', m.id, { floor, name: name || floor, imageAsset }); toast('위치도를 저장했습니다.'); return;
+        }
+        if (!st.items.length && st.src) el.querySelector('#mu-add').click();
+        if (!st.items.length) { toast('파일을 올리고 ‘이 화면을 위치도로 추가’를 눌러주세요.', 'warn'); return false; }
+        let first = null, n0 = S.sitemaps.filter(x=>x.div===div).length;
+        for (let i = 0; i < st.items.length; i++) { const it = st.items[i];
+          toast(`위치도 올리는 중… (${i+1}/${st.items.length})`);
+          const up = await uploadDrawingFile(await toFile(it.canvas, it.floor));
+          const id = await Store.add('sitemaps', { div, floor: it.floor, name: it.name || it.floor, imageAsset: up.imageAsset, order: n0 + i });
+          if (!first) first = id; }
+        ui.mapId = st.items.length > 1 ? 'ALL' : first; ui.mapEdit = st.items.length === 1; saveUi();
+        toast(`위치도 ${st.items.length}개를 등록했습니다. 층을 고르고 ‘실 배치 편집’으로 실 이름을 배치하세요.`);
+      } catch(e){ toast(e.message || '업로드 실패', 'err'); return false; }
+    } });
+}
+async function addRoomFromMap(div){
+  const n = $('#new-room').value.trim(); if (!n) return toast('실명을 입력하세요.', 'warn');
+  const id = await safe(Store.add('rooms', { div, name: n, order: roomsOf(div).length }), `'${n}' 실을 등록했습니다. 위치도 위를 드래그해 배치하세요.`);
+  if (id) go({ placeRoom: id });
+}
+async function unplaceRoom(id){ await safe(Store.upd('rooms', id, { mapId: '' })); }
+function selectRoom(id){
+  if (VROOMS[id]) { const c = cats().find(x => x.type === 'space' && x.div === VROOMS[id].div); if (c) return goPage('cat', c.id); }
+  const rr = S.rooms.find(x => x.id === id); if (rr && rr.mapId && S.sitemaps.some(m => m.id === rr.mapId) && !ui.mapEdit) ui.mapId = rr.mapId;
+  ui.selRoom = id; ui.layEdit = false; ui.dwSel = ''; draft = null; saveUi(); render();
+  setTimeout(() => { const el = $('#room-detail'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 40);
+}
+function bindSiteMap(){
+  document.querySelectorAll('.smap.mini').forEach(mm => mm.onclick = e => { const box = e.target.closest('.rbox'); if (box) selectRoom(box.dataset.id); else go({ mapId: mm.dataset.map }); });
+  const sm = $('#smap'); if (!sm) return;
+  const edit = sm.classList.contains('edit'); let act = null;
+  const pt = e => { const r = sm.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * 100, y: (e.clientY - r.top) / r.height * 100 }; };
+  sm.onpointerdown = e => {
+    const box = e.target.closest('.rbox');
+    if (!edit) { if (box) selectRoom(box.dataset.id); return; }
+    const p = pt(e);
+    if (box) { const r = S.rooms.find(x => x.id === box.dataset.id); if (!r) return;
+      act = { kind: e.target.classList.contains('rs') ? 'resize' : 'move', r, el: box, p0: p, o: { x: r.mx, y: r.my, w: r.mw, h: r.mh }, cur: { x: r.mx, y: r.my, w: r.mw, h: r.mh } };
+      sm.setPointerCapture(e.pointerId); e.preventDefault(); return; }
+    if (!ui.placeRoom) { toast('오른쪽 목록에서 배치할 실을 먼저 고르세요.', 'warn'); return; }
+    const g = document.createElement('div'); g.className = 'drawghost'; sm.appendChild(g); act = { kind: 'draw', p0: p, g };
+    sm.setPointerCapture(e.pointerId); e.preventDefault();
+  };
+  sm.onpointermove = e => { if (!act) return; const p = pt(e);
+    if (act.kind === 'draw') { Object.assign(act.g.style, { left: Math.min(act.p0.x,p.x)+'%', top: Math.min(act.p0.y,p.y)+'%', width: Math.abs(p.x-act.p0.x)+'%', height: Math.abs(p.y-act.p0.y)+'%' }); return; }
+    const dx = p.x - act.p0.x, dy = p.y - act.p0.y, o = act.o, c = act.cur;
+    if (act.kind === 'move') { c.x = clamp(o.x + dx, 0, 100 - o.w); c.y = clamp(o.y + dy, 0, 100 - o.h); }
+    else { c.w = clamp(o.w + dx, 2, 100 - o.x); c.h = clamp(o.h + dy, 2, 100 - o.y); }
+    Object.assign(act.el.style, { left: c.x+'%', top: c.y+'%', width: c.w+'%', height: c.h+'%' }); act.moved = true; };
+  sm.onpointerup = async e => { if (!act) return; const a = act; act = null; const p = pt(e);
+    if (a.kind === 'draw') { a.g.remove();
+      let x = Math.min(a.p0.x, p.x), y = Math.min(a.p0.y, p.y), w = Math.abs(p.x - a.p0.x), h = Math.abs(p.y - a.p0.y);
+      if (w < 2 || h < 2) { w = 10; h = 6; x = clamp(a.p0.x - 5, 0, 90); y = clamp(a.p0.y - 3, 0, 94); }
+      const id = ui.placeRoom, mapId = (curMap(ui.div)||{}).id; if (!mapId) return;
+      await safe(Store.upd('rooms', id, { mapId, mx: x, my: y, mw: Math.min(w, 100-x), mh: Math.min(h, 100-y) }));
+      const maps = S.sitemaps.filter(m=>m.div===ui.div);
+      const next = roomsOf(ui.div).find(r => r.id !== id && (!r.mapId || !maps.some(m=>m.id===r.mapId)));
+      ui.placeRoom = next ? next.id : ''; saveUi(); render(); return; }
+    if (a.moved) await safe(Store.upd('rooms', a.r.id, { mx: a.cur.x, my: a.cur.y, mw: a.cur.w, mh: a.cur.h }));
+  };
+}
+
+/* ---------- ② 선택한 실 상세 ---------- */
+function layoutPreview(l, big){
+  return `<div class="cvro ${big?'big':''}"><img src="${esc(assetUrl(l.imageAsset))}">${(l.shapes||[]).map((s,i)=>`<div class="shp ${s.shape==='circle'?'circle':''}" style="left:${s.x}%;top:${s.y}%;width:${s.w}%;height:${s.h}%;cursor:default"><span class="no">${i+1}</span><span class="lb">${esc(s.name||'')} × ${esc(s.qty)}</span></div>`).join('')}</div>`;
+}
+function roomDetail(div, r){
+  const d = roomData(div, r.id);
+  const hist = [...d.dw.map(x=>({ t:'dw', date:x.date, x })), ...d.ly.map(x=>({ t:'ly', date:x.date, x }))].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  let view;
+  if (ui.layEdit) { ui.layRoom = r.id; view = `<div class="row" style="margin-bottom:8px"><b>도면 위 집기 배치 편집</b><div class="grow"></div><button class="btn sm" onclick="layoutGuard().then(ok=>{ if(ok){ ui.layEdit=false; draft=null; render(); } })">편집 닫기</button></div>${fxLayout(div)}`; }
+  else {
+    const ver = [...d.dw.map(x => ({ key: 'dw:' + x.id, t: 'dw', x })), ...d.ly.map(x => ({ key: 'ly:' + x.id, t: 'ly', x }))]
+      .sort((a,b) => String(b.x.date).localeCompare(String(a.x.date)) || (b.x.createdAt??0) - (a.x.createdAt??0));
+    const defKey = d.lastLy ? 'ly:' + d.lastLy.id : d.lastDw ? 'dw:' + d.lastDw.id : '';
+    const cur = ver.find(v => v.key === ui.dwSel) || ver.find(v => v.key === defKey) || ver[0];
+    const latestOf = t => ver.find(v => v.t === t);
+    const isLatest = cur && latestOf(cur.t) && latestOf(cur.t).key === cur.key;
+    const label = v => v.t === 'ly' ? `${v.x.date} · 집기 배치도 (${(v.x.shapes||[]).length}개 표기)` : `${v.x.date} · ${v.x.kind || '도면'}${v.x.version ? ' · ' + v.x.version : ''}`;
+    const main = !cur ? `<div class="empty">아직 등록된 도면이 없습니다.</div>`
+      : cur.t === 'ly' ? layoutPreview(cur.x, true)
+      : cur.x.imageAsset ? `<img class="dv-img" src="${esc(assetUrl(cur.x.imageAsset))}" onclick="lightbox('${cur.x.imageAsset}','${esc(r.name)} · ${esc(label(cur))}')">` : `<div class="empty">이미지 없음</div>`;
+    view = `${ver.length ? `<div class="dv-sel"><span class="lbl">도면 DB</span><select onchange="ui.dwSel=this.value;render()">${ver.map(v=>`<option value="${v.key}" ${cur&&v.key===cur.key?'selected':''}>${esc(label(v))}</option>`).join('')}</select><span class="muted" style="font-size:11px">총 ${d.dw.length}건${d.ly.length?` · 배치도 ${d.ly.length}건`:''}</span></div>` : ''}
+      <div class="dv-main">${main}</div>
+      ${cur ? `<div class="dv-info"><span class="chip ${isLatest?'g':'a'}">${isLatest?'최신 버전':'이전 버전'}</span>
+        <b>${esc(cur.x.date)}</b> ${cur.t==='ly'?'집기 배치도':esc(cur.x.kind||'도면')}${cur.t==='dw'&&cur.x.version?` · <b>${esc(cur.x.version)}</b>`:''}
+        ${cur.t==='dw'&&cur.x.author?`<span class="muted">· 작성 ${esc(cur.x.author)}</span>`:''}
+        ${!isLatest&&latestOf(cur.t)?`<span class="muted">· 최신은 ${esc(latestOf(cur.t).x.date)}</span>`:''}
+        ${cur.t==='dw'&&cur.x.changeLog?`<div class="dv-log">변경내역: ${esc(cur.x.changeLog)}</div>`:''}${cur.t==='ly'&&cur.x.memo?`<div class="dv-log">메모: ${esc(cur.x.memo)}</div>`:''}
+        ${cur.t==='ly'?`<button class="btn sm" style="margin-left:auto" onclick="ui.layEdit=true;ui.laySnap='${cur.x.id}';draft=null;render()">이 배치도 편집</button>`:''}</div>` : ''}
+      ${ver.length > 1 ? `<div class="dv-thumbs">${ver.map(v => `<div class="th ${v.t==='ly'?'ly':''} ${cur&&v.key===cur.key?'on':''}" title="${esc(label(v))}" style="background-image:url('${esc(assetUrl(v.x.imageAsset))}')" onclick="ui.dwSel='${v.key}';render()"><span>${esc(v.x.date.slice(2))} ${v.t==='ly'?'배치도':esc(v.x.kind==='렌더링'?'렌더':(v.x.version||'도면'))}</span></div>`).join('')}</div>` : ''}
+      <div class="row" style="margin-top:8px">${canUpload()?`<button class="btn sm pri" onclick="openDrawingUpload('${div}','${r.id}',()=>{ui.dwSel='';render()})">+ 도면·렌더링 등록</button>`:''}<button class="btn sm" onclick="ui.layEdit=true;ui.laySnap='';draft=null;render()">도면 위 집기 배치</button></div>`;
+  }
+  return `<section class="sp-card sel"><div class="sp-h"><span class="sp-no">2</span><b style="font-size:16px">${esc(r.name)}</b><span class="chip ${RST[d.status][1]}">${RST[d.status][0]}</span><span class="muted" style="font-size:11.5px">${esc(DIVS[div])}${r.mapId&&mapLabelOf(r.mapId)?` · ${esc(mapLabelOf(r.mapId))}`:''}</span>
+      <div class="grow"></div><button class="btn sm ghost" onclick="go({selRoom:''})">닫기 ✕</button></div>
+    <div class="rd-sec"><div class="rd-t">도면 · 집기 한눈에 보기</div>
+      <div class="rd-g2"><div>${view}</div>
+        <div><div class="row" style="margin-bottom:6px"><b style="font-size:12.5px">집기</b><span class="chip">${d.fx.length}종 · ${d.qty}개</span><span class="chip g">반영 ${d.fxOk}/${d.fx.length}</span></div>
+          <div class="tbl-wrap"><table class="t"><thead><tr><th>집기명</th><th class="c" style="width:60px">수량</th><th>규격·요청</th><th style="width:96px">조달</th><th style="width:96px">반영</th><th style="width:26px"></th></tr></thead><tbody>
+          ${d.fx.map(f=>`<tr><td><input type="text" value="${esc(f.name)}" onchange="updFx('${f.id}','name',this.value)"></td>
+            <td><input type="number" min="0" value="${esc(f.qty)}" style="text-align:center" onchange="updFx('${f.id}','qty',Number(this.value)||0)"></td>
+            <td><input type="text" value="${esc(f.request||'')}" onchange="updFx('${f.id}','request',this.value)"></td>
+            <td><select onchange="updFx('${f.id}','source',this.value)">${SRC.map(s=>`<option ${s===(f.source||'미정')?'selected':''}>${s}</option>`).join('')}</select></td>
+            <td><select class="stat ${stClass(f.reflected)}" onchange="updFx('${f.id}','reflected',this.value)">${REFL.map(s=>`<option ${s===f.reflected?'selected':''}>${s}</option>`).join('')}</select></td>
+            <td><button class="x" onclick="delFx('${f.id}')">✕</button></td></tr>`).join('') || '<tr><td colspan="6" class="empty" style="padding:12px">등록된 집기가 없습니다.</td></tr>'}
+          </tbody></table></div>
+          <div class="form" style="grid-template-columns:1.4fr 60px 1.4fr 100px auto;margin:8px 0 0">
+            <label class="f">집기명<input type="text" id="rf-name"></label><label class="f">수량<input type="number" id="rf-qty" value="1" min="0"></label>
+            <label class="f">규격·요청<input type="text" id="rf-req"></label><label class="f">조달<select id="rf-src">${SRC.map(s=>`<option>${s}</option>`).join('')}</select></label>
+            <button class="btn pri" onclick="addRoomFx('${div}','${r.id}')">추가</button></div></div></div></div>
+    <div class="rd-sec"><div class="rd-t">요청사항 및 반영여부 <span class="chip g">반영 ${d.done}</span><span class="chip a">검토중 ${d.open}</span><span class="chip ${d.no?'r':''}">미반영 ${d.no}</span></div>
+      <div class="tbl-wrap"><table class="t"><thead><tr><th style="width:120px">요청일</th><th style="width:96px">구분</th><th style="min-width:220px">요청사항</th><th style="width:120px">요청자</th><th style="min-width:200px">설계·시공 피드백</th><th class="c" style="width:100px">반영여부</th><th style="width:26px"></th></tr></thead><tbody>
+      ${d.req.map(q=>`<tr><td><input type="date" value="${esc(q.reqDate||'')}" onchange="upd('decisions','${q.id}','reqDate',this.value)"></td>
+        <td><select onchange="upd('decisions','${q.id}','kind',this.value)">${['인테리어','집기','기타'].map(k=>`<option ${k===q.kind?'selected':''}>${k}</option>`).join('')}</select></td>
+        <td><textarea rows="1" onchange="upd('decisions','${q.id}','request',this.value)">${esc(q.request)}</textarea></td>
+        <td><input type="text" value="${esc(q.requester||'')}" onchange="upd('decisions','${q.id}','requester',this.value)"></td>
+        <td><textarea rows="1" placeholder="피드백" onchange="updFeedback('${q.id}',this.value)">${esc(q.feedback||'')}</textarea></td>
+        <td class="c"><select class="stat ${stClass(reqSt(q))}" onchange="setReqSt('${q.id}',this.value)">${REQ_ST.map(s=>`<option ${s===reqSt(q)?'selected':''}>${s}</option>`).join('')}</select></td>
+        <td><button class="x" onclick="delReq('${q.id}')">✕</button></td></tr>`).join('') || '<tr><td colspan="7" class="empty" style="padding:12px">등록된 요청사항이 없습니다.</td></tr>'}
+      </tbody></table></div>
+      <div class="form" style="grid-template-columns:100px 2fr 1fr 1.6fr auto;margin:8px 0 0">
+        <label class="f">구분<select id="rq-kind"><option>인테리어</option><option>집기</option><option>기타</option></select></label>
+        <label class="f">요청사항<input type="text" id="rq-req" placeholder="예: 라커 폭 1,100mm로 확대"></label>
+        <label class="f">요청자<input type="text" id="rq-who"></label>
+        <label class="f">피드백 (선택)<input type="text" id="rq-fb"></label>
+        <button class="btn pri" onclick="addRoomReq('${div}','${r.id}')">등록</button></div></div>
+    <div class="rd-sec"><div class="rd-t">변경 히스토리 <span class="muted" style="font-weight:500;font-size:11.5px">도면 등록·집기·요청 변경은 자동으로 기록되고, 직접 기록도 추가할 수 있어요</span></div>
+      <div class="form" style="grid-template-columns:130px 110px 1fr auto;margin:0 0 8px">
+        <label class="f">일자<input type="date" id="rl-date" value="${today()}"></label>
+        <label class="f">구분<select id="rl-kind">${LOG_KINDS.map(k=>`<option>${k}</option>`).join('')}</select></label>
+        <label class="f">변경 내용<input type="text" id="rl-text" placeholder="예: 설계사 협의로 출입문 위치 변경"></label>
+        <button class="btn dark" onclick="addRoomLog('${div}','${r.id}')">기록</button></div>
+      <div class="hist">${d.logs.map(l=>`<div class="hi"><span class="hd">${esc(l.date)}</span><span class="chip ${l.kind==='도면'?'b':l.kind==='집기'?'g':l.kind==='요청'?'a':''}">${esc(l.kind)}</span><span class="ht">${esc(l.text)}</span>${l.author?`<span class="muted" style="font-size:10.5px">${esc(l.author)}</span>`:''}<button class="x" onclick="delRow('room_logs','${l.id}','히스토리')">✕</button></div>`).join('') || '<div class="muted" style="padding:8px 2px">아직 변경 이력이 없습니다.</div>'}</div></div>
+    <div class="rd-sec"><div class="rd-t">최신 요약 장표 <div class="grow"></div><button class="btn sm ppt" onclick="exportRoomPPT('${div}','${r.id}')">PPT</button><button class="btn sm xl" onclick="exportRoomXlsx('${div}','${r.id}')">엑셀</button></div>
+      ${roomSheet(div, r, d)}</div>
+  </section>`;
+}
+function roomSheet(div, r, d){
+  const openReq = d.req.filter(q => reqSt(q) === '검토중');
+  return `<div class="sheet"><div class="sh-h"><div><div class="muted" style="font-size:11px">${esc(DIVS[div])}</div><b>${esc(r.name)} · 최신 현황</b></div><div class="grow"></div><div class="muted" style="font-size:11.5px">기준일 ${today()}</div></div>
+    <div class="sh-k"><div><span>최신 도면</span><b>${d.lastDw ? esc(d.lastDw.date) : '-'}</b><small>${esc(d.lastDw?.version||'')}</small></div>
+      <div><span>집기 배치도</span><b>${d.lastLy ? esc(d.lastLy.date) : '-'}</b><small>${d.lastLy ? (d.lastLy.shapes||[]).length + '개 표기' : ''}</small></div>
+      <div><span>집기</span><b>${d.fx.length}종 ${d.qty}개</b><small>반영 ${d.fxOk}/${d.fx.length}</small></div>
+      <div><span>요청사항</span><b>${d.req.length}건</b><small>반영 ${d.done} · 검토 ${d.open} · 미반영 ${d.no}</small></div>
+      <div><span>최근 변경</span><b>${d.lastChange ? esc(d.lastChange.date) : '-'}</b><small>${esc(d.lastChange?.kind||'')}</small></div></div>
+    <div class="sh-g"><div class="sh-img">${d.lastLy ? layoutPreview(d.lastLy) : d.lastDw?.imageAsset ? `<img src="${esc(assetUrl(d.lastDw.imageAsset))}">` : '<div class="empty">도면 없음</div>'}</div>
+      <div class="sh-cols"><div><div class="sh-st">집기 목록</div>${d.fx.slice(0,12).map(f=>`<div class="sh-li"><b>${esc(f.name)}</b> ×${esc(f.qty)} <span class="muted">${esc(f.request||'')}</span> <span class="chip ${f.reflected==='반영완료'?'g':f.reflected==='미반영'?'r':'a'}">${esc(f.reflected||'검토중')}</span></div>`).join('') || '<div class="muted">-</div>'}${d.fx.length>12?`<div class="muted">외 ${d.fx.length-12}종</div>`:''}</div>
+        <div><div class="sh-st">검토 중 요청</div>${openReq.slice(0,6).map(q=>`<div class="sh-li">· ${esc(q.request)}</div>`).join('') || '<div class="muted">없음</div>'}
+          <div class="sh-st" style="margin-top:8px">최근 변경</div>${d.logs.slice(0,5).map(l=>`<div class="sh-li"><span class="muted">${esc(l.date.slice(5))}</span> ${esc(l.text)}</div>`).join('') || '<div class="muted">없음</div>'}</div></div></div></div>`;
+}
+async function addRoomFx(div, rid){
+  const name = $('#rf-name').value.trim(); if (!name) return toast('집기명을 입력하세요.', 'warn');
+  const qty = Number($('#rf-qty').value)||0;
+  const id = await safe(Store.add('fixtures', { div, room: rid, name, qty, request: $('#rf-req').value.trim(), source: $('#rf-src').value, reflected: '검토중', drawing: false, built: false, remark: '', order: S.fixtures.filter(f=>f.room===rid).length }), '집기를 추가했습니다.');
+  if (id) logRoom(div, rid, '집기', `집기 추가: ${name} ×${qty}`);
+}
+async function updFx(id, field, value){
+  const f = S.fixtures.find(x=>x.id===id); if (!f) return; const before = f[field];
+  await safe(Store.upd('fixtures', id, { [field]: value }));
+  if (field === 'reflected' || field === 'qty' || field === 'source') logRoom(f.div, f.room, '집기', `${f.name}: ${field==='reflected'?'반영여부':field==='qty'?'수량':'조달'} ${before ?? '-'} → ${value}`);
+}
+async function delFx(id){ const f = S.fixtures.find(x=>x.id===id); if (!f || !await confirmBox(`'${f.name}' 집기를 삭제할까요?`)) return;
+  await safe(Store.del('fixtures', id), '삭제했습니다.'); logRoom(f.div, f.room, '집기', `집기 삭제: ${f.name}`); }
+async function addRoomReq(div, rid){
+  const req = $('#rq-req').value.trim(); if (!req) return toast('요청사항을 입력하세요.', 'warn');
+  const fb = $('#rq-fb').value.trim();
+  const id = await safe(Store.add('decisions', { div, room: rid, kind: $('#rq-kind').value, reqDate: today(), request: req, requester: $('#rq-who').value.trim(), feedback: fb, fbDate: fb ? today() : '', status: '검토중' }), '요청사항을 등록했습니다.');
+  if (id) logRoom(div, rid, '요청', `요청 등록: ${req}`);
+}
+async function setReqSt(id, v){ const q = S.decisions.find(x=>x.id===id); if (!q) return; const before = reqSt(q);
+  await safe(Store.upd('decisions', id, { status: v, doneDate: v === '반영' ? today() : '' }));
+  logRoom(q.div, q.room, '요청', `‘${q.request.slice(0,30)}’ ${before} → ${v}`); }
+async function delReq(id){ const q = S.decisions.find(x=>x.id===id); if (!q || !await confirmBox('이 요청사항을 삭제할까요?')) return;
+  await safe(Store.del('decisions', id), '삭제했습니다.'); logRoom(q.div, q.room, '요청', `요청 삭제: ${q.request.slice(0,30)}`); }
+async function addRoomLog(div, rid){
+  const text = $('#rl-text').value.trim(); if (!text) return toast('변경 내용을 입력하세요.', 'warn');
+  await safe(Store.add('room_logs', { div, room: rid, date: $('#rl-date').value || today(), kind: $('#rl-kind').value, text, author: nameCache[caps.myId] || '' }), '히스토리를 기록했습니다.');
+}
+function roomSummaryRow(div, r, i){
+  if (r.virtual) { const S2 = roomsOf(r.div).map(x=>roomData(r.div, x.id));
+    return { 'No': i+1, '실명': r.name, '위치도': '-', '최신 도면': '-', '집기': `${S2.reduce((s,x)=>s+x.fx.length,0)}종`, '요청(반영/검토/미반영)': `${S2.reduce((s,x)=>s+x.done,0)}/${S2.reduce((s,x)=>s+x.open,0)}/${S2.reduce((s,x)=>s+x.no,0)}`, '최근 변경': '', '상태': '연동' }; }
+  const d = roomData(div, r.id);
+  return { 'No': i+1, '실명': r.name, '위치도': r.mapId ? (mapLabelOf(r.mapId) || '미배치') : '미배치', '최신 도면': d.lastDw ? `${d.lastDw.date} ${d.lastDw.version||''}`.trim() : '',
+    '집기': `${d.fx.length}종 ${d.qty}개 (반영 ${d.fxOk}/${d.fx.length})`, '요청(반영/검토/미반영)': `${d.done}/${d.open}/${d.no}`, '최근 변경': d.lastChange ? `${d.lastChange.date} ${d.lastChange.text}` : '', '상태': RST[d.status][0] };
+}
+function exportRoomXlsx(div, rid){
+  const r = S.rooms.find(x=>x.id===rid), d = roomData(div, rid);
+  exportXlsx(`${DIVS[div]}_${r.name}_현황_${fileStamp()}.xlsx`, [
+    ['요약', [roomSummaryRow(div, r, 0)]],
+    ['집기', d.fx.map((f,i)=>({ 'No': i+1, '집기명': f.name, '수량': Number(f.qty)||0, '규격·요청': f.request||'', '조달': f.source||'', '반영여부': f.reflected||'' }))],
+    ['요청사항', d.req.map((q,i)=>({ 'No': i+1, '요청일': q.reqDate||'', '구분': q.kind, '요청사항': q.request, '요청자': q.requester||'', '피드백': q.feedback||'', '반영여부': reqSt(q) }))],
+    ['변경히스토리', d.logs.map(l=>({ '일자': l.date, '구분': l.kind, '내용': l.text, '작성자': l.author||'' }))],
+    ['도면이력', d.dw.map(x=>({ '기준일': x.date, '구분': x.kind||'도면', '버전': x.version||'', '변경내역': x.changeLog||'' }))]]);
+}
+async function exportRoomPPT(div, rid){
+  if (!window.PptxGenJS) return toast('PPT 라이브러리를 불러오지 못했습니다.', 'err');
+  const r = S.rooms.find(x=>x.id===rid), d = roomData(div, rid); toast('PPT를 만드는 중입니다…');
+  try {
+    const pptx = new PptxGenJS(); pptx.layout = 'LAYOUT_WIDE'; const sl = pptx.addSlide(); const F = 'Malgun Gothic';
+    sl.addText(`${DIVS[div]} · ${r.name} 최신 현황`, { x: .4, y: .2, w: 10, h: .5, fontSize: 20, bold: true, fontFace: F });
+    sl.addText(`기준일 ${today()}`, { x: 10.4, y: .25, w: 2.6, h: .4, fontSize: 11, color: '5A6478', align: 'right', fontFace: F });
+    const kp = [['최신 도면', d.lastDw ? d.lastDw.date : '-'], ['집기', `${d.fx.length}종 ${d.qty}개`], ['집기 반영', `${d.fxOk}/${d.fx.length}`], ['요청 반영/검토/미반영', `${d.done}/${d.open}/${d.no}`], ['최근 변경', d.lastChange ? d.lastChange.date : '-']];
+    kp.forEach(([k,v],i)=>{ sl.addShape(pptx.ShapeType.rect, { x: .4 + i*2.52, y: .8, w: 2.42, h: .7, fill: { color: 'F3F5F9' }, line: { color: 'E2E6EE' } });
+      sl.addText([{ text: k + '\n', options: { fontSize: 9, color: '8590A3' } }, { text: v, options: { fontSize: 14, bold: true, color: '1B2130' } }], { x: .45 + i*2.52, y: .82, w: 2.32, h: .66, fontFace: F, valign: 'middle' }); });
+    const imgId = d.lastLy ? d.lastLy.imageAsset : d.lastDw?.imageAsset;
+    const BX = .4, BY = 1.7, BW = 6.6, BH = 5.5;
+    if (imgId) { const src = await assetDataUrl(imgId); if (src) { const { w, h } = await imgSize(src); const sc = Math.min(BW/w, BH/h), W = w*sc, H = h*sc, X = BX + (BW-W)/2, Y = BY + (BH-H)/2;
+      sl.addImage({ data: src, x: X, y: Y, w: W, h: H });
+      if (d.lastLy) (d.lastLy.shapes||[]).forEach((s,i)=>{ const sx = X + s.x/100*W, sy = Y + s.y/100*H;
+        sl.addShape(s.shape==='circle'?pptx.ShapeType.ellipse:pptx.ShapeType.rect, { x: sx, y: sy, w: s.w/100*W, h: s.h/100*H, fill: { color: 'D9342B', transparency: 85 }, line: { color: 'D9342B', width: 1.5 } });
+        sl.addText(String(i+1), { x: sx-.12, y: sy-.12, w: .24, h: .24, shape: pptx.ShapeType.ellipse, fill: { color: 'D9342B' }, color: 'FFFFFF', fontSize: 8, bold: true, align: 'center', valign: 'middle', margin: 0 }); }); } }
+    const head = t => t.map(x=>({ text: x, options: { bold: true, fill: { color: '273044' }, color: 'FFFFFF' } }));
+    sl.addTable([head(['집기','수량','반영']), ...d.fx.slice(0,10).map(f=>[f.name, String(f.qty), f.reflected||''])], { x: 7.2, y: 1.7, w: 5.8, colW: [3.4, .9, 1.5], fontSize: 9, fontFace: F, border: { type: 'solid', pt: .5, color: 'CBD2DE' } });
+    const reqY = 1.9 + Math.min(10, d.fx.length + 1) * .3;
+    sl.addTable([head(['요청사항','반영여부']), ...d.req.slice(0,6).map(q=>[q.request, reqSt(q)])], { x: 7.2, y: reqY, w: 5.8, colW: [4.3, 1.5], fontSize: 9, fontFace: F, border: { type: 'solid', pt: .5, color: 'CBD2DE' } });
+    await saveFile(`${DIVS[div]}_${r.name}_요약장표_${fileStamp()}.pptx`, await pptx.write({ outputType: 'blob' }));
+  } catch(e){ toast('PPT 생성 실패: ' + (e.message||e), 'err'); }
+}
+
+/* ---------- ③ 실별 요약 리스트 (최신 버전 한눈에) ---------- */
+function roomListup(div, nav){
+  return `<section class="sp-card"><div class="sp-h"><span class="sp-no">3</span><b>실별 최신 현황 요약</b><span class="muted" style="font-size:11.5px">행을 누르면 해당 실 상세가 열립니다</span><div class="grow"></div>
+      <button class="btn sm xl" onclick="exportListup('${div}')">엑셀 내보내기</button></div>
+    <div class="tbl-wrap"><table class="t lu"><thead><tr><th class="c" style="width:44px">No</th><th>실명</th><th>위치도</th><th>최신 도면</th><th>집기 (반영)</th><th>요청 반영·검토·미반영</th><th style="min-width:220px">최근 변경</th><th class="c">상태</th></tr></thead><tbody>
+    ${nav.map((r,i) => { if (r.virtual) return `<tr class="vrow" onclick="selectRoom('${r.id}')"><td class="c">${i+1}</td><td colspan="7"><b>${esc(r.name)}</b> <span class="muted">— ${esc(DIVS[r.div])} 탭의 실별 현황으로 이동 →</span></td></tr>`;
+      const d = roomData(div, r.id), mp = S.sitemaps.find(m=>m.id===r.mapId);
+      return `<tr class="${r.id===ui.selRoom?'on':''}" onclick="selectRoom('${r.id}')"><td class="c muted">${i+1}</td><td><b>${esc(r.name)}</b></td>
+        <td>${mp ? `<span class="chip b">${esc(mapLabel(mp))}</span>` : '<span class="muted">미배치</span>'}</td>
+        <td>${d.lastDw ? `${esc(d.lastDw.date)} <span class="muted">${esc(d.lastDw.version||'')}</span>${d.dw.length>1?` <span class="chip">${d.dw.length}건</span>`:''}` : '<span class="muted">-</span>'}</td>
+        <td>${d.fx.length ? `${d.fx.length}종 ${d.qty}개 <span class="muted">(${d.fxOk}/${d.fx.length})</span>` : '<span class="muted">-</span>'}</td>
+        <td>${d.req.length ? `<span class="chip g">${d.done}</span> <span class="chip a">${d.open}</span> <span class="chip ${d.no?'r':''}">${d.no}</span>` : '<span class="muted">-</span>'}</td>
+        <td>${d.lastChange ? `<span class="muted">${esc(d.lastChange.date.slice(5))}</span> ${esc(d.lastChange.text)}` : '<span class="muted">-</span>'}</td>
+        <td class="c"><span class="chip ${RST[d.status][1]}">${RST[d.status][0]}</span></td></tr>`; }).join('') || '<tr><td colspan="8" class="empty">등록된 실이 없습니다.</td></tr>'}
+    </tbody></table></div></section>`;
+}
+function exportListup(div){ exportXlsx(`${DIVS[div]}_실별현황요약_${fileStamp()}.xlsx`, [['실별 현황', roomsOf(div).map((r,i)=>roomSummaryRow(div, r, i))]]); }
 
 /* ---------- 워크플로우 현황 ---------- */
 function tabFlow(div){
@@ -1358,7 +2062,7 @@ function tabFlow(div){
     <div class="st end"><div class="no">STEP 4</div><div class="nm">공사 구현 · 이사</div>
       <div class="ln"><span>공사 구현 확인</span><b>${c(items,x=>x.built)}/${items.length}</b></div><div class="ln"><span>문학 이전 집기 확인</span><b>${c(mv,x=>x.moveChecked)}/${mv.length}</b></div><div class="ln"><span class="muted">이사 확인은 ‘이사 → 크로스체크’ 탭</span><b></b></div></div>
   </div>`;
-  const rooms = ui.room === 'ALL' ? roomsOf(div) : roomsOf(div).filter(r=>r.id===ui.room);
+  const rooms = curRoom() === 'ALL' ? roomsOf(div) : roomsOf(div).filter(r=>r.id===ui.room);
   const mini = (label, n, d) => `<div class="l"><span>${label}</span><b>${n}/${d}</b></div><div class="pbar ${d&&n===d?'g':''}"><i style="width:${d?Math.round(n/d*100):0}%"></i></div>`;
   const mx = rooms.map(r => {
     const D = S.decisions.filter(x=>x.div===div&&x.room===r.id), I = S.interior_reqs.filter(x=>x.div===div&&x.room===r.id), F = S.fixtures.filter(x=>x.div===div&&x.room===r.id);
@@ -1462,7 +2166,7 @@ function tabDrawing(div){
 function openDrawingUpload(div, room, onDone){
   modal({ title: '도면 등록 (일자별 DB)', body: `
     <div class="row"><label class="f" style="flex:1">도면 기준일<input type="date" id="du-date" value="${today()}"></label><label class="f" style="flex:1.3">실<select id="du-room">${roomOpts(div, room || defRoom(div), true)}</select></label></div>
-    <label class="f">버전명<input type="text" id="du-ver" placeholder="예: 실시설계 Rev.3"></label>
+    <div class="row"><label class="f" style="width:120px">구분<select id="du-kind"><option>도면</option><option>렌더링</option></select></label><label class="f" style="flex:1">버전명<input type="text" id="du-ver" placeholder="예: 실시설계 Rev.3"></label></div>
     <label class="f">작성 / 설계사<input type="text" id="du-author"></label>
     <label class="f">주요 변경내역<textarea id="du-log" rows="2" placeholder="변경된 벽체, 문 위치, 설비 등"></textarea></label>
     <label class="f">도면 파일 (PNG·JPG·PDF, 20MB 이하)<input type="file" id="du-file" accept="image/png,image/jpeg,image/webp,application/pdf"></label>
@@ -1474,8 +2178,10 @@ function openDrawingUpload(div, room, onDone){
       try {
         const up = await uploadDrawingFile(file);
         const rec = Object.assign({ div, room: el.querySelector('#du-room').value, date: el.querySelector('#du-date').value || today(), version: el.querySelector('#du-ver').value.trim(),
-          author: el.querySelector('#du-author').value.trim(), changeLog: el.querySelector('#du-log').value.trim() }, up);
-        const id = await Store.add('drawings', rec); toast('도면을 DB에 저장했습니다.'); if (onDone) onDone(id, rec);
+          author: el.querySelector('#du-author').value.trim(), changeLog: el.querySelector('#du-log').value.trim(), kind: el.querySelector('#du-kind').value }, up);
+        const id = await Store.add('drawings', rec); toast('도면을 DB에 저장했습니다.');
+        logRoom(div, rec.room, '도면', `${rec.kind} 등록: ${rec.date} ${rec.version||''}${rec.changeLog?' — '+rec.changeLog:''}`.trim());
+        if (onDone) onDone(id, rec);
       } catch(e){ toast(e.message || '업로드 실패', 'err'); return false; }
     } });
 }
@@ -1566,7 +2272,7 @@ function fxSpec(div){
   const pmap = {}; (prev?.items||[]).forEach(it => pmap[specKey(it)] = it);
   const cmap = {}; (sel?.items||[]).forEach(it => cmap[specKey(it)] = it);
   const removed = prev ? prev.items.filter(it => !cmap[specKey(it)]) : [];
-  const roomF = ui.room === 'ALL' ? null : roomName(ui.room);
+  const roomF = curRoom() === 'ALL' ? null : roomName(ui.room);
   const items = (sel?.items||[]).filter(it => !roomF || !it.room || it.room === roomF);
   let nNew = 0, nChg = 0;
   const rowsH = items.map(it => { const p = pmap[specKey(it)]; let cls = '', tag = '';
@@ -1630,7 +2336,7 @@ let selShape = null, tool = 'rect';
 function layoutsOf(div, room){ return S.layouts.filter(l=>l.div===div && l.room===room).sort(byDate); }
 function ensureDraft(div){
   const rooms = roomsOf(div);
-  let room = (ui.layRoom && (ui.layRoom === '_all' || rooms.some(r=>r.id===ui.layRoom))) ? ui.layRoom : (ui.room !== 'ALL' ? ui.room : (rooms[0]?.id || '_all'));
+  let room = (ui.layRoom && (ui.layRoom === '_all' || rooms.some(r=>r.id===ui.layRoom))) ? ui.layRoom : (curRoom() !== 'ALL' ? ui.room : (rooms[0]?.id || '_all'));
   if (ui.layRoom !== room) { ui.layRoom = room; saveUi(); }
   const snaps = layoutsOf(div, room);
   const snap = snaps.find(s=>s.id===ui.laySnap) || snaps[snaps.length-1] || null;
@@ -1712,7 +2418,7 @@ async function saveLayout(){
   else { const same = S.layouts.find(s=>s.div===d.div && s.room===d.room && s.date===date);
     if (same) { if (!await confirmBox(`${date} 날짜의 배치도가 이미 있습니다. 덮어쓸까요?`, '덮어쓰기')) return;
       await safe(Store.put('layouts', same.id, Object.assign({ createdAt: same.createdAt }, data)), '덮어써서 저장했습니다.'); draft = null; go({ laySnap: same.id }); return; }
-    const id = await safe(Store.add('layouts', data), `${date} 배치도를 새 이력으로 저장했습니다.`); if (id) { draft = null; go({ laySnap: id }); } }
+    const id = await safe(Store.add('layouts', data), `${date} 배치도를 새 이력으로 저장했습니다.`); if (id) { logRoom(d.div, d.room, '집기', `${date} 집기 배치도 저장 (${d.shapes.length}개 표기)`); draft = null; go({ laySnap: id }); } }
   render();
 }
 async function delLayout(id){ if (!await confirmBox('이 날짜의 배치도 이력을 삭제할까요?')) return; await safe(Store.del('layouts', id), '삭제했습니다.'); draft = null; selShape = null; go({ laySnap: '' }); }
@@ -1890,22 +2596,116 @@ async function exportRenderPPT(div){
   } catch(e){ toast('PPT 생성 실패: ' + (e.message||e), 'err'); }
 }
 
+
+/* =========================================================
+   종합현황 (갑지 · 메인탭)
+   ========================================================= */
+const daysSince = d => d ? Math.floor((new Date(today()) - new Date(d)) / 86400000) : 0;
+const catNm = id => (S.categories.find(c => c.id === id) || {}).name || '';
+const ovOpen = id => `openTaskModal('${id}')`;
+function catSignal(catId){
+  const ts = S.ms_tasks.filter(t => t.catId === catId && taskLive(t)), now = nowWeekAbs();
+  const late = ts.filter(t => msStatus(t) === 'late');
+  if (late.length) return { k: 'bad', label: '지연', why: `기한 경과 ${late.length}건` };
+  const soon = ts.filter(t => msStatus(t) !== 'done' && taskEnd(t) >= now && taskEnd(t) <= now + 1);
+  if (soon.length) return { k: 'warn', label: '주의', why: `2주 안에 마감되는 미완료 일정 ${soon.length}건` };
+  return { k: 'ok', label: '정상', why: '기한 경과·임박 일정 없음' };
+}
+function weekItems(w){
+  const out = [];
+  liveTasks().forEach(t => { const a = taskAbs(t), b = taskEnd(t);
+    if (t.kind === 'point') { if (a === w) out.push({ tg: 'd', lb: '◆ 주요', t, o: 0 }); return; }
+    if (a === w) out.push({ tg: 's', lb: '시작', t, o: 1 });
+    if (b === w) out.push({ tg: 'e', lb: '종료', t, o: 2 });
+    if (a < w && b > w && msStatus(t) !== 'done') out.push({ tg: 'i', lb: '진행 중', t, o: 9, ing: true }); });
+  return out.sort((x,y) => x.o - y.o || catNm(x.t.catId).localeCompare(catNm(y.t.catId)));
+}
+const ovSub = t => { const c = S.categories.find(x => x.id === t.catId); return c ? laneLabel(c, t) : ''; };
+function renderOvMonthly(){
+  const now = nowWeekAbs(), m0 = Math.floor(now / 4), weeks = Array.from({ length: 8 }, (_, i) => m0*4 + i), list = cats();
+  const ORD = { d: 0, s: 1, i: 2, e: 3 };
+  let g = `<div class="mcal" style="grid-template-columns:170px repeat(8,minmax(110px,1fr))"><div class="hd" style="border-left:none"></div>
+    ${[m0, m0+1].map((m,i) => `<div class="hd mo ${i?'nm1':'tm'}" style="grid-column:span 4">${i?'다음 달':'이번 달'} · ${ymLabel(nYm(m))}</div>`).join('')}
+    <div class="hd" style="border-left:none;text-align:left">구역</div>${weeks.map(w => `<div class="hd ${Math.floor(w/4)===m0?'tm':''} ${w===now?'cur':''} ${w===m0*4+4?'nm1':''}">${w%4+1}주${w===now?' (이번 주)':''}</div>`).join('')}`;
+  list.forEach(c => {
+    g += `<div class="rl">${esc(c.name)}</div>`;
+    weeks.forEach(w => { const its = weekItems(w).filter(x => x.t.catId === c.id).sort((x,y) => ORD[x.tg] - ORD[y.tg]);
+      g += `<div class="cl ${Math.floor(w/4)===m0?'tm':''} ${w===now?'cur':''} ${w===m0*4+4?'nm1':''}">${its.map(x => `<div class="ci ${x.tg}" onclick="${ovOpen(x.t.id)}" title="${esc(x.lb)} · ${esc(ovSub(x.t))} · ${esc(x.t.title)}">${({d:'◆ ',s:'▶ ',i:'◐ ',e:'■ '})[x.tg]}${esc(x.t.title)}</div>`).join('')}</div>`; });
+  });
+  return `<section class="card"><div class="card-h"><h2>월간 주요 업무</h2><span class="hint">▶ 시작 · ◐ 진행 · ■ 종료 · ◆ 주요 시점 · 항목을 누르면 일정 상세</span></div><div style="overflow-x:auto">${g}</div></div></section>`;
+}
+function renderOvWeekly(){
+  const now = nowWeekAbs();
+  const col = (w, cur) => { const its = weekItems(w), n = its.filter(x=>!x.ing).length, ing = its.filter(x=>x.ing).length;
+    return `<div><div class="wh ${cur?'cur':''}">${cur?'이번 주':'다음 주'} <span class="muted" style="font-weight:600">${absLabel(w)}</span><div class="grow"></div><span class="chip">${n}건${ing?` · 진행 중 ${ing}`:''}</span></div>
+      ${its.map(x => `<div class="wit ${x.ing?'ing':''}" onclick="${ovOpen(x.t.id)}"><span class="tg ${x.tg}">${x.lb}</span><span class="c" title="${esc(catNm(x.t.catId))}">${esc(catNm(x.t.catId))}</span>
+        <span class="t"><b>${esc(x.t.title)}</b> <span class="muted" style="font-size:11px">· ${esc(ovSub(x.t))}</span></span>
+        <span class="p">${x.t.kind==='point'?'시점':'마감'} ${shortAbs(x.t.kind==='point' ? taskAbs(x.t) : taskEnd(x.t))}</span></div>`).join('') || '<div class="empty">이 주에 해당하는 일정이 없습니다.</div>'}</div>`; };
+  return `<section class="card"><div class="card-h"><h2>주간 주요 업무</h2></div><div class="wk2">${col(now, true)}${col(now + 1, false)}</div></section>`;
+}
+function renderOvPending(){
+  const now = nowWeekAbs();
+  const items = liveTasks().filter(t => msStatus(t) === 'late').map(t => ({ t, wk: now - taskEnd(t) })).sort((a,b) => b.wk - a.wk);
+  return `<section class="card"><div class="card-h"><h2>주요 미결 업무</h2><span class="hint">종료 주차가 지났는데 완료(진행률 100%)되지 않은 일정</span><div class="grow"></div><span class="chip ${items.length?'r':''}">미결 ${items.length}</span></div>
+    <div style="padding:6px 12px 10px">${items.length ? `<table class="ov-list pend-auto"><thead><tr><th style="width:36px">No</th><th style="width:170px">구역</th><th>항목</th><th style="width:150px">종료</th><th style="width:80px">경과</th><th style="width:70px">진행률</th></tr></thead><tbody>
+      ${items.map((x,i) => `<tr onclick="${ovOpen(x.t.id)}"><td style="text-align:center;color:var(--mute);font-weight:800">${i+1}</td><td class="cat">${esc(catNm(x.t.catId))}</td>
+        <td><b>${esc(x.t.title)}</b> <span class="muted" style="font-size:11px">· ${esc(ovSub(x.t))}</span></td>
+        <td class="per" style="text-align:left">${shortAbs(taskEnd(x.t))}</td><td style="color:var(--red);font-weight:700;font-size:11.5px">${x.wk}주 경과</td><td class="per">${pct(msProg(x.t))}%</td></tr>`).join('')}
+      </tbody></table>` : '<div class="empty">일정이 어긋난 항목이 없습니다.</div>'}</div></section>`;
+}
+function renderOvReqWait(){
+  const catOfDiv = div => cats().find(c => c.type === 'space' && c.div === div);
+  const ds = S.decisions.filter(d => reqSt(d) === '검토중' && catOfDiv(d.div)).sort((a,b) => String(a.reqDate||'').localeCompare(String(b.reqDate||'')));
+  return `<div class="panel"><div class="ph">요청사항 검토 대기<div class="grow"></div><span class="chip ${ds.length?'a':''}">${ds.length}건</span></div>
+    ${ds.length ? `<table class="ov-list"><tbody>${ds.slice(0,12).map(d => { const c = catOfDiv(d.div), age = daysSince(d.reqDate);
+      return `<tr onclick="goRoom('${c.id}','${d.room||'ALL'}')"><td class="cat" style="width:150px">${esc(c.name)}${d.room?` · ${esc(roomName(d.room))}`:''}</td>
+        <td><b>${esc(d.request)}</b>${d.requester?` <span class="muted" style="font-size:11px">· ${esc(d.requester)}</span>`:''}</td><td class="per" style="${age>=14?'color:var(--amber);font-weight:700':''}">${d.reqDate ? (age ? age+'일 대기' : '오늘 등록') : ''}</td></tr>`; }).join('')}</tbody></table>${ds.length>12?`<div class="muted" style="font-size:11px;padding:6px 12px">외 ${ds.length-12}건</div>`:''}`
+      : '<div class="empty">검토 중인 요청사항이 없습니다.</div>'}</div>`;
+}
+function renderOvZones(){
+  return `<div class="panel"><div class="ph">구역별 상태</div><div class="ov-chk" style="padding:4px 0 6px">
+    ${cats().map(c => { const s = catSignal(c.id), p = pct(catProg(c.id)), nr = c.type === 'space' ? roomsOf(c.div).length : 0;
+      return `<div class="it" style="padding-left:12px;align-items:center" onclick="goPage('cat','${c.id}')"><span class="sig ${s.k}"><i></i>${s.label}</span><b>${esc(c.name)}</b>${nr?`<span class="muted" style="font-size:11px">${nr}실</span>`:''}<span class="m">${p}% · ${esc(s.why)}</span></div>`; }).join('')}
+  </div></div>`;
+}
+function renderOvLogs(){
+  const from = new Date(Date.now() - 14*86400000).toISOString().slice(0,10);
+  const catOfDiv = div => cats().find(c => c.type === 'space' && c.div === div);
+  const logs = S.room_logs.filter(l => String(l.date||'') >= from && catOfDiv(l.div)).sort((a,b) => String(b.date).localeCompare(String(a.date)) || (b.createdAt??0) - (a.createdAt??0));
+  return `<section class="card"><div class="card-h"><h2>최근 업데이트</h2><span class="hint">최근 2주 · 실별 히스토리</span><div class="grow"></div><span class="chip">${logs.length}건</span></div>
+    <div class="feed">${logs.slice(0,30).map(l => { const c = catOfDiv(l.div); return `<div class="fi" style="grid-template-columns:86px 200px 1fr" onclick="goRoom('${c.id}','${l.room||'ALL'}')"><span class="d">${esc(l.date)}${l.author?`<br>${esc(l.author)}`:''}</span><span><b>${esc(c.name)}</b>${l.room?`<br><span class="muted" style="font-size:11px">${esc(roomName(l.room))}</span>`:''}</span><span class="tx">${l.kind?`<span class="chip" style="margin-right:4px">${esc(l.kind)}</span>`:''}${esc(l.text)}</span></div>`; }).join('') || '<div class="empty">최근 2주간 기록된 업데이트가 없습니다.</div>'}</div></section>`;
+}
+function renderOverview(){
+  const ts = liveTasks(), now = nowWeekAbs(), all = pct(allProg());
+  const n = k => ts.filter(t => msStatus(t) === k).length;
+  const mk = (settings.markers || []).find(m => /준공/.test(m.label || ''));
+  const mkAbs = mk ? ymN(mk.ym)*4 + (Number(mk.week)||1) - 1 : null, left = mkAbs !== null ? mkAbs - now : null;
+  let h = `<section class="card ov-head">
+    <div><span class="k">청라돔 이전·입주 통합관리</span><span class="v ov-title">종합현황</span><span class="s">기준일 ${today()} · ${absLabel(now)}</span></div>
+    <div><span class="k">전체 진행률</span><span class="v">${all}<small>%</small></span><div class="pbar ${all===100?'g':''}"><i style="width:${all}%"></i></div><span class="s">마일스톤 ${ts.length}건 중 ${n('done')}건 완료</span></div>
+    <div><span class="k">일정 현황</span><span class="v" style="font-size:20px">진행 중 ${n('now')} <span style="color:${n('late')?'var(--red)':'var(--mute)'}">· 경과 ${n('late')}</span></span><span class="s">완료 ${n('done')} · 예정 ${n('plan')}</span></div>
+    <div><span class="k">준공 목표</span>${mk ? `<span class="v">${left >= 0 ? `${Math.floor(left/4)}<small>개월 남음</small>` : `${Math.floor(-left/4)}<small>개월 경과</small>`}</span><span class="s">${esc((mk.label.match(/\(([^)]+)\)/)||[])[1] || ymLabel(mk.ym))} 준공 · 남은 기간 ${left >= 0 ? left : 0}주</span>` : `<span class="s">마일스톤의 ‘기준선’에 ‘준공’이 들어간 항목을 추가하면 남은 기간이 표시됩니다.</span>`}</div>
+  </section>`;
+  h += renderOvMonthly() + renderOvWeekly() + renderOvPending() + `<section class="ov-two" style="grid-template-columns:1.4fr 1fr">${renderOvReqWait()}${renderOvZones()}</section>` + renderOvLogs();
+  return h;
+}
+
 /* =========================================================
    전체 렌더 · 페이지(탭) 전환
    ========================================================= */
 let ganttScrolled = false, ganttLeft = null;
 function goPage(p, catId){
-  ui.page = p === 'rr' ? 'rr' : p === 'cat' ? 'cat' : 'ms';
+  ui.page = p === 'cat' ? 'cat' : p === 'ov' ? 'ov' : 'ms';
   if (catId) ui.cat = catId;
   saveUi();
-  const h = ui.page === 'rr' ? '#rnr' : ui.page === 'cat' ? '#cat-' + ui.cat : '#milestone';
+  const h = ui.page === 'ov' ? '#overview' : ui.page === 'cat' ? '#cat-' + ui.cat : '#milestone';
   if (location.hash !== h) history.replaceState(null, '', h);
   render(); window.scrollTo(0, 0);
 }
 function pageFromHash(){
   const h = location.hash;
-  if (h === '#rnr') return ['rr'];
   if (h === '#milestone') return ['ms'];
+  if (h === '#overview' || h === '' || h === '#') return ['ov'];
   if (h.startsWith('#cat-')) return ['cat', h.slice(5)];
   return null;
 }
@@ -1914,14 +2714,16 @@ window.addEventListener('hashchange', () => { const p = pageFromHash(); if (p) {
 function renderNav(){
   const nav = $('#pnav'); if (!nav) return;
   const list = cats();
-  nav.innerHTML = `<button class="${ui.page==='ms'?'on':''}" onclick="goPage('ms')">마일스톤</button><button class="${ui.page==='rr'?'on':''}" onclick="goPage('rr')">R&amp;R</button>`
-    + (list.length ? '<span class="pnav-sep"></span>' : '')
-    + list.map(c => `<button class="${ui.page==='cat'&&ui.cat===c.id?'on':''}" onclick="goPage('cat','${c.id}')">${esc(c.name)}</button>`).join('');
+  const btn = c => `<button class="${ui.page==='cat'&&ui.cat===c.id?'on':''}" onclick="goPage('cat','${c.id}')">${esc(c.name)}</button>`;
+  const gen = list.filter(c => c.type !== 'space'), sp = list.filter(c => c.type === 'space');
+  nav.innerHTML = `<button class="${ui.page==='ov'?'on':''}" onclick="goPage('ov')">종합현황</button><button class="${ui.page==='ms'?'on':''}" onclick="goPage('ms')">마일스톤</button>` + gen.map(btn).join('')
+    + (sp.length ? `<span class="pnav-sep"></span><span class="pnav-lbl">구역별 진행현황</span>` + sp.map(btn).join('') : '');
 }
 
 function render(){
   if (!Store.ready) return;
   const list = cats();
+  list.forEach(c => { if (c.type === 'space' && c.div) DIVS[c.div] = c.name; });
   if (ui.cat && !list.some(c=>c.id===ui.cat)) ui.cat = null;
   if (!ui.cat && list.length) ui.cat = list[0].id;
   const c = list.find(x=>x.id===ui.cat);
@@ -1931,9 +2733,10 @@ function render(){
   renderNav();
   const banner = '';
   let html = banner;
-  if (ui.page === 'rr') html += renderRR();
-  else if (ui.page === 'cat') html += `<section class="card ws" id="ws">${c.type === 'space' ? renderCheongna(c) : renderGeneral(c)}</section>`;
-  else html += renderSummary() + renderFlowPicto() + renderMilestone() + renderCats();
+  if (ui.page === 'rr') ui.page = 'ms';
+  if (ui.page === 'cat') html += c.type === 'space' ? `<div id="ws" class="spwrap">${renderSpace(c)}</div>` : `<section class="card ws" id="ws">${renderGeneral(c)}</section>`;
+  else if (ui.page === 'ov') html += renderOverview();
+  else html += renderSummary() + renderMilestone();
   $('#app').innerHTML = html;
   const names = new Set(); S.plans.forEach(p => { if (p.lead) names.add(p.lead.trim()); (p.staff||[]).forEach(s => s && names.add(s.trim())); });
   $('#dl-names').innerHTML = [...names].sort().map(n => `<option value="${esc(n)}">`).join('');
@@ -1942,6 +2745,7 @@ function render(){
   if (g2) { if (gl !== null) g2.scrollLeft = gl; else if (ganttLeft !== null) g2.scrollLeft = ganttLeft; else if (!ganttScrolled) { const ms = period(); g2.scrollLeft = Math.max(0, (nowWeekAbs() - ymN(ms[0])*4 - 8) * WK); } ganttScrolled = true; }
   fitBars();
   bindCanvas();
+  bindSiteMap();
   runMigrations();
 }
 function fitBars(){
