@@ -406,10 +406,10 @@ tr.pdone td input[type=text]{text-decoration:line-through;color:var(--mute)}
 .smap{position:relative;display:inline-block;user-select:none;touch-action:none;max-width:100%}
 .smap img{display:block;max-width:100%;max-height:70vh;pointer-events:none;background:#fff}
 .smap.edit.placing{cursor:crosshair}
-.rbox{position:absolute;border:2px solid #4d5b78;background:rgba(255,255,255,.82);border-radius:5px;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;overflow:hidden;padding:1px 3px;transition:box-shadow .1s}
-.rbox span{font-size:11px;font-weight:800;line-height:1.15;color:var(--ink);word-break:keep-all}
-.rbox.st-open{border-color:#d08a00;background:rgba(255,244,222,.9)}
-.rbox.st-ok{border-color:#14834a;background:rgba(229,245,236,.9)}
+.rbox{position:absolute;border:2px solid #4d5b78;background:#fff;border-radius:5px;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;overflow:hidden;padding:1px 3px;transition:box-shadow .1s}
+.rbox span{font-size:var(--fs,11px);font-weight:800;line-height:1.15;color:var(--ink);word-break:keep-all}
+.rbox.st-open{border-color:#d08a00;background:#fff4de}
+.rbox.st-ok{border-color:#14834a;background:#e5f5ec}
 .rbox.st-none{border-color:#9aa4b6;border-style:dashed}
 .rbox:hover{box-shadow:0 0 0 3px rgba(47,91,234,.3)}
 .rbox.sel{border-color:var(--red);box-shadow:0 0 0 3px rgba(217,52,43,.35);z-index:2}
@@ -596,7 +596,7 @@ table.lu tr.vrow td{background:#f5f8ff}
 .fl-card .fl-h b{font-size:15px}.fl-card .fl-h:hover{background:#eef3ff}
 .map-box.mini{border:none;border-radius:0;padding:6px}
 .smap.mini{cursor:pointer}.smap.mini img{max-height:300px}
-.smap.mini .rbox{border-width:1.5px;padding:0 1px}.smap.mini .rbox span{font-size:8.5px}
+.smap.mini .rbox{border-width:1.5px;padding:0 1px}.smap.mini .rbox span{font-size:calc(var(--fs,11px)*.7)}
 .fl-rooms{margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
 .fl-rooms .t{font-weight:800;font-size:12px;margin-bottom:4px}
 .fl-rooms .it{font-size:12px;padding:4px 6px;border-radius:6px;cursor:pointer}.fl-rooms .it:hover{background:#eef3ff}.fl-rooms .it.on{background:var(--acc);color:#fff}
@@ -615,6 +615,11 @@ table.lu tr.vrow td{background:#f5f8ff}
 .mu-list .it{display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:5px;font-size:12px}
 .mu-list .it img{width:64px;height:44px;object-fit:contain;background:#f3f5f9;border-radius:4px}
 @media (max-width:900px){.mu-grid{grid-template-columns:1fr}.fl-grid{grid-template-columns:1fr}}
+.mt-box{border:1px solid var(--line);border-radius:9px;background:#fff;padding:8px 10px;margin-bottom:10px;display:flex;flex-direction:column;gap:6px}
+.mt-t{font-size:12px}
+.mt-row{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.mt-row .lb{font-size:11.5px;font-weight:800;color:var(--ink2);width:56px}
+.mt-row input{padding:4px 6px;font-size:12px}
 .userchip{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#c9d1e0}
 .userchip button{border:1px solid #3d4862;background:none;color:#c9d1e0;border-radius:7px;padding:3px 8px;font-size:11px}
 .userchip:empty{display:none}
@@ -1680,7 +1685,7 @@ function siteMapSection(div, maps, map, rooms){
   const onMap = map ? rooms.filter(r => r.mapId === map.id) : [];
   const unplaced = rooms.filter(r => !r.mapId || !maps.some(m => m.id === r.mapId));
   const cnt = m => rooms.filter(r => r.mapId === m.id).length;
-  const boxes = (m, ed) => rooms.filter(r => r.mapId === m.id).map(r => { const st = roomData(div, r.id).status; return `<div class="rbox st-${st} ${r.id===ui.selRoom?'sel':''} ${r.id===ui.placeRoom?'placing':''}" data-id="${r.id}" style="left:${r.mx}%;top:${r.my}%;width:${r.mw}%;height:${r.mh}%" title="${esc(r.name)}"><span>${esc(r.name)}</span>${ed?'<i class="rs"></i>':''}</div>`; }).join('');
+  const boxes = (m, ed) => rooms.filter(r => r.mapId === m.id).map(r => { const st = roomData(div, r.id).status; return `<div class="rbox st-${st} ${r.id===ui.selRoom?'sel':''} ${r.id===ui.placeRoom?'placing':''}" data-id="${r.id}" style="left:${r.mx}%;top:${r.my}%;width:${r.mw}%;height:${r.mh}%;--fs:${Number(r.mf)||11}px;${Number(r.mr)?`transform:rotate(${Number(r.mr)}deg)`:''}" title="${esc(r.name)}"><span>${esc(r.name)}</span>${ed?'<i class="rs"></i>':''}</div>`; }).join('');
   const tabs = maps.length ? `<div class="fl-tabs">${maps.length > 1 ? `<button class="${all?'on':''}" onclick="go({mapId:'ALL',mapEdit:false,placeRoom:''})">전체 층<small>${maps.length}개</small></button>` : ''}
       ${maps.map(m=>`<button class="${map&&m.id===map.id?'on':''}" onclick="go({mapId:'${m.id}',placeRoom:''})"><b>${esc(floorOf(m))}</b>${m.name && m.name!==floorOf(m)?` ${esc(m.name)}`:''}<small>${cnt(m)}실</small></button>`).join('')}</div>` : '';
   let body;
@@ -1692,6 +1697,7 @@ function siteMapSection(div, maps, map, rooms){
         <div class="map-box"><div class="smap ${edit?'edit':''} ${edit&&ui.placeRoom?'placing':''}" id="smap"><img src="${esc(assetUrl(map.imageAsset))}" draggable="false">${boxes(map, edit)}</div></div>
         ${edit ? `<div class="map-side">
             <div class="muted" style="font-size:11.5px;margin-bottom:6px">① 아래 목록에서 실을 고르고 ② 위치도 위를 드래그하면 그 자리에 실 이름이 배치됩니다. 배치된 실은 끌어서 옮기고 모서리로 크기를 바꿀 수 있어요.</div>
+            ${mapTools(map, rooms)}
             <div class="row" style="margin-bottom:8px"><input type="text" id="new-room" placeholder="새 실명 작성" style="flex:1"><button class="btn sm dark" onclick="addRoomFromMap('${div}')">등록</button></div>
             <div class="row" style="margin-bottom:6px"><label class="muted" style="font-size:11.5px;display:flex;gap:4px;align-items:center"><input type="checkbox" ${ui.mapOnlyUn?'checked':''} onchange="go({mapOnlyUn:this.checked})">미배치 실만 보기</label></div>
             <div class="ms-rooms">${rooms.filter(r => !ui.mapOnlyUn || !r.mapId || !maps.some(m=>m.id===r.mapId) || r.id===ui.placeRoom).map(r => { const pl = r.mapId && maps.some(m=>m.id===r.mapId), here = r.mapId === map.id;
@@ -1820,6 +1826,25 @@ function openMapUpload(div, mapId){
       } catch(e){ toast(e.message || '업로드 실패', 'err'); return false; }
     } });
 }
+function mapTools(map, rooms){
+  const r = rooms.find(x => x.id === ui.placeRoom && x.mapId === map.id);
+  if (!r) return `<div class="mt-box muted" style="font-size:11.5px">배치된 실 이름을 누르면 여기서 <b>회전</b>과 <b>글자 크기</b>를 바꿀 수 있어요.</div>`;
+  const deg = Number(r.mr)||0, fs = Number(r.mf)||11;
+  return `<div class="mt-box"><div class="mt-t">선택한 실 · <b>${esc(r.name)}</b></div>
+    <div class="mt-row"><span class="lb">회전</span><button class="btn sm" title="왼쪽 90°" onclick="setRoomStyle('${r.id}',{mr:${deg-90}})">⟲ 90°</button><button class="btn sm" onclick="setRoomStyle('${r.id}',{mr:${deg-15}})">−15°</button>
+      <input type="number" step="1" value="${deg}" style="width:58px" onchange="setRoomStyle('${r.id}',{mr:Number(this.value)||0})"><button class="btn sm" onclick="setRoomStyle('${r.id}',{mr:${deg+15}})">+15°</button><button class="btn sm" title="오른쪽 90°" onclick="setRoomStyle('${r.id}',{mr:${deg+90}})">⟳ 90°</button>${deg?`<button class="btn sm ghost" onclick="setRoomStyle('${r.id}',{mr:0})">0°</button>`:''}</div>
+    <div class="mt-row"><span class="lb">글자 크기</span><button class="btn sm" onclick="setRoomStyle('${r.id}',{mf:${Math.max(6,fs-1)}})">−</button>
+      <input type="number" min="6" max="40" value="${fs}" style="width:52px" onchange="setRoomStyle('${r.id}',{mf:clamp(Number(this.value)||11,6,40)})"><span class="muted" style="font-size:11px">px</span><button class="btn sm" onclick="setRoomStyle('${r.id}',{mf:${Math.min(40,fs+1)}})">+</button>
+      <button class="btn sm ghost" onclick="applyFontAll('${map.id}',${fs})" title="이 층에 배치된 모든 실을 같은 글자 크기로">이 층 전체 적용</button></div></div>`;
+}
+async function setRoomStyle(id, patch){
+  if ('mr' in patch) { let d = ((Math.round(patch.mr) % 360) + 360) % 360; if (d > 180) d -= 360; patch.mr = d; }
+  await safe(Store.upd('rooms', id, patch));
+}
+async function applyFontAll(mapId, fs){
+  const rs = S.rooms.filter(r => r.mapId === mapId); if (!rs.length) return;
+  await safe(Promise.all(rs.map(r => Store.upd('rooms', r.id, { mf: fs }))), `이 층 실 ${rs.length}개를 ${fs}px로 맞췄습니다.`);
+}
 async function delSiteMap(id){
   const m = S.sitemaps.find(x => x.id === id); if (!m) return;
   const n = S.rooms.filter(r=>r.mapId===id).length;
@@ -1870,6 +1895,7 @@ function bindSiteMap(){
       const next = roomsOf(ui.div).find(r => r.id !== id && (!r.mapId || !maps.some(m=>m.id===r.mapId)));
       ui.placeRoom = next ? next.id : ''; saveUi(); render(); return; }
     if (a.moved) await safe(Store.upd('rooms', a.r.id, { mx: a.cur.x, my: a.cur.y, mw: a.cur.w, mh: a.cur.h }));
+    if (ui.placeRoom !== a.r.id) { ui.placeRoom = a.r.id; saveUi(); render(); }
   };
 }
 
