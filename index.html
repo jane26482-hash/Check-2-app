@@ -1248,6 +1248,8 @@ function openTaskModal(taskId = null, catId = null, row = 0, abs = null){
       const data = { catId: v('#tm-cat'), row: isRoom ? -1 : Number(key.slice(2)), roomId: isRoom ? key.slice(5) : '', startYm: v('#tm-ym'), startWeek: Number(v('#tm-wk')), kind,
         done: el.querySelector('#tm-done').dataset.v === '1', key: el.querySelector('#tm-key').checked, weeks: kind === 'point' ? 1 : clamp(Number(v('#tm-weeks'))||1, 1, 150), title: v('#tm-title').trim(), color: '', memo: v('#tm-memo').trim() };
       data.progress = data.done ? 100 : 0;
+      if (data.done && !(t && t.done)) { data.doneAt = today(); data.wasLate = nowWeekAbs() > (ymN(data.startYm)*4 + data.startWeek - 1 + (kind === 'point' ? 0 : data.weeks - 1)); }
+      if (!data.done) { data.doneAt = ''; data.wasLate = false; }
       if (!data.title) { toast('추진업무 내용을 입력하세요.', 'warn'); return false; }
       if (kind !== 'point' && !key.startsWith('room:')) {
         const a = ymN(data.startYm)*4 + data.startWeek - 1, b = a + data.weeks - 1;
@@ -2675,10 +2677,10 @@ function weekItems(w){
     if (t.kind === 'point') { if (a === w) out.push({ tg: 'd', lb: '◆ 주요', t, o: 0 }); return; }
     if (a === w) out.push({ tg: 's', lb: '시작', t, o: 1 });
     if (b === w) out.push({ tg: 'e', lb: '종료', t, o: 2 });
-    if (a < w && b > w && msStatus(t) !== 'done') out.push({ tg: 'i', lb: '진행 중', t, o: 9, ing: true }); });
+    if (a < w && b > w) out.push({ tg: 'i', lb: '진행 중', t, o: 9, ing: true }); });
   return out.sort((x,y) => x.o - y.o || catNm(x.t.catId).localeCompare(catNm(y.t.catId)));
 }
-async function setDone(id, v){ const t = S.ms_tasks.find(x => x.id === id); if (!t || !!t.done === v) return; await safe(Store.upd('ms_tasks', id, { done: v, progress: v ? 100 : 0 }), v ? '완료로 바꿨습니다.' : '미결로 바꿨습니다.'); }
+async function setDone(id, v){ const t = S.ms_tasks.find(x => x.id === id); if (!t || !!t.done === v) return; const late = nowWeekAbs() > taskEnd(t); await safe(Store.upd('ms_tasks', id, { done: v, progress: v ? 100 : 0, wasLate: v ? late : false, doneAt: v ? today() : '' }), v ? '완료로 바꿨습니다.' : '미결로 바꿨습니다.'); }
 const dnToggle = t => `<span class="dn-tg" onclick="event.stopPropagation()"><button class="o ${t.done?'':'on'}" onclick="setDone('${t.id}',false)">미결</button><button class="d ${t.done?'on':''}" onclick="setDone('${t.id}',true)">완료</button></span>`;
 const ovSub = t => { const c = S.categories.find(x => x.id === t.catId); return c ? laneLabel(c, t) : ''; };
 function renderOvMonthly(){
@@ -2707,12 +2709,13 @@ function renderOvWeekly(){
 }
 function renderOvPending(){
   const now = nowWeekAbs();
-  const items = liveTasks().filter(t => msStatus(t) === 'late').map(t => ({ t, wk: now - taskEnd(t) })).sort((a,b) => b.wk - a.wk);
-  return `<section class="card"><div class="card-h"><h2>주요 미결 업무</h2><span class="hint">종료 주차가 지났는데 아직 미결인 일정</span><div class="grow"></div><span class="chip ${items.length?'r':''}">미결 ${items.length}</span></div>
+  const items = liveTasks().filter(t => msStatus(t) === 'late' || (t.done && t.wasLate)).map(t => ({ t, wk: now - taskEnd(t) })).sort((a,b) => (a.t.done?1:0) - (b.t.done?1:0) || b.wk - a.wk);
+  const open = items.filter(x => !x.t.done).length;
+  return `<section class="card"><div class="card-h"><h2>주요 미결 업무</h2><span class="hint">종료 주차가 지났는데 아직 미결인 일정</span><div class="grow"></div><span class="chip ${open?'r':''}">미결 ${open}</span><span class="chip g">완료 ${items.length - open}</span></div>
     <div style="padding:6px 12px 10px">${items.length ? `<table class="ov-list pend-auto"><thead><tr><th style="width:36px">No</th><th style="width:170px">구역</th><th>항목</th><th style="width:150px">종료</th><th style="width:80px">경과</th><th style="width:120px">상태</th></tr></thead><tbody>
       ${items.map((x,i) => `<tr onclick="${ovOpen(x.t.id)}"><td style="text-align:center;color:var(--mute);font-weight:800">${i+1}</td><td class="cat">${esc(catNm(x.t.catId))}</td>
         <td><b>${esc(x.t.title)}</b> <span class="muted" style="font-size:11px">· ${esc(ovSub(x.t))}</span></td>
-        <td class="per" style="text-align:left">${shortAbs(taskEnd(x.t))}</td><td style="color:var(--red);font-weight:700;font-size:11.5px">${x.wk}주 경과</td><td>${dnToggle(x.t)}</td></tr>`).join('')}
+        <td class="per" style="text-align:left">${shortAbs(taskEnd(x.t))}</td><td style="color:${x.t.done?'var(--green)':'var(--red)'};font-weight:700;font-size:11.5px">${x.t.done?`완료${x.t.doneAt?' '+esc(x.t.doneAt.slice(5)):''}`:x.wk+'주 경과'}</td><td>${dnToggle(x.t)}</td></tr>`).join('')}
       </tbody></table>` : '<div class="empty">일정이 어긋난 항목이 없습니다.</div>'}</div></section>`;
 }
 function renderOvReqWait(){
